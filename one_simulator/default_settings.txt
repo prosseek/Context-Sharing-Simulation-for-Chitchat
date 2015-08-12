@@ -94,10 +94,10 @@ MovementModel.warmup = 1000
 ## Map based movement -movement model specific settings
 MapBasedMovement.nrofMapFiles = 4
 
-MapBasedMovement.mapFile1 = one_simulator/data/roads.wkt
-MapBasedMovement.mapFile2 = one_simulator/data/main_roads.wkt
-MapBasedMovement.mapFile3 = one_simulator/data/pedestrian_paths.wkt
-MapBasedMovement.mapFile4 = one_simulator/data/shops.wkt
+MapBasedMovement.mapFile1 = data/roads.wkt
+MapBasedMovement.mapFile2 = data/main_roads.wkt
+MapBasedMovement.mapFile3 = data/pedestrian_paths.wkt
+MapBasedMovement.mapFile4 = data/shops.wkt
 
 ## Reports - all report names have to be valid report classes
 

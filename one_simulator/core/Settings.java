@@ -31,14 +31,14 @@ public class Settings {
 	/** properties object where the setting files are read into */
 	protected static Properties props;
 	/** file name of the default settings file ({@value}) */
-	public static final String DEF_SETTINGS_FILE ="one_simulator/default_settings.txt";
+	public static final String DEF_SETTINGS_FILE ="default_settings.txt";
 	
 	/** 
 	 * Setting to define the file name where all read settings are written
 	 * ({@value}. If set to an empty string, standard output is used. 
 	 * By default setting are not written anywhere. 
 	 */
-	public static final String SETTING_OUTPUT_S = "one_simulator/Settings.output";
+	public static final String SETTING_OUTPUT_S = "Settings.output";
 	
 	/** delimiter for requested values in strings ({@value})
 	 * @see #valueFillString(String) */
@@ -54,8 +54,8 @@ public class Settings {
 	private String secondaryNamespace = null;
 	private Stack<String> oldNamespaces;
 	private Stack<String> secondaryNamespaces;
-	
-	/**
+
+    /**
 	 * Creates a setting object with a namespace. Namespace is the prefix
 	 * of the all subsequent setting requests.
 	 * @param namespace Namespace to use
