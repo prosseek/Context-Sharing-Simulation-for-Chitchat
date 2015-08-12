@@ -2,9 +2,7 @@
   <library name="lib">
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/lib/ECLA.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/scala-library.jar!/" />
       <root url="jar://$PROJECT_DIR$/lib/DTNConsoleConnection.jar!/" />
-      <root url="jar://$PROJECT_DIR$/lib/junit-4.7.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

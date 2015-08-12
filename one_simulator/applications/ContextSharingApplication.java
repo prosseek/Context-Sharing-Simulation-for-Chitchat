@@ -92,9 +92,6 @@ public class ContextSharingApplication extends Application implements Connection
 
         sendContext(host1, host2, m1);
         sendContext(host2, host1, m2);
-
-        smcho.Arith a = new smcho.Arith();
-        System.out.println(a.add(20, 20));
     }
 
     @Override

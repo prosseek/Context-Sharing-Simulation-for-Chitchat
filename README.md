@@ -7,22 +7,7 @@ Context Sharing Simulation on ONE Simulator
 
 All the one simulator code is in one_simulator directory, all the settings should be in the one_simulator directory
 
-#### Settings.java change
-
-    public class Settings {
-    	/** properties object where the setting files are read into */
-    	protected static Properties props;
-    	/** file name of the default settings file ({@value}) */
-    	public static final String DEF_SETTINGS_FILE ="one_simulator/default_settings.txt";
-
-#### default_settings.txt change
-
-Changes in setup files.
-
-    MapBasedMovement.mapFile1 = one_simulator/data/roads.wkt
-    MapBasedMovement.mapFile2 = one_simulator/data/main_roads.wkt
-    MapBasedMovement.mapFile3 = one_simulator/data/pedestrian_paths.wkt
-    MapBasedMovement.mapFile4 = one_simulator/data/shops.wkt
+The working direcgtory becomes PATH/one_simulator
 
 ### [2015/08/10] Applications are listeners.
 
