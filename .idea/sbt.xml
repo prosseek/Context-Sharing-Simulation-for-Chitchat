@@ -5,6 +5,12 @@
       <SbtProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/context" />
         <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/context" />
+            <option value="$PROJECT_DIR$/context/project" />
+          </set>
+        </option>
       </SbtProjectSettings>
     </option>
   </component>
