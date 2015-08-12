@@ -21,8 +21,7 @@ public class ContextSharingApplication extends Application implements Connection
     // Private vars
     private int     contextSize = 0;
 
-    // CONSTRUCTORS
-
+    //region CONSTRUCTORS
     /**
      * Creates a new ping application with the given settings.
      *
@@ -44,9 +43,9 @@ public class ContextSharingApplication extends Application implements Connection
         super(a);
         this.contextSize = a.getContextSize();
     }
+    //endregion
 
-    /* OVERRIDE methods */
-
+    //region OVERRIDE METHODS
     /**
      * Handles an incoming message. If the message is a ping message replies
      * with a pong message. Generates events for ping and pong messages.
@@ -102,18 +101,18 @@ public class ContextSharingApplication extends Application implements Connection
     public void hostsDisconnected(DTNHost host1, DTNHost host2) {
         System.out.printf("Disconnected: %d <-> %d\n", host1.getAddress(), host2.getAddress());
     }
+    //endregion
 
-    // PROPERTIES
-
+    //region PROPERTIES
     /**
      * @return the lastPing
      */
     public int getContextSize() {
         return contextSize;
     }
+    //endregion
 
-    // PRIVATE METHODS
-
+    //region PRIVATE METHODS
     /**
      *
      * @param host1
@@ -131,4 +130,5 @@ public class ContextSharingApplication extends Application implements Connection
     protected Message createContext(DTNHost host) {
         return null;
     }
+    //endregion
 }
