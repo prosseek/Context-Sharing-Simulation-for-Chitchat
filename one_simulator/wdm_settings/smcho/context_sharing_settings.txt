@@ -1,0 +1,21 @@
+# This configuration file adds Ping application for all the nodes and 
+# a report module that counts the number of pings & pongs sent & received
+
+Scenario.name = context_sharing1
+Scenario.simulateConnections = true
+Scenario.updateInterval = 10
+
+# 43200s == 12h
+Scenario.endTime = 10000
+
+# Define new application
+contextSharingApp.type = ContextSharingApplication
+
+# Set Ping app for all nodes
+Group.nrofApplications = 1
+Group.application1 = contextSharingApp
+
+# Add report for Ping app
+Report.nrofReports = 1
+Report.report2 = ContextSharingAppReporter
+

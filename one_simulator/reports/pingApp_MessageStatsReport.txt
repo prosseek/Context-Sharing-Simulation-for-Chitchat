@@ -1,0 +1,20 @@
+Message stats for scenario pingApp
+sim_time: 43200.1000
+created: 20268
+started: 937280
+relayed: 927088
+aborted: 10186
+dropped: 845979
+removed: 0
+delivered: 11731
+delivery_prob: 0.5788
+response_prob: 0.0000
+overhead_ratio: 78.0289
+latency_avg: 3597.0306
+latency_med: 3027.5000
+hopcount_avg: 2.4664
+hopcount_med: 2
+buffertime_avg: 3621.1857
+buffertime_med: 3036.2000
+rtt_avg: NaN
+rtt_med: NaN
