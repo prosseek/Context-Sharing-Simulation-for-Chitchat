@@ -1,6 +1,8 @@
 package applications;
 
 import core.*;
+import smcho.Context;
+import smcho.Database;
 
 public class ContextSharingApplication extends Application implements ConnectionListener {
 /**
@@ -87,11 +89,24 @@ public class ContextSharingApplication extends Application implements Connection
     public void hostsConnected(DTNHost host1, DTNHost host2) {
         System.out.printf("Connected: %d <-> %d\n", host1.getAddress(), host2.getAddress());
         // Each host sends context to the other side
-        Message m1 = createContext(host1);
-        Message m2 = createContext(host2);
+        Database d = Database.get();
+        Context c1 = d.getContext(host1.getAddress());
+        Context c2 = d.getContext(host2.getAddress());
+        int size1 = c1.getSize();
+        int size2 = c2.getSize();
 
-        sendContext(host1, host2, m1);
-        sendContext(host2, host1, m2);
+        Message m1 = new Message(host1, host2, getId(), size1);
+        m1.addProperty("type", "context");
+        m1.setAppID(APP_ID);
+        host1.createNewMessage(m1);
+
+        Message m2 = new Message(host2, host1, getId(), size2);
+        m2.addProperty("type", "context");
+        m2.setAppID(APP_ID);
+        host2.createNewMessage(m2);
+
+        d.add(host1.getAddress(), host2.getAddress(), c1);
+        d.add(host2.getAddress(), host1.getAddress(), c2);
     }
 
     @Override
@@ -117,15 +132,16 @@ public class ContextSharingApplication extends Application implements Connection
      * @param m1
      */
     private void sendContext(DTNHost host1, DTNHost host2, Message m1) {
-
+        //Database.connect(host1.getAddress(), host2.getAddress(), m1);
     }
 
-    /**
-     * @param host
-     * @return
-     */
-    protected Message createContext(DTNHost host) {
-        return null;
+    private Context messageToContext(Message m) {
+        Context c =  Context.create();
+        return c;
+    }
+
+    private String getId() {
+        return "";
     }
     //endregion
 }

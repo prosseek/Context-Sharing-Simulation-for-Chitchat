@@ -4,6 +4,28 @@ package smcho
   *
   * @constructor create a database with owner id
   */
-class Database (val owner: Int) {
-  def getOwner() = this.owner
+object Database  {
+  var database: Database = null;
+  def get() = {
+    if (database == null) {
+      database = new Database()
+    }
+    database
+  }
+}
+
+class Database {
+  /**
+   *  Host i sends a message c to j
+   * @param i
+   * @param j
+   * @param c
+   */
+  def add(i: Int, j:Int, c: Context) = {
+    println(s"$i sends a context to $j");
+  }
+
+  def getContext(id: Int) = {
+    Context.create()
+  }
 }
