@@ -1,6 +1,6 @@
 Message stats for scenario context_sharing1
 sim_time: 10000.0000
-created: 0
+created: 4
 started: 0
 relayed: 0
 aborted: 0

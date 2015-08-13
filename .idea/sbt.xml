@@ -5,10 +5,24 @@
       <SbtProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/context" />
         <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/context" />
+            <option value="$PROJECT_DIR$/context/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="0.13.5" />
       </SbtProjectSettings>
       <SbtProjectSettings>
         <option name="externalProjectPath" value="$PROJECT_DIR$/contextProcessor" />
         <option name="jdk" value="1.8" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/contextProcessor" />
+            <option value="$PROJECT_DIR$/contextProcessor/project" />
+          </set>
+        </option>
+        <option name="sbtVersion" value="0.13.5" />
         <option name="useAutoImport" value="true" />
         <option name="useOurOwnAutoImport" value="true" />
       </SbtProjectSettings>

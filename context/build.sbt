@@ -1,4 +1,4 @@
-name := "contextProcessor"
+name := "context"
 
 version := "1.0"
 
