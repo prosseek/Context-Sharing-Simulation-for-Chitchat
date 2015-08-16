@@ -4,12 +4,18 @@ import core.*;
 import smcho.Context;
 import smcho.Database;
 
-public class ContextSharingApplication extends Application implements ConnectionListener {
+public class ContextSharingApplication extends Application implements ConnectionListener, MessageListener {
 /**
- * An application to share contexts when participants are connected.
+ * An application to share contexts when hosts are connected in a DTN.
  *
- * The corresponding <code>ContextSharingAppReporter</code> class can be used to record
+ * 1. The corresponding <code>ContextSharingAppReporter</code> class can be used to record
  * information about the application behavior.
+ *
+ * 2. The mechanism is as follows:
+ *    2.1 Each host makes their own context to be shared.
+ *    2.2 When a message (context) is received, the context database is updated, and the next set of contexts
+ *        are calculated.
+ *    2.3 When hosts are connected, the created context at 2.2 is made into message.
  *
  * @see ContextSharingAppReporter
  * @author smcho
@@ -52,18 +58,28 @@ public class ContextSharingApplication extends Application implements Connection
      * Handles an incoming message. If the message is a ping message replies
      * with a pong message. Generates events for ping and pong messages.
      *
+     *  handle() implements the 2.2 in the description
+     *  2.2 When a message (context) is received, the context database is updated, and the next set of contexts
+     *      are calculated.
+     *
      * @param msg	message received by the router
      * @param host	host to which the application instance is attached
      */
     @Override
     public Message handle(Message msg, DTNHost host) {
         String type = (String)msg.getProperty("type");
-        if (type==null) return msg; // Not a ping/pong message
+        if (type==null) return msg;
 
-        // Respond with pong if we're the recipient
-        if (msg.getTo().getAddress() == host.getAddress()) {
-            // The message is mine
-            return null;
+        if (type == "context") { // message transferred
+            if (msg.getTo().getAddress() == host.getAddress()) {
+                System.out.printf(">>> %5.3f %s\n", SimClock.getTime(), msg.getId());
+                Context context = messageToContext(msg);
+                Database.processMessage(host.getAddress(), context);
+
+                // Sender should remove the message in order not to send it again
+                msg.getFrom().deleteMessage(msg.getId(), true);
+                return null;
+            }
         }
 
         return msg;
@@ -82,36 +98,35 @@ public class ContextSharingApplication extends Application implements Connection
     @Override
     public void update(DTNHost host) {
         double curTime = SimClock.getTime();
-        //System.out.println(curTime);
     }
 
+    /**
+     * 2.3 When hosts are connected, the created context at 2.2 is made into message.
+     *
+     * @param host1 Host that initiated the connection
+     * @param host2 Host that was connected to
+     */
     @Override
     public void hostsConnected(DTNHost host1, DTNHost host2) {
-        System.out.printf("Connected: %d <-> %d\n", host1.getAddress(), host2.getAddress());
-        // Each host sends context to the other side
-        Database d = Database.get();
-        Context c1 = d.getContext(host1.getAddress());
-        Context c2 = d.getContext(host2.getAddress());
+        // Show message
+        System.out.printf("%5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
+
+        // get Context
+        Context c1 = Database.getContext(host1.getAddress());
+        Context c2 = Database.getContext(host2.getAddress());
         int size1 = c1.getSize();
         int size2 = c2.getSize();
 
-        Message m1 = new Message(host1, host2, getId(), size1);
-        m1.addProperty("type", "context");
-        m1.setAppID(APP_ID);
+        // Message is created from the context
+        Message m1 = contextToMessage(host1, host2, size1);
+        Message m2 = contextToMessage(host2, host1, size2);
         host1.createNewMessage(m1);
-
-        Message m2 = new Message(host2, host1, getId(), size2);
-        m2.addProperty("type", "context");
-        m2.setAppID(APP_ID);
         host2.createNewMessage(m2);
-
-        d.add(host1.getAddress(), host2.getAddress(), c1);
-        d.add(host2.getAddress(), host1.getAddress(), c2);
     }
 
     @Override
     public void hostsDisconnected(DTNHost host1, DTNHost host2) {
-        System.out.printf("Disconnected: %d <-> %d\n", host1.getAddress(), host2.getAddress());
+        System.out.printf("%5.3f, Disconnected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
     }
     //endregion
 
@@ -125,23 +140,58 @@ public class ContextSharingApplication extends Application implements Connection
     //endregion
 
     //region PRIVATE METHODS
+    private Message contextToMessage(DTNHost host1, DTNHost host2, int size) {
+        Message m1 = new Message(host1, host2, getMessageId(host1, host2, size), size);
+        m1.addProperty("type", "context");
+        m1.setAppID(APP_ID);
+        return m1;
+    }
+
+    private String getMessageId(DTNHost f, DTNHost t, int size) {
+        double simTime = SimClock.getTime();
+        String message = String.format("%d-%d-%d-%7.3f", f.getAddress(), t.getAddress(), size, simTime);
+        return message;
+    }
+
     /**
      *
-     * @param host1
-     * @param host2
-     * @param m1
+     * Given a message, make it into a context
+     *
+     * @param msg
+     * @return
      */
-    private void sendContext(DTNHost host1, DTNHost host2, Message m1) {
-        //Database.connect(host1.getAddress(), host2.getAddress(), m1);
-    }
-
-    private Context messageToContext(Message m) {
-        Context c =  Context.create();
-        return c;
-    }
-
-    private String getId() {
-        return "";
+    private Context messageToContext(Message msg) {
+        return Context.create(msg.getFrom().getAddress(), msg.getTo().getAddress(), msg.getId());
     }
     //endregion
+
+    //region MESSAGE listener implementation
+    @Override
+    public void newMessage(Message m) {
+        System.out.printf("1) Message created: %s\n", m.getId());
+    }
+
+    @Override
+    public void messageTransferStarted(Message m, DTNHost from, DTNHost to) {
+        System.out.printf("2) %5.3f Message transfer started %d -> %d (%s)\n", SimClock.getTime(), from.getAddress(), to.getAddress(), m.getId());
+    }
+
+    @Override
+    public void messageDeleted(Message m, DTNHost where, boolean dropped) {
+        System.out.printf("XXX: Message deleted - %s at %d\n", m.getId(), where.getAddress());
+    }
+
+    @Override
+    public void messageTransferAborted(Message m, DTNHost from, DTNHost to) {
+        System.out.printf("???: Message aborted - %s\n", m.getId());
+    }
+
+    @Override
+    public void messageTransferred(Message m, DTNHost from, DTNHost to, boolean firstDelivery) {
+        System.out.printf("3) %5.3f Message transferred %d -> %d (%s) %b\n", SimClock.getTime(), from.getAddress(), to.getAddress(), m.getId(), firstDelivery);
+
+
+    }
+    //endregion
+
 }

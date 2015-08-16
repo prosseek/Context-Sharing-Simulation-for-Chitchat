@@ -4,27 +4,11 @@
  */
 package routing;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Random;
-
+import core.*;
 import routing.util.RoutingInfo;
-
 import util.Tuple;
 
-import core.Application;
-import core.Connection;
-import core.DTNHost;
-import core.Message;
-import core.MessageListener;
-import core.Settings;
-import core.SettingsError;
-import core.SimClock;
-import core.SimError;
+import java.util.*;
 
 /**
  * Superclass for message routers.
@@ -363,8 +347,7 @@ public abstract class MessageRouter {
 		// If the application re-targets the message (changes 'to')
 		// then the message is not considered as 'delivered' to this host.
 		isFinalRecipient = aMessage.getTo() == this.host;
-		isFirstDelivery = isFinalRecipient &&
-		!isDeliveredMessage(aMessage);
+		isFirstDelivery = isFinalRecipient && !isDeliveredMessage(aMessage);
 
 		if (!isFinalRecipient && outgoing!=null) {
 			// not the final recipient and app doesn't want to drop the message

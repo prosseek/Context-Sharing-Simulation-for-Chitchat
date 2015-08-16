@@ -3,7 +3,7 @@
 
 Scenario.name = context_sharing1
 Scenario.simulateConnections = true
-Scenario.updateInterval = 10
+Scenario.updateInterval = 0.01
 
 # 43200s == 12h
 Scenario.endTime = 10000
