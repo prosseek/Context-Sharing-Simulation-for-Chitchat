@@ -4,8 +4,8 @@ package smcho
   *
   * @constructor create a database with owner id
   */
-class Context (val fromAddress: Int, val toAddress: Int, val message : String) {
 
+class Context (val fromAddress: Int, val toAddress: Int, val message : String) {
   var size = -1;
   def setSize(size: Int) = this.size = size;
   def getSize() = this.size;

@@ -12,10 +12,13 @@ class ContextTest extends FunSuite {
     //    val message = "Hello"
     //    val d = new Context(host1 = 0, host2 = 3, message=message)
     //    assert(d.getMessage() == message)
+
   }
   // Get/set size
   test("Set and get test") {
+
     //val f = fixture
+
     //f.context.setSize(10)
     //assert(f.context.getSize() == 10)
   }

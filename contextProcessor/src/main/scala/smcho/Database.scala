@@ -1,11 +1,15 @@
 package smcho
 
+<<<<<<< HEAD
 import scala.collection.mutable.{Map => mm}
 
 object Database {
 
   val contexts = mm[String, Context]();
 
+=======
+object Database {
+>>>>>>> 0407f12c3c956d2c55fa339c3b7af50d0e9ace39
   /**
    *  Host i sends a message c to j
    *  This transaction is stored in the database to be analyzed later
