@@ -4,16 +4,20 @@ package smcho
   *
   * @constructor create a database with owner id
   */
-class Context (val host1: Int, val host2: Int, val message : String) {
+class Context (val fromAddress: Int, val toAddress: Int, val message : String) {
 
   var size = -1;
   def setSize(size: Int) = this.size = size;
   def getSize() = this.size;
+  def getMessage() = this.message
+  def getFromAddress() = this.fromAddress
+  def getToAddress() = this.toAddress
+  override def toString() = s"($fromAddress => $toAddress):$message"
 }
 
 object Context {
   def create(host1: Int, host2: Int, message : String) =
   {
-    new Context(host1 = host1, host2 = host2, message = message)
+    new Context(fromAddress = host1, toAddress = host2, message = message)
   }
 }

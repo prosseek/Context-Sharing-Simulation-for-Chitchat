@@ -1,17 +1,21 @@
 package smcho
 
+import scala.collection.mutable.{Map => mm}
+
 object Database {
+
+  val contexts = mm[String, Context]();
+
   /**
    *  Host i sends a message c to j
    *  This transaction is stored in the database to be analyzed later
    *
-   * @param i
-   * @param j
    * @param c
    * @return true/false based on the added results
    */
-  def add(i: Int, j:Int, c: Context) = {
-    println(s"add $i * $j");
+  def add(c: Context) = {
+    println(s"add $c");
+    contexts.put(c.getMessage(), c)
   }
 
   /**

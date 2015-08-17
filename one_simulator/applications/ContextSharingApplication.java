@@ -4,6 +4,8 @@ import core.*;
 import smcho.Context;
 import smcho.Database;
 
+import java.util.List;
+
 public class ContextSharingApplication extends Application implements ConnectionListener, MessageListener {
 /**
  * An application to share contexts when hosts are connected in a DTN.
@@ -114,14 +116,18 @@ public class ContextSharingApplication extends Application implements Connection
         // get Context
         Context c1 = Database.getContext(host1.getAddress());
         Context c2 = Database.getContext(host2.getAddress());
-        int size1 = c1.getSize();
-        int size2 = c2.getSize();
 
         // Message is created from the context
-        Message m1 = contextToMessage(host1, host2, size1);
-        Message m2 = contextToMessage(host2, host1, size2);
-        host1.createNewMessage(m1);
-        host2.createNewMessage(m2);
+        // todo:: Better exception handling than printing the trace
+        try {
+            Message m1 = createMessage(host1.getAddress(), host2.getAddress(), c1);
+            Message m2 = createMessage(host2.getAddress(), host1.getAddress(), c2);
+            host1.createNewMessage(m1);
+            host2.createNewMessage(m2);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -140,16 +146,34 @@ public class ContextSharingApplication extends Application implements Connection
     //endregion
 
     //region PRIVATE METHODS
-    private Message contextToMessage(DTNHost host1, DTNHost host2, int size) {
-        Message m1 = new Message(host1, host2, getMessageId(host1, host2, size), size);
+    private Message contextToMessage(Context context) throws Exception {
+        int host1 = context.getFromAddress();
+        int host2 = context.getToAddress();
+        return createMessage(host1, host2, context);
+    }
+
+    private DTNHost getHost(int id) throws Exception {
+        SimScenario sim = SimScenario.getInstance();
+        List<DTNHost> hosts = sim.getHosts();
+
+        for (DTNHost h: hosts) {
+            if (h.getAddress() == id) return h;
+        }
+        throw new Exception(String.format("No matching host id %d", id));
+    }
+
+    private Message createMessage(int host1, int host2, Context context) throws Exception {
+        DTNHost dtnhost1 = getHost(host1);
+        DTNHost dtnhost2 = getHost(host2);
+        Message m1 = new Message(dtnhost1, dtnhost2, getMessageId(host1, host2, context.getSize()), context.getSize());
         m1.addProperty("type", "context");
         m1.setAppID(APP_ID);
         return m1;
     }
 
-    private String getMessageId(DTNHost f, DTNHost t, int size) {
+    private String getMessageId(int host1, int host2, int size) {
         double simTime = SimClock.getTime();
-        String message = String.format("%d-%d-%d-%7.3f", f.getAddress(), t.getAddress(), size, simTime);
+        String message = String.format("%d-%d-%d-%7.3f", host1, host2, size, simTime);
         return message;
     }
 

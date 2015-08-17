@@ -1,5 +1,7 @@
 # Ignore IntelliJ IDE
-out
+out/
+project/
+target/
 /.idea/workspace.xml
 
 *.class
@@ -11,3 +13,6 @@ contextProcessor/target/
 contextProcessor/project/
 context/target/
 context/project/
+contextSummary/target/
+contextSummary/project/
+

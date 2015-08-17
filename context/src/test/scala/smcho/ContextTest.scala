@@ -8,23 +8,14 @@ import org.scalatest.Assertions._
  */
 class ContextTest extends FunSuite {
 
-  def fixture = {
-    new {
-      //val context = new Context(0);
-    }
-  }
   test("Create context") {
-    val d = new Context(host1 = 0, host2 = 3, message="Hello")
-    //assert(d.getId() == 1)
+    //    val message = "Hello"
+    //    val d = new Context(host1 = 0, host2 = 3, message=message)
+    //    assert(d.getMessage() == message)
   }
-  test("Create context 2") {
-    val d = new Context(host1 = 0, host2 = 3, message="Hello")
-    //assert(d.getId() == 2)
-  }
-
   // Get/set size
   test("Set and get test") {
-    val f = fixture
+    //val f = fixture
     //f.context.setSize(10)
     //assert(f.context.getSize() == 10)
   }
