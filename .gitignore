@@ -3,6 +3,7 @@ out/
 project/
 target/
 /.idea/workspace.xml
+.DS_Store
 
 *.class
 

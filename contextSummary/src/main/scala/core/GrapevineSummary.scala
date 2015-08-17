@@ -107,6 +107,7 @@ abstract class GrapevineSummary extends ContextSummary {
     val summary = summaries(0)
     copy(summary)
   }
+
   override def save(filePath: String): Unit = {
     val f = new PrintWriter(new File(filePath))
     (f.write(toFileString()))

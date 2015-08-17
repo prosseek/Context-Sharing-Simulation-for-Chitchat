@@ -70,6 +70,11 @@ class BloomierFilterSummary extends GrapevineSummary {
   override def get(key: String): Any = {
     // [2014/08/21] bug
     // It should call the method, not the value
+    if (check(key) == NoError) instance.get()
+    else None
+  }
+
+  def _get(key: String): Any = {
     instance.get()
   }
 
@@ -113,4 +118,10 @@ class BloomierFilterSummary extends GrapevineSummary {
     }
     return ab
   }
+
+  /**
+   * todo:: the serialized size is not correct as it is missing the header size.
+   * @return
+   */
+  override def getSerializedSize(): Int = getSize()._1
 }

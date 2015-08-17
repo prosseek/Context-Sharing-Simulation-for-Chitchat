@@ -73,4 +73,6 @@ class CompleteSummary  extends GrapevineSummary {
     val goalBitSetSize = Util.getByteSizeFromSize(dataStructure.size)
     return sizeByteArray ++ bitSetToByteArray(bitSet, goalBitSetSize) ++ ab
   }
+
+  override def getSerializedSize(): Int = serialize().size
 }

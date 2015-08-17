@@ -14,6 +14,8 @@ abstract class ContextSummary {
    */
   def getSize() : (Int, Int, Int);
 
+  def getSerializedSize() : Int;
+
   /**
    * Returns the value from the input key
    * The returned value can be null, so Option type is used.
@@ -22,6 +24,7 @@ abstract class ContextSummary {
    * @return
    */
   def get(key:String): Any
+
   def check(key:String): BottomType
 
   /**

@@ -5,7 +5,6 @@ import util.conversion.Util
 /**
  * Created by smcho on 5/31/14.
  */
-//case class BloomierParameter(val m:Int, val k:Int, val q:Int, val hashSeed:Int)
 
 object BloomierHasher {
   var uniqueNeighbors = false
@@ -13,10 +12,6 @@ object BloomierHasher {
 
 case class BloomierHasher(val m:Int, val k:Int = 3, val q:Int = 32, val hashSeed:Int = 0) {
   val byteSize = Util.getByteSize(q)
-
-//  def this(p:BloomierParameter) = {
-//    this(p.m, p.k, p.q, p.hashSeed)
-//  }
 
   /**
    * Just create one byteSize (8 * byteSize bits) of random 0s and 1s

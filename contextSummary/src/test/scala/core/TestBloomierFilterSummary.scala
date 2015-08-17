@@ -27,6 +27,7 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     // map1 size
     t.create(map = map1, m = 8, k = 3, q = 8*4)
     val expectedSize = t.getM()/8 + 4 * 4
+    println(t.getSize())
     assert(t.getSize()._1 == expectedSize)
   }
   test ("Simple") {
@@ -44,9 +45,10 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
         assert(t.get("time") == (11,11))
       if (t.check("date") == NoError)
         assert(t.get("date") == (2014,10, 1))
+
 //      if (t.check("message") == NoError)
 //        assert(t.get("message") == message)
-      println(s"width = ${width}, ${t.getSize}")
+      println(s"width = ${width}, ${t.getSize}, ${t.getSerializedSize}")
     }
 
     message = "Hello, world"

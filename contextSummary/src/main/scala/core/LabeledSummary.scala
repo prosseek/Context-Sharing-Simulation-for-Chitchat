@@ -27,6 +27,8 @@ class LabeledSummary extends GrapevineSummary {
     (getTheorySize(), serial.size, compressed.size)
   }
 
+  override def getSerializedSize() = getTheorySize()
+
 //  def getCompleteSize(): Int = {
 //    def log2(x : Double) = {
 //      math.log10(x)/math.log10(2.0)
