@@ -45,7 +45,8 @@ class CompleteSummary  extends GrapevineSummary {
   /* It should not be accessed from the key, but the index */
 
   override def get(key: String): Any = {
-     throw new RuntimeException(s"No matching value for key ${key}")
+    if (getMap().contains(key)) getMap().get(key).get
+    else None
   }
 
   override def check(key: String): BottomType = {
