@@ -11,13 +11,16 @@ object Database {
   // todo:: the map should be ContextSummary not LabeledSummary
   val contexts = mm[String, LabeledSummary]();
   // todo:: make it simple and relative one
-  val contextPath = "/Users/smcho/Desktop/code/ContextSharingSimulation/experiment/contexts/SimulationSimple/contexts"
+  val contextPath = "experiment/contexts/SimulationSimple/contexts"
+  loadContexts(contextPath)
 
-  val files = new java.io.File(contextPath).listFiles.filter(_.getName.endsWith(".txt")) // context is in txt format
+  def loadContexts(directory: String) = {
+    val files = new java.io.File(directory).listFiles.filter(_.getName.endsWith(".txt")) // context is in txt format
 
-  for (file <- files) {
-    val fileName = file.toString
-    contexts(uFile.getBasename(fileName)) = uFile.fileToSummary(fileName)(0) // todo:: fileToSummary should return a summary
+    for (file <- files) {
+      val fileName = file.toString
+      contexts(uFile.getBasename(fileName)) = uFile.fileToSummary(fileName)(0) // todo:: fileToSummary should return a summary
+    }
   }
 
   /**
