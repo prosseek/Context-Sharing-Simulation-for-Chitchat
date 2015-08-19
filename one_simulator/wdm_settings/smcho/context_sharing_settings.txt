@@ -19,3 +19,5 @@ Group.application1 = contextSharingApp
 Report.nrofReports = 1
 Report.report2 = ContextSharingAppReporter
 
+# ContextSummary storage directory
+ContextSummary.directory = SimulationSimple

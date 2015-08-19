@@ -43,3 +43,9 @@ abstract class ContextSummary {
   // def zip(): Array[Byte];
   def serialize(): Array[Byte];
 }
+
+object ContextSummary {
+  def load(filePath:String) = {
+
+  }
+}

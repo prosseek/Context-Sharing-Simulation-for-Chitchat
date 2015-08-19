@@ -25,6 +25,12 @@ public class SimScenario implements Serializable {
     /** a way to get a hold of this... */
     private static SimScenario myinstance=null;
 
+
+    // smcho added
+    public static final String CONTEXTSUMMARY = "ContextSummary";
+    public static final String DIRECTORY = "directory";
+    // end added
+
     /** namespace of scenario settings ({@value})*/
     public static final String SCENARIO_NS = "Scenario";
     /** number of host groups -setting id ({@value})*/
@@ -413,10 +419,11 @@ public class SimScenario implements Serializable {
                         mmProto, mRouterProto);
 
                 // smcho added
-                // If the application implements connectionListner, it should be added to the lister group
-                ContextMessage c = ContextMessage.load("hello.txt");
-                String key = c.getId();
-                host.addContext(key, c);
+                // todo:: no error checking when there are no files or directories exist
+                s = new Settings(CONTEXTSUMMARY);
+                String contextDirectory = s.getSetting(DIRECTORY);
+                ContextMessage c = ContextMessage.load(contextDirectory, Integer.toString(j));
+                host.setContextMessage(c);
                 //smcho
                 hosts.add(host);
             }
