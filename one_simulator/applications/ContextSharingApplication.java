@@ -76,7 +76,7 @@ public class ContextSharingApplication extends Application implements Connection
             if (msg.getTo().getAddress() == host.getAddress()) {
                 System.out.printf(">>> %5.3f %s\n", SimClock.getTime(), msg.getId());
                 ContextMessage contextMessage = messageToContext(msg);
-                Database.processMessage(host.getAddress(), contextMessage);
+                //Database.processMessage(host.getAddress(), contextMessage);
 
                 // Sender should remove the message in order not to send it again
                 msg.getFrom().deleteMessage(msg.getId(), true);
@@ -114,8 +114,8 @@ public class ContextSharingApplication extends Application implements Connection
         System.out.printf("%5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
 
         // get Context
-        ContextMessage c1 = Database.getContext(host1.getAddress());
-        ContextMessage c2 = Database.getContext(host2.getAddress());
+        ContextMessage c1 = Database.getContextMessage(host1.getAddress());
+        ContextMessage c2 = Database.getContextMessage(host2.getAddress());
 
         // Message is created from the context
         // todo:: Better exception handling than printing the trace

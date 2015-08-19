@@ -10,16 +10,14 @@ import routing.MessageRouter;
 import routing.util.RoutingInfo;
 import smcho.ContextMessage;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * A DTN capable host.
  */
 public class DTNHost implements Comparable<DTNHost> {
-
-    // smcho add
-    private Map<String, ContextMessage> contexts = new TreeMap<String, ContextMessage>();
-    // add end
 
     private static int nextAddress = 0;
     private int address;
@@ -37,6 +35,10 @@ public class DTNHost implements Comparable<DTNHost> {
     private List<MovementListener> movListeners;
     private List<NetworkInterface> net;
     private ModuleCommunicationBus comBus;
+
+    // smcho add
+    private ContextMessage contextMessage;
+    // end add
 
     static {
         DTNSim.registerForReset(DTNHost.class.getCanonicalName());
@@ -568,18 +570,11 @@ public class DTNHost implements Comparable<DTNHost> {
     }
 
     // smcho add
-
-    /**
-     *
-     */
-    public void addContext(String key, ContextMessage contextMessage) {
-        this.contexts.put(key, contextMessage);
+    public void setContextMessage(ContextMessage contextMessage) {
+        this.contextMessage = contextMessage;
     }
-
-    public void deleteContext(String key) {
-        if (this.contexts.containsKey(key)) {
-            this.contexts.remove(key);
-        }
+    public ContextMessage getContextMessage() {
+        return this.contextMessage;
     }
-    // add end
+    // end add
 }

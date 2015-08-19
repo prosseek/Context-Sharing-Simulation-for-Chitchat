@@ -1,7 +1,6 @@
 package smcho
 
 import org.scalatest.FunSuite
-import org.scalatest.Assertions._
 
 /**
  * Created by smcho on 8/12/15.

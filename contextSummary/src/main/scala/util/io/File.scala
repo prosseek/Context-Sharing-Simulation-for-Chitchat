@@ -25,4 +25,6 @@ object File {
   def resultsToFile(filePath:String, results:String) = {
     Files.write(Paths.get(filePath), results.getBytes(StandardCharsets.UTF_8))
   }
+
+  def getBasename(filePath:String) = filePath.split("/").reverse.head
 }

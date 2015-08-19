@@ -3,32 +3,32 @@ Context Sharing Simulation on ONE Simulator
 
 ## Changes
 
-### [2015/08/17]
+### [2015/08/19] hosts has ContextMessage
 
 #### SimScenario
 
-Line 314, `protected void createHosts()`
+`createHosts()` can load contexts from the directory.
 
-    Context c = CREATE CONTEXT;
-    String key = c.getId();
-    host.addContext(KEY, VALUE)
-    hosts.add(host);
-    
+    protected void createHosts() {
+
+                // smcho added
+                s = new Settings(CONTEXTSUMMARY);
+                String contextDirectory = s.getSetting(DIRECTORY);
+                ContextMessage c = ContextMessage.load(contextDirectory, Integer.toString(j));
+                host.setContextMessage(c);
+                //smcho
+
 #### DTNHost
 
-DTNHost now contains the context:
+    private ContextMessage contextMessage;
 
-    private Map<String, Context> contexts = new TreeMap<String, Context>();
-    
     ...
-
-    public void addContext(String key, Context context) {
-        this.contexts.put(key, context);
+    
+    public void setContextMessage(ContextMessage contextMessage) {
+        this.contextMessage = contextMessage;
     }
-    public void deleteContext(String key) {
-        if (this.contexts.containsKey(key)) {
-            this.contexts.remove(key);
-        }
+    public ContextMessage getContextMessage() {
+        return this.contextMessage;
     }
 
 ### [2015/08/10] Project structure change
