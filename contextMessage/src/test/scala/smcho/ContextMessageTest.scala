@@ -6,7 +6,7 @@ import org.scalatest.Assertions._
 /**
  * Created by smcho on 8/12/15.
  */
-class ContextTest extends FunSuite {
+class ContextMessageTest extends FunSuite {
 
   test("Create context") {
     //    val message = "Hello"

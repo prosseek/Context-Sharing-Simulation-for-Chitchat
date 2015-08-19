@@ -1,7 +1,7 @@
 package applications;
 
 import core.*;
-import smcho.Context;
+import smcho.ContextMessage;
 import smcho.Database;
 
 import java.util.List;
@@ -75,8 +75,8 @@ public class ContextSharingApplication extends Application implements Connection
         if (type == "context") { // message transferred
             if (msg.getTo().getAddress() == host.getAddress()) {
                 System.out.printf(">>> %5.3f %s\n", SimClock.getTime(), msg.getId());
-                Context context = messageToContext(msg);
-                Database.processMessage(host.getAddress(), context);
+                ContextMessage contextMessage = messageToContext(msg);
+                Database.processMessage(host.getAddress(), contextMessage);
 
                 // Sender should remove the message in order not to send it again
                 msg.getFrom().deleteMessage(msg.getId(), true);
@@ -114,8 +114,8 @@ public class ContextSharingApplication extends Application implements Connection
         System.out.printf("%5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
 
         // get Context
-        Context c1 = Database.getContext(host1.getAddress());
-        Context c2 = Database.getContext(host2.getAddress());
+        ContextMessage c1 = Database.getContext(host1.getAddress());
+        ContextMessage c2 = Database.getContext(host2.getAddress());
 
         // Message is created from the context
         // todo:: Better exception handling than printing the trace
@@ -146,10 +146,10 @@ public class ContextSharingApplication extends Application implements Connection
     //endregion
 
     //region PRIVATE METHODS
-    private Message contextToMessage(Context context) throws Exception {
-        int host1 = context.getFromAddress();
-        int host2 = context.getToAddress();
-        return createMessage(host1, host2, context);
+    private Message contextToMessage(ContextMessage contextMessage) throws Exception {
+        int host1 = contextMessage.getFromAddress();
+        int host2 = contextMessage.getToAddress();
+        return createMessage(host1, host2, contextMessage);
     }
 
     private DTNHost getHost(int id) throws Exception {
@@ -162,10 +162,10 @@ public class ContextSharingApplication extends Application implements Connection
         throw new Exception(String.format("No matching host id %d", id));
     }
 
-    private Message createMessage(int host1, int host2, Context context) throws Exception {
+    private Message createMessage(int host1, int host2, ContextMessage contextMessage) throws Exception {
         DTNHost dtnhost1 = getHost(host1);
         DTNHost dtnhost2 = getHost(host2);
-        Message m1 = new Message(dtnhost1, dtnhost2, getMessageId(host1, host2, context.getSize()), context.getSize());
+        Message m1 = new Message(dtnhost1, dtnhost2, getMessageId(host1, host2, contextMessage.getSize()), contextMessage.getSize());
         m1.addProperty("type", "context");
         m1.setAppID(APP_ID);
         return m1;
@@ -184,8 +184,8 @@ public class ContextSharingApplication extends Application implements Connection
      * @param msg
      * @return
      */
-    private Context messageToContext(Message msg) {
-        return Context.create(msg.getFrom().getAddress(), msg.getTo().getAddress(), msg.getId());
+    private ContextMessage messageToContext(Message msg) {
+        return ContextMessage.create(msg.getFrom().getAddress(), msg.getTo().getAddress(), msg.getId());
     }
     //endregion
 

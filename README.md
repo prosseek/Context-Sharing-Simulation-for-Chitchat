@@ -3,6 +3,34 @@ Context Sharing Simulation on ONE Simulator
 
 ## Changes
 
+### [2015/08/17]
+
+#### SimScenario
+
+Line 314, `protected void createHosts()`
+
+    Context c = CREATE CONTEXT;
+    String key = c.getId();
+    host.addContext(KEY, VALUE)
+    hosts.add(host);
+    
+#### DTNHost
+
+DTNHost now contains the context:
+
+    private Map<String, Context> contexts = new TreeMap<String, Context>();
+    
+    ...
+
+    public void addContext(String key, Context context) {
+        this.contexts.put(key, context);
+    }
+    public void deleteContext(String key) {
+        if (this.contexts.containsKey(key)) {
+            this.contexts.remove(key);
+        }
+    }
+
 ### [2015/08/10] Project structure change
 
 All the one simulator code is in one_simulator directory, all the settings should be in the one_simulator directory

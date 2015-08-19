@@ -16,7 +16,7 @@ class LabeledSummary extends GrapevineSummary {
   // this is the size in bytes
   def getTheorySize(): Int = {
     (0 /: dataStructure) { (acc, value) => acc + value._2.getSize } + // sum value size
-    (0 /: dataStructure.keys) {(acc, value) => acc + value.size}     // sum of keys
+    (0 /: dataStructure.keys) {(acc, value) => acc + value.length}     // sum of keys
     // dataStructure.size     // 1 byte is used for identifying the type
   }
 
@@ -24,7 +24,7 @@ class LabeledSummary extends GrapevineSummary {
     val serial = serialize()
     val compressed = compress(serial)
 
-    (getTheorySize(), serial.size, compressed.size)
+    (getTheorySize(), serial.length, compressed.length)
   }
 
   override def getSerializedSize() = getTheorySize()
@@ -44,7 +44,8 @@ class LabeledSummary extends GrapevineSummary {
     //MMap[String, Tuple2[GrapevineType, Object]]()
       r.get
     else
-      throw new RuntimeException(s"No matching value for key ${key}")
+      None
+      //throw new RuntimeException(s"No matching value for key ${key}")
   }
 
   override def check(key: String): BottomType = {
@@ -62,6 +63,6 @@ class LabeledSummary extends GrapevineSummary {
       val id = value.getId()
       ab ++= (stringToByteArray(key) ++ Array[Byte](id.toByte) ++ byteArrayValue)
     }
-    return ab
+    ab
   }
 }

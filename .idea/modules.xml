@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/context/context.iml" filepath="$PROJECT_DIR$/context/context.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contextMessage/contextMessage.iml" filepath="$PROJECT_DIR$/contextMessage/contextMessage.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor.iml" filepath="$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextSummary/contextSummary.iml" filepath="$PROJECT_DIR$/contextSummary/contextSummary.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor-build.iml" filepath="$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor-build.iml" />

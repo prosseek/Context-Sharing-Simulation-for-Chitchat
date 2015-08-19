@@ -10,6 +10,7 @@ import movement.MapBasedMovement;
 import movement.MovementModel;
 import movement.map.SimMap;
 import routing.MessageRouter;
+import smcho.ContextMessage;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -410,6 +411,13 @@ public class SimScenario implements Serializable {
                 DTNHost host = new DTNHost(this.messageListeners,
                         this.movementListeners,	gid, interfaces, comBus,
                         mmProto, mRouterProto);
+
+                // smcho added
+                // If the application implements connectionListner, it should be added to the lister group
+                ContextMessage c = ContextMessage.load("hello.txt");
+                String key = c.getId();
+                host.addContext(key, c);
+                //smcho
                 hosts.add(host);
             }
         }

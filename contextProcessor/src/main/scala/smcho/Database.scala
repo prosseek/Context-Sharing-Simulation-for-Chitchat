@@ -4,7 +4,7 @@ import scala.collection.mutable.{Map => mm}
 
 object Database {
 
-  val contexts = mm[String, Context]();
+  val contexts = mm[String, ContextMessage]();
 
   /**
    *  Host i sends a message c to j
@@ -13,7 +13,7 @@ object Database {
    * @param c
    * @return true/false based on the added results
    */
-  def add(c: Context) = {
+  def add(c: ContextMessage) = {
     println(s"add $c");
     contexts.put(c.getMessage(), c)
   }
@@ -24,7 +24,7 @@ object Database {
    * @return created_context
    */
   def getContext(id: Int) = {
-    val c = Context.create(0, 0, "hello")
+    val c = ContextMessage.create(0, 0, "hello")
     c.setSize(432);
     c
   }
@@ -34,7 +34,7 @@ object Database {
    * @param id
    * @param context
    */
-  def processMessage(id: Int, context: Context): Unit = {
+  def processMessage(id: Int, context: ContextMessage): Unit = {
 
   }
 }
