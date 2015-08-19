@@ -1,6 +1,9 @@
 # ContextSharingSimulation
 Context Sharing Simulation on ONE Simulator
 
+## Simulation setup
+* [2015/08/19] Contexts in `experiment/contexts/SimulationSimple/contexts` are loaded when the simulation starts. Refer to Database object in ContextProcessor package.
+
 ## Changes
 
 ### [2015/08/19] hosts has ContextMessage

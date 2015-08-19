@@ -1,5 +1,6 @@
 package smcho
 
+import core.LabeledSummary
 import org.scalatest.FunSuite
 import org.scalatest.Assertions._
 
@@ -8,8 +9,22 @@ import org.scalatest.Assertions._
  */
 class DatabaseTest extends FunSuite {
   test("Create test") {
-    Database.getContexts() foreach { context =>
-      println(context.toString())
+    Database.loadContexts("contextProcessor/resources/test/sample_contexts")
+    Database.getContexts() foreach {
+      case (string, context)  =>
+        string match {
+          case "summary1.txt" =>
+            assert(context.getSizeLabeled() == 105)
+            assert(context.getSizeBloomier() == 46)
+            assert(context.getKeys().size == 9)
+            // experiment/contexts/SimulationSimple/contexts/summary1.txt
+          case "summary2.txt" =>
+            assert(context.getSizeLabeled() == 107)
+            assert(context.getSizeBloomier() == 50)
+            assert(context.getKeys().size == 8)
+            // experiment/contexts/SimulationSimple/contexts/summary1.txt
+          case _ => println(s"${string} <- ???")
+        }
     }
   }
 //  test("Create test2") {

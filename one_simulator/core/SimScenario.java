@@ -10,10 +10,13 @@ import movement.MapBasedMovement;
 import movement.MovementModel;
 import movement.map.SimMap;
 import routing.MessageRouter;
+import scala.collection.JavaConversions;
 import smcho.ContextMessage;
+import smcho.Database;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -409,6 +412,14 @@ public class SimScenario implements Serializable {
             }
 
             // creates hosts of ith group
+            // smcho added
+
+            // load inital contexts into the database
+            s = new Settings(CONTEXTSUMMARY);
+            String contextDirectory = s.getSetting(DIRECTORY);
+            Database.loadContexts(contextDirectory);
+            // end added
+
             for (int j=0; j<nrofHosts; j++) {
                 ModuleCommunicationBus comBus = new ModuleCommunicationBus();
 
@@ -420,11 +431,12 @@ public class SimScenario implements Serializable {
 
                 // smcho added
                 // todo:: no error checking when there are no files or directories exist
-                s = new Settings(CONTEXTSUMMARY);
-                String contextDirectory = s.getSetting(DIRECTORY);
-                ContextMessage c = ContextMessage.load(contextDirectory, Integer.toString(j));
+                String initialContext = s.getSetting("host" + Integer.toString(j));
+                List<String> contexts = Arrays.asList(initialContext);
+                ContextMessage c = ContextMessage.load(JavaConversions.asScalaBuffer(Arrays.asList(initialContext)));
                 host.setContextMessage(c);
-                //smcho
+                // end added
+
                 hosts.add(host);
             }
         }

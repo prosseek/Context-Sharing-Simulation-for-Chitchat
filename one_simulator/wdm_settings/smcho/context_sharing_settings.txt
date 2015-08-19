@@ -20,4 +20,9 @@ Report.nrofReports = 1
 Report.report2 = ContextSharingAppReporter
 
 # ContextSummary storage directory
-ContextSummary.directory = SimulationSimple
+ContextSummary.directory = experiment/simulation/simpleSimulation
+ContextSummary.host0 = summary0.txt
+ContextSummary.host1 = summary1.txt
+ContextSummary.host2 = summary2.txt
+ContextSummary.host3 = summary3.txt
+ContextSummary.host4 = summary4.txt

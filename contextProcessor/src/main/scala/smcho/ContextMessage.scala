@@ -32,37 +32,8 @@ object ContextMessage {
     new ContextMessage(fromAddress = host1, toAddress = host2, id = message)
   }
 
-  /**
-   * Load ContextSummaries from a directory
-   *
-   * The contexts should be in
-   *     #workingdirectory/directoryName/hostName
-   * Or
-   *     absolutePath/hostName
-   *
-   * The hostNames are number of the hostid
-   *
-   * @param directoryName
-   * @param hostName
-   * @return
-   */
   // todo:: no error checking when the directory does not exist
-  def load(directoryName: String, hostName: String) = {
-    var basedirectory : String = ""
-    // todo:: file path name processing - "/" may not work with Windows
-    if (directoryName.startsWith("/")) {
-      // absolute path
-      basedirectory = directoryName
-    }
-    else {
-      // relative path
-      basedirectory = new File(".").getAbsolutePath() + "/" + ContextMessage.contextDirectory + "/" + directoryName;
-    }
-    val contextDirectory = basedirectory + "/" + hostName
-    if (Files.exists(Paths.get(contextDirectory))) {
-      println("YES")
-    }
-
+  def load(contexts: Seq[String]) = { // directoryName: String, hostName: String) = {
     new ContextMessage(1, 2, "hello")
   }
 }
