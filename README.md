@@ -2,6 +2,9 @@
 Context Sharing Simulation on ONE Simulator
 
 ## Simulation setup
+* [2015/08/19] `ln -s ../experiment/ ./experiment` should be executed in the ONE simulator directory.
+    * Database loads the contexts assuming the base directory is in ContextSharingSimulation directory, but with one simulator this becomes one_simulator.
+    * This symbolic link solves this issue. 
 * [2015/08/19] Contexts in `experiment/contexts/SimulationSimple/contexts` are loaded when the simulation starts. Refer to Database object in ContextProcessor package.
 
 ## Changes
