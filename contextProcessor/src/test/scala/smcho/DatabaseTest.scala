@@ -23,7 +23,7 @@ class DatabaseTest extends FunSuite {
             assert(context.getSizeBloomier() == 50)
             assert(context.getKeys().size == 8)
             // experiment/contexts/SimulationSimple/contexts/summary1.txt
-          case _ => println(s"${string} <- ???")
+          case _ => println(s"${string} <- unkonwn test name")
         }
     }
   }
