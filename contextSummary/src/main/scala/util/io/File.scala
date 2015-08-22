@@ -26,5 +26,11 @@ object File {
     Files.write(Paths.get(filePath), results.getBytes(StandardCharsets.UTF_8))
   }
 
-  def getBasename(filePath:String) = filePath.split("/").reverse.head
+  def getBasename(filePath:String) = {
+    val baseName = filePath.split("/").reverse.head
+    if (baseName.endsWith(".txt"))
+      baseName.replace(".txt", "")
+    else
+      baseName
+  }
 }

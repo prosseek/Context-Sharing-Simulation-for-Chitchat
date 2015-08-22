@@ -5,35 +5,28 @@ import java.nio.file.{Files, Paths}
 
 import core.ContextSummary
 
-/** A database that stores contexts exchanged
+/** ContextMessage is a class to transform between a set of contexts to Message (Simulator)
   *
   * @constructor create a database with owner id
   */
 
-class ContextMessage(val fromAddress: Int, val toAddress: Int, val id: String) {
-  var size = 0;
-  var contextSummaries : Set[ContextSummary] = _
+case class ContextMessage(var host1: Int, var host2: Int, var size:Int, val id: String) {
+  def this(id:String) = this(-1, -1, 0, id)
 
-  def setSize(size: Int) = this.size = size;
+  def setSize(size: Int) = this.size = size
+  def setHost1(host: Int) = this.host1 = host
+  def setHost2(host: Int) = this.host2 = host
+
   def getSize() = this.size;
-  def getMessage() = this.id
-  def getFromAddress() = this.fromAddress
-  def getToAddress() = this.toAddress
-  def getId() = ""
-  override def toString() = s"($fromAddress => $toAddress):$id"
+  def getId() = this.id
+  def getHost1() = this.host1
+  def getHost2() = this.host2
+  override def toString() = s"($host1 => $host2)[$size]:$id"
 }
 
-object ContextMessage {
-
-  val contextDirectory: String = "contexts"
-
-  def create(host1: Int, host2: Int, message : String) =
-  {
-    new ContextMessage(fromAddress = host1, toAddress = host2, id = message)
-  }
-
-  // todo:: no error checking when the directory does not exist
-  def load(contexts: Seq[String]) = { // directoryName: String, hostName: String) = {
-    new ContextMessage(1, 2, "hello")
-  }
-}
+//object ContextMessage {
+//  def create(host1: Int, host2: Int, size:Int, id : String) =
+//  {
+//    new ContextMessage(host1 = host1, host2 = host2, size = size, id = id)
+//  }
+//}

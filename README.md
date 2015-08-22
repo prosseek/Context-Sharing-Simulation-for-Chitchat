@@ -9,34 +9,6 @@ Context Sharing Simulation on ONE Simulator
 
 ## Changes
 
-### [2015/08/19] hosts has ContextMessage
-
-#### SimScenario
-
-`createHosts()` can load contexts from the directory.
-
-    protected void createHosts() {
-
-                // smcho added
-                s = new Settings(CONTEXTSUMMARY);
-                String contextDirectory = s.getSetting(DIRECTORY);
-                ContextMessage c = ContextMessage.load(contextDirectory, Integer.toString(j));
-                host.setContextMessage(c);
-                //smcho
-
-#### DTNHost
-
-    private ContextMessage contextMessage;
-
-    ...
-    
-    public void setContextMessage(ContextMessage contextMessage) {
-        this.contextMessage = contextMessage;
-    }
-    public ContextMessage getContextMessage() {
-        return this.contextMessage;
-    }
-
 ### [2015/08/10] Project structure change
 
 All the one simulator code is in one_simulator directory, all the settings should be in the one_simulator directory
