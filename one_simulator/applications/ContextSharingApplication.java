@@ -25,6 +25,7 @@ public class ContextSharingApplication extends Application implements Connection
     /** Size of the ping message */
     //public static final String CONTEXT_SIZE = "contextSize";
     public static final String SUMMARYTYPE = "summaryType";
+
     public static final String CONTEXTSUMMARY = "ContextSummary";
 
     /** Application ID */
@@ -46,6 +47,7 @@ public class ContextSharingApplication extends Application implements Connection
 //        }
         Settings s2 = new Settings(CONTEXTSUMMARY);
         this.summaryType = s2.getSetting(SUMMARYTYPE);
+
         super.setAppID(APP_ID);
     }
 
