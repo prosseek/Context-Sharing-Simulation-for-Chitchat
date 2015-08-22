@@ -7,18 +7,21 @@ import org.scalatest.FunSuite
  */
 class ContextMessageTest extends FunSuite {
 
-  test("Create context") {
-    //    val message = "Hello"
-    //    val d = new Context(host1 = 0, host2 = 3, message=message)
-    //    assert(d.getMessage() == message)
-
+  test("Create ContextMessage") {
+    val id = "Hello"
+    val d = ContextMessage(host1 = 0, host2 = 3, size = 100, id=id)
+    assert(d.getId() == id)
+    assert(d.getSize() == 100)
+    assert(d.getHost1() == 0)
+    assert(d.getHost2() == 3)
   }
   // Get/set size
-  test("Set and get test") {
-
-    //val f = fixture
-
-    //f.context.setSize(10)
-    //assert(f.context.getSize() == 10)
+  test("Simpler ContextMessage creating") {
+    val id = "Hello"
+    val d = new ContextMessage(id)
+    assert(d.getId() == id)
+    assert(d.getSize() == 0)
+    assert(d.getHost1() == -1)
+    assert(d.getHost2() == -1)
   }
 }

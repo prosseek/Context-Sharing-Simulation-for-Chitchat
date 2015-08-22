@@ -8,7 +8,6 @@ import movement.MovementModel;
 import movement.Path;
 import routing.MessageRouter;
 import routing.util.RoutingInfo;
-import smcho.ContextMessage;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,10 +34,6 @@ public class DTNHost implements Comparable<DTNHost> {
     private List<MovementListener> movListeners;
     private List<NetworkInterface> net;
     private ModuleCommunicationBus comBus;
-
-    // smcho add
-    private ContextMessage contextMessage;
-    // end add
 
     static {
         DTNSim.registerForReset(DTNHost.class.getCanonicalName());
@@ -568,13 +563,4 @@ public class DTNHost implements Comparable<DTNHost> {
     public int compareTo(DTNHost h) {
         return this.getAddress() - h.getAddress();
     }
-
-    // smcho add
-    public void setContextMessage(ContextMessage contextMessage) {
-        this.contextMessage = contextMessage;
-    }
-    public ContextMessage getContextMessage() {
-        return this.contextMessage;
-    }
-    // end add
 }

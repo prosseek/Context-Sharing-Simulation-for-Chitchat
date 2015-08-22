@@ -16,4 +16,7 @@ class TestFile extends FunSuite with BeforeAndAfter {
     //print(new File(".").getCanonicalPath())
   }
 
+  test ("getBasename test") {
+    assert(File.getBasename("/abc/def/ghi.txt") == "ghi")
+  }
 }
