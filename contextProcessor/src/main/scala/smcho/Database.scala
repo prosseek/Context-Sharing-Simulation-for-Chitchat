@@ -5,7 +5,7 @@ import scala.collection.mutable.{Map => mm, Set => mSet}
 object Database {
 
   private var summaries : mm[String, Summary] = _
-  private var history: mm[Int, mSet[String]] = mm[Int, mSet[String]]()
+  private var history = mm[Int, mSet[String]]()
 
   def getSummary(name: String) = {
     summaries.get(name)
