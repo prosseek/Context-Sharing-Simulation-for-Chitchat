@@ -6,7 +6,10 @@ import scala.collection.mutable.{Map => mm}
 import util.io.{File => uFile}
 import core.{BloomierFilterSummary, LabeledSummary, ContextSummary}
 
-class Summary(val contextSummary: ContextSummary) {
+class Summary(val contextSummary: ContextSummary, var name:String) {
+
+  def this(contextSummary: ContextSummary) = this(contextSummary, "")
+
   private val labeledSummary = contextSummary.asInstanceOf[LabeledSummary]
   private val bloomierSummary = getBloomier(labeledSummary)
   private val sizeLabeled = labeledSummary.getSerializedSize()
@@ -19,6 +22,9 @@ class Summary(val contextSummary: ContextSummary) {
     bf
   }
 
+  def setName(name:String) = this.name = name
+
+  def getName() = this.name
   def getSizeLabeled() = sizeLabeled
   def getSizeBloomier() = sizeBloomier
   def getKeys() = labeledSummary.getKeys()
@@ -35,8 +41,9 @@ object Summary {
 
     for (file <- files) {
       val fileName = file.toString
+      val key = uFile.getBasename(fileName)
       // todo:: fileToSummary should return a summary not a list of summaries (remove (0))
-      summaries(uFile.getBasename(fileName)) = new Summary(uFile.fileToSummary(fileName)(0))
+      summaries(key) = new Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
     }
     summaries
   }

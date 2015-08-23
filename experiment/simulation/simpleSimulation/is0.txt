@@ -4,6 +4,3 @@ message -> What's your problem?
 time -> (11, 21)
 date -> (2015, 01, 01)
 age -> 12
-level of athelete -> 9
-athelete -> john
-value_f -> 11.2

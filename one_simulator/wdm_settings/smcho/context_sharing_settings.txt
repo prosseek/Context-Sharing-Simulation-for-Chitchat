@@ -16,7 +16,7 @@ Group.nrofApplications = 1
 Group.application1 = contextSharingApp
 
 # Add report for Ping app
-Report.nrofReports = 1
+Report.nrofReports = 2
 Report.report2 = ContextSharingAppReporter
 
 # ContextType
