@@ -25,11 +25,12 @@ public class ContextSharingApplication extends Application implements Connection
     /** Size of the ping message */
     //public static final String CONTEXT_SIZE = "contextSize";
     public static final String SUMMARYTYPE = "summaryType";
-
     public static final String CONTEXTSUMMARY = "ContextSummary";
 
     /** Application ID */
     public static final String APP_ID = "edu.texas.mpc.ContextSharingApplication";
+
+    private static final String MESSAGE_FORMAT = "(%d->%d[%d])";
 
     // Private vars
     //private int     contextSize = 0;
@@ -83,9 +84,8 @@ public class ContextSharingApplication extends Application implements Connection
             if (msg.getTo().getAddress() == host.getAddress()) {
                 System.out.printf(">>> %5.3f %s\n", SimClock.getTime(), msg.getId());
                 ContextMessage contextMessage = messageToContextMessage(msg);
-                //Database.processMessage(host.getAddress(), contextMessage);
+                Database.addToHistory(host.getAddress(), contextMessage.getId());
 
-                // Sender should remove the message in order not to send it again
                 msg.getFrom().deleteMessage(msg.getId(), true);
                 return null;
             }
@@ -118,11 +118,11 @@ public class ContextSharingApplication extends Application implements Connection
     @Override
     public void hostsConnected(DTNHost host1, DTNHost host2) {
         // Show message
-        System.out.printf("%5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
+        System.out.printf("!!!! %5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
 
         // get Context
-        ContextMessage c1 = Database.getContextMessageToShare(host1.getAddress(), this.summaryType);
-        ContextMessage c2 = Database.getContextMessageToShare(host2.getAddress(), this.summaryType);
+        ContextMessage c1 = Database.getContextMessageFromAddress(host1.getAddress(), this.summaryType);
+        ContextMessage c2 = Database.getContextMessageFromAddress(host2.getAddress(), this.summaryType);
 
         // Message is created from the context
         // todo:: Better exception handling than printing the trace
@@ -144,21 +144,9 @@ public class ContextSharingApplication extends Application implements Connection
     //endregion
 
     //region PROPERTIES
-    /**
-     * @return the lastPing
-     */
-//    public int getContextSize() {
-//        return contextSize;
-//    }
     //endregion
 
     //region PRIVATE METHODS
-//    private Message contextToMessage(ContextMessage contextMessage) throws Exception {
-//        int host1 = contextMessage.getHost1();
-//        int host2 = contextMessage.getHost2();
-//        return createMessage(host1, host2, contextMessage);
-//    }
-
     private DTNHost getHost(int id) throws Exception {
         SimScenario sim = SimScenario.getInstance();
         List<DTNHost> hosts = sim.getHosts();
@@ -181,19 +169,13 @@ public class ContextSharingApplication extends Application implements Connection
         DTNHost dtnhost1 = getHost(host1);
         DTNHost dtnhost2 = getHost(host2);
         int size = contextMessage.getSize();
-        String message = contextMessage.getId() + String.format("(%d->%d:%d)", host1, host2, size);
+        String message = contextMessage.getId() + String.format(MESSAGE_FORMAT, host1, host2, size);
 
         Message m1 = new Message(dtnhost1, dtnhost2, message, size);
         m1.addProperty("type", "context");
         m1.setAppID(APP_ID);
         return m1;
     }
-//
-//    private String getMessageId(int host1, int host2, int size) {
-//        double simTime = SimClock.getTime();
-//        String message = String.format("%d-%d-%d-%7.3f", host1, host2, size, simTime);
-//        return message;
-//    }
 
     /**
      *
@@ -203,7 +185,11 @@ public class ContextSharingApplication extends Application implements Connection
      * @return
      */
     private ContextMessage messageToContextMessage(Message msg) {
-        return new ContextMessage(msg.getFrom().getAddress(), msg.getTo().getAddress(), msg.getSize(), msg.getId());
+        return new ContextMessage(
+                msg.getFrom().getAddress(),
+                msg.getTo().getAddress(),
+                msg.getSize(),
+                msg.getId());
     }
     //endregion
 
