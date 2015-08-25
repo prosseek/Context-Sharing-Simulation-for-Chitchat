@@ -26,6 +26,7 @@ public class ContextSharingApplication extends Application implements Connection
     //public static final String CONTEXT_SIZE = "contextSize";
     public static final String SUMMARYTYPE = "summaryType";
     public static final String CONTEXTSUMMARY = "ContextSummary";
+    public static final String STRAGETY = "strategy";
 
     /** Application ID */
     public static final String APP_ID = "edu.texas.mpc.ContextSharingApplication";
@@ -35,6 +36,9 @@ public class ContextSharingApplication extends Application implements Connection
     // Private vars
     //private int     contextSize = 0;
     private String   summaryType = "";
+    private String   strategy = "";
+
+    private Database database = null;
 
     //region CONSTRUCTORS
     /**
@@ -48,6 +52,9 @@ public class ContextSharingApplication extends Application implements Connection
 //        }
         Settings s2 = new Settings(CONTEXTSUMMARY);
         this.summaryType = s2.getSetting(SUMMARYTYPE);
+        this.strategy = s2.getSetting(STRAGETY);
+
+        this.database = new Database(this.strategy);
 
         super.setAppID(APP_ID);
     }
@@ -185,10 +192,12 @@ public class ContextSharingApplication extends Application implements Connection
      * @return
      */
     private ContextMessage messageToContextMessage(Message msg) {
+        double clock = SimClock.getTime();
         return new ContextMessage(
                 msg.getFrom().getAddress(),
                 msg.getTo().getAddress(),
                 msg.getSize(),
+                clock,
                 msg.getId());
     }
     //endregion

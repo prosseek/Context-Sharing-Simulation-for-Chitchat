@@ -44,4 +44,22 @@ class DatabaseTest extends FunSuite  with BeforeAndAfterEach {
     Database.addToHistory(2, "B")
     assert(Database.getHistory(2) == Set[String]("B", "A"))
   }
+
+  //
+
+  test("getClass test") {
+    val db = new Database("smcho.SimpleShareLogic")
+    val cl = db.getClass("smcho.SimpleShareLogic")
+    assert(cl.toString == "class smcho.SimpleShareLogic")
+    intercept[java.lang.Exception] {
+      val cl2 = db.getClass("smcho.SimpleShareLogic2")
+    }
+  }
+  test("loadObject test")
+  {
+    val db = new Database("smcho.SimpleShareLogic")
+    val cl = db.loadObject("smcho.SimpleShareLogic").asInstanceOf[smcho.ShareLogic]
+    cl.generateShareContext(10)
+    println(cl)
+  }
 }

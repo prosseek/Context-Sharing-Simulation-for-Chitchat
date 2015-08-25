@@ -24,8 +24,6 @@ ContextSummary.summaryType = bf
 
 # ContextSummary storage directory
 ContextSummary.directory = experiment/simulation/simpleSimulation
-ContextSummary.host0 = summary0.txt
-ContextSummary.host1 = summary1.txt
-ContextSummary.host2 = summary2.txt
-ContextSummary.host3 = summary3.txt
-ContextSummary.host4 = summary4.txt
+
+# Sharing strategy
+ContextSummary.strategy = smcho.SimpleShareLogic

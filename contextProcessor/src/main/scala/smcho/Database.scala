@@ -2,10 +2,44 @@ package smcho
 
 import scala.collection.mutable.{Map => mm, Set => mSet}
 
+class Database(val strategy: String) {
+  val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
+
+  def getClass (className: String) = {
+    var c: Class[_] = null
+    try {
+      c = Class.forName(className)
+    }
+    catch {
+      case e: ClassNotFoundException => {
+        throw new Exception("Couldn't find class '" + className + "'" + "\n" + e.getMessage, e)
+      }
+    }
+    c
+  }
+
+  def loadObject (className: String) = {
+    var o: Any = null
+
+    try {
+      val objClass = getClass(className)
+      o = objClass.newInstance
+    }
+    catch {
+      case e: SecurityException => {
+        e.printStackTrace
+        throw new Exception("Fatal exception " + e, e)
+      }
+    }
+    o
+  }
+}
+
 object Database {
 
-  private var summaries : mm[String, Summary] = _
-  private var history = mm[Int, mSet[String]]()
+  private val shareLogic = new SimpleShareLogic()
+  private var summaries = shareLogic.getSummaries()
+  private var history = shareLogic.getHistory()
 
   def getSummary(name: String) = {
     summaries.get(name)
@@ -53,6 +87,7 @@ object Database {
     history.get(host).get += summaryName
   }
 
+
   def getHistory() = {
     history
   }
@@ -70,8 +105,6 @@ object Database {
    * @return created_context
    */
   def getContextMessageFromAddress(id: Int, summaryType: String): ContextMessage = {
-    // This is totally arbitrary
-    // todo:: update this, this is very wrong
     val contextName = "is" + id
     Database.getContextMessageFromName(contextName, summaryType)
   }
