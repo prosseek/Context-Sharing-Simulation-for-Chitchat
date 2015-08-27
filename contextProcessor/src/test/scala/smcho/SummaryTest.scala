@@ -16,14 +16,16 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
       case (string, context)  =>
         string match {
           case "summary1" =>
-            assert(context.getSizeLabeled() == 105)
-            assert(context.getSizeBloomier() == 46)
+            assert(context.getSize("l") == 105)
+            assert(context.getSize("b") == 46)
+            assert(context.getSummaryType() == "b")
             assert(context.getKeys().size == 9)
             assert(context.getName() == "summary1")
           // experiment/contexts/SimulationSimple/contexts/summary1.txt
           case "summary2" =>
-            assert(context.getSizeLabeled() == 107)
-            assert(context.getSizeBloomier() == 50)
+            assert(context.getSize("l") == 107)
+            assert(context.getSize("b") == 50)
+            assert(context.getSummaryType() == "b")
             assert(context.getKeys().size == 8)
             assert(context.getName() == "summary2")
           // experiment/contexts/SimulationSimple/contexts/summary1.txt

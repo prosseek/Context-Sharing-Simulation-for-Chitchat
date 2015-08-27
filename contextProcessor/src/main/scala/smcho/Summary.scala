@@ -6,9 +6,7 @@ import scala.collection.mutable.{Map => mm}
 import util.io.{File => uFile}
 import core.{BloomierFilterSummary, LabeledSummary, ContextSummary}
 
-class Summary(val contextSummary: ContextSummary, var name:String) {
-
-  def this(contextSummary: ContextSummary) = this(contextSummary, "")
+class Summary(val contextSummary: ContextSummary, var name:String, var summaryType: String) {
 
   private val labeledSummary = contextSummary.asInstanceOf[LabeledSummary]
   private val bloomierSummary = getBloomier(labeledSummary)
@@ -23,14 +21,20 @@ class Summary(val contextSummary: ContextSummary, var name:String) {
   }
 
   def setName(name:String) = this.name = name
+  def setSummaryType(sType: String) = this.summaryType = sType
 
   def getName() = this.name
-  def getSizeLabeled() = sizeLabeled
-  def getSizeBloomier() = sizeBloomier
+  def getSummaryType() = this.summaryType
+  def getSize(summaryType: String = this.summaryType) = if (summaryType == "b") sizeBloomier else sizeLabeled
   def getKeys() = labeledSummary.getKeys()
 }
 
 object Summary {
+
+  def apply(contextSummary: ContextSummary, name:String, summaryType: String) : Summary = new Summary(contextSummary, name, summaryType)
+  def apply(contextSummary: ContextSummary, name:String) : Summary = apply(contextSummary, name, "b")
+  def apply(contextSummary: ContextSummary) : Summary = apply(contextSummary, "")
+
   def loadContexts(directory: String) = {
     val summaries = mm[String, Summary]();
     // executed in one simulator, the "." is inside the one simulator directory, so there should be some changes
@@ -43,7 +47,7 @@ object Summary {
       val fileName = file.toString
       val key = uFile.getBasename(fileName)
       // todo:: fileToSummary should return a summary not a list of summaries (remove (0))
-      summaries(key) = new Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
+      summaries(key) = Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
     }
     summaries
   }
