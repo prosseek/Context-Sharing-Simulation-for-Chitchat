@@ -41,6 +41,7 @@ object ContextMessage extends IdParser  {
   // <editor-fold desc="Constructor">
   def apply(host1: Int, host2: Int, size:Int, time: Double, id: String) = new ContextMessage(host1, host2, size, time, id)
   def apply(id:String) = new ContextMessage(0, 0, 0, 0.0, id)
+  def apply(summaries: Iterable[Summary]) = new ContextMessage(0, 0, 0, 0.0, summariesToId(summaries))
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[Summary]) =
     new ContextMessage(host1, host2, size, time, summariesToId(summaries))
 

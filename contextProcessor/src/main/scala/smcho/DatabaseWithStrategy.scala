@@ -1,6 +1,6 @@
 package smcho
 
-import scala.collection.mutable.{Map => mm, Set => mSet}
+import scala.collection.mutable.{Map => mm, Set => mSet, ListBuffer}
 
 object DatabaseWithStrategy {
   def apply(strategy: String) = new DatabaseWithStrategy(strategy)
@@ -47,11 +47,11 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
     null
   }
 
-  override def getContextMessageFromName(contextName: Iterable[String]) = {
-//    val summary = getSummary(contextName)
-//    if (summary == null) {
-//      throw new NoContextException(contextName)
-    null
+  override def getContextMessageFromNames(names: Iterable[String]) = {
+    val tempSummaries = (ListBuffer[Summary]() /: names) {
+      (acc, name) => if (summaries.contains(name)) acc += summaries.get(name).get else acc
+    }
+    ContextMessage(tempSummaries)
   }
 
   // </editor-fold>

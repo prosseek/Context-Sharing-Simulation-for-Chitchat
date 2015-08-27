@@ -13,19 +13,19 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
 
   override def beforeEach() {
     database = DatabaseWithStrategy()
+    database.load("contextProcessor/resources/test/sample_contexts")
   }
 
   test("getSummary test") {
-    database.load("contextProcessor/resources/test/sample_contexts")
     assert(database.getSummary("summary1").getClass.getName == "smcho.Summary")
     assert(database.getSummary("summary0") == null)
   }
 
-//  test("getContextMessageFromName test") {
-//    // no host1/2 addresses are set
-//    assert(Database.getContextMessageFromName("summary1", "bf").toString == "(-1 => -1)[46]:summary1")
-//    assert(Database.getContextMessageFromName("summary1", "lb").toString == "(-1 => -1)[105]:summary1")
-//  }
+  test("getContextMessageFromName test") {
+    // no host1/2 addresses are set
+    assert(database.getContextMessageFromNames(List("summary1")).toString == "[0->0/0/0.0/summary1|b|46]")
+    //asse(database.getContextMessageFromName(List("summary1")).toString == "(0 => 0)[105]:summary1")
+  }
 //
 //  test("getHostAddressFromSummaryName test") {
 //    assert(Database.getHostAddressFromSummaryName("id123") == 123)

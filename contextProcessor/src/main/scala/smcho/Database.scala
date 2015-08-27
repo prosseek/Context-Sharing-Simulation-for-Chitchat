@@ -15,5 +15,5 @@ trait Database {
 
   def getContextMessageFromAddress(id: Int): ContextMessage
 
-  def getContextMessageFromName(contextName: Iterable[String]): ContextMessage
+  def getContextMessageFromNames(contextName: Iterable[String]): ContextMessage
 }
