@@ -21,6 +21,8 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
             assert(context.getSummaryType() == "b")
             assert(context.getKeys().size == 9)
             assert(context.getName() == "summary1")
+            assert(context.makeString() == "summary1|b|46")
+            assert(context.makeString("l") == "summary1|l|105")
           // experiment/contexts/SimulationSimple/contexts/summary1.txt
           case "summary2" =>
             assert(context.getSize("l") == 107)
@@ -28,6 +30,8 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
             assert(context.getSummaryType() == "b")
             assert(context.getKeys().size == 8)
             assert(context.getName() == "summary2")
+            assert(context.makeString() == "summary2|b|50")
+            assert(context.makeString("l") == "summary2|l|107")
           // experiment/contexts/SimulationSimple/contexts/summary1.txt
           case _ => println(s"${string} <- unkonwn test name")
         }

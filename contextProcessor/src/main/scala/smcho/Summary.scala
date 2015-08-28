@@ -27,13 +27,22 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
   def getSummaryType() = this.summaryType
   def getSize(summaryType: String = this.summaryType) = if (summaryType == "b") sizeBloomier else sizeLabeled
   def getKeys() = labeledSummary.getKeys()
+  def makeString(summaryType: String = this.summaryType) = {
+    s"${name}|${summaryType}|${getSize(summaryType)}"
+  }
+
+  def copy(newSummaryType: String = "b") = {
+    new Summary(contextSummary, name, summaryType = newSummaryType)
+  }
+
+  override def toString() = makeString()
 }
 
 object Summary {
 
   def apply(contextSummary: ContextSummary, name:String, summaryType: String) : Summary = new Summary(contextSummary, name, summaryType)
-  def apply(contextSummary: ContextSummary, name:String) : Summary = apply(contextSummary, name, "b")
-  def apply(contextSummary: ContextSummary) : Summary = apply(contextSummary, "")
+  def apply(contextSummary: ContextSummary, name:String) : Summary = new Summary(contextSummary, name, "b")
+  def apply(contextSummary: ContextSummary) : Summary = new Summary(contextSummary, "", "b")
 
   def loadContexts(directory: String) = {
     val summaries = mm[String, Summary]();

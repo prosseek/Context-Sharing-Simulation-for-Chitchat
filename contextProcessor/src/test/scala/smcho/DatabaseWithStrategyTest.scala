@@ -21,9 +21,8 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
     assert(database.getSummary("summary0") == null)
   }
 
-  test("getContextMessageFromName test") {
-    // no host1/2 addresses are set
-    assert(database.getContextMessageFromNames(List("summary1")).toString == "[0->0/0/0.0/summary1|b|46]")
+  test("getContextMessageFromNames test") {
+    assert(database.getFromNames(List("summary1")).toString == "[0->0/0/0.0/summary1|b|46]")
     //asse(database.getContextMessageFromName(List("summary1")).toString == "(0 => 0)[105]:summary1")
   }
 //

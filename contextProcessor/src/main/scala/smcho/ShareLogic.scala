@@ -12,5 +12,5 @@ trait ShareLogic {
 //  def getHistory() = history
 
 
-  def generateShareContext(host: Int) : String
+  def get(host: Int, summaries: mm[String, Summary], history:  mm[Int, mSet[String]]) : String
 }

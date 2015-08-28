@@ -177,7 +177,7 @@ public class ContextSharingApplication extends Application implements Connection
         DTNHost dtnhost1 = getHost(host1);
         DTNHost dtnhost2 = getHost(host2);
         int size = contextMessage.getSize();
-        String message = contextMessage.getId() + String.format(MESSAGE_FORMAT, host1, host2, size);
+        String message = contextMessage.getContent() + String.format(MESSAGE_FORMAT, host1, host2, size);
 
         Message m1 = new Message(dtnhost1, dtnhost2, message, size);
         m1.addProperty("type", "context");
