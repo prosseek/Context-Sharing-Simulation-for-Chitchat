@@ -33,19 +33,15 @@ trait IdParser extends ContentParser {
     val namePattern = """([a-zA-Z]+\d+)([a-z])?""".r
     names flatMap { name =>
       name match {
-        case namePattern(summaryName, summaryType) => {
-          if (summaryPool.contains(summaryName)) {
+        case namePattern(summaryName, summaryType) if (summaryPool.contains(summaryName)) => {
             var sType = summaryType
             if (sType == null || !(sType == "b" || sType == "l")) sType = "b"
-            Some(summaryPool.get(summaryName).get.copy(newSummaryType = sType))
-          }
-          else None
+            Some(summaryPool.get(summaryName).get.copy(sType))
         }
         case _ => None
       }
     }
   }
-
 
   def summariesToId(summaries: Iterable[Summary]) : String = {
     def makeSummaryName(s : Summary) = {
@@ -86,14 +82,6 @@ trait IdParser extends ContentParser {
     }
 
     val contents = parseContent(content)
-//    val contents = content.split(":") map (v =>
-//      v match {
-//        case summaryPattern(name, option, summaryType, size) => (
-//          name,
-//          if (summaryType == null) DEFAULT_TYPE else summaryType,
-//          if (size == null) 0 else size.toInt)
-//        case _ => throw new Exception(s"No match for summary $summaryPattern")
-//      })
 
     (host1, host2, size, time, contents)
   }

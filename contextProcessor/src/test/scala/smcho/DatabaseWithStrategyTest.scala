@@ -16,15 +16,15 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
     database.load("contextProcessor/resources/test/sample_contexts")
   }
 
-  test("getSummary test") {
-    assert(database.getSummary("summary1").getClass.getName == "smcho.Summary")
-    assert(database.getSummary("summary0") == null)
-  }
-
-  test("getContextMessageFromNames test") {
-    assert(database.getFromNames(List("summary1")).toString == "[0->0/0/0.0/summary1|b|46]")
-    //asse(database.getContextMessageFromName(List("summary1")).toString == "(0 => 0)[105]:summary1")
-  }
+//  test("getSummary test") {
+//    assert(database.getSummary("summary1").getClass.getName == "smcho.Summary")
+//    assert(database.getSummary("summary0") == null)
+//  }
+//
+//  test("getContextMessageFromNames test") {
+//    assert(database.getFromNames(List("summary1")).toString == "[0->0/0/0.0/summary1|b|46]")
+//    //asse(database.getContextMessageFromName(List("summary1")).toString == "(0 => 0)[105]:summary1")
+//  }
 //
 //  test("getHostAddressFromSummaryName test") {
 //    assert(Database.getHostAddressFromSummaryName("id123") == 123)

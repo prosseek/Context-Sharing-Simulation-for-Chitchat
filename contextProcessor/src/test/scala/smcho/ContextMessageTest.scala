@@ -11,7 +11,7 @@ class ContextMessageTest extends FunSuite with BeforeAndAfterEach {
   val summaries = Summary.loadContexts("contextProcessor/resources/test/sample_contexts")
 
   override def beforeEach(): Unit = {
-    idstring = "summary1:summary2|l|123"
+    idstring = "summary1|b|46:summary2|l|123"
   }
 
   test("Create ContextMessage") {
@@ -86,6 +86,7 @@ class ContextMessageTest extends FunSuite with BeforeAndAfterEach {
 
     // 3. Iterable[String]
     d = ContextMessage(host1 = 0, host2 = 3, size = 100, time = 10.0, summaries=List("summary11", "summary2"), summaries)
+    //println(d.toString())
     assert(d.toString() == expected)
   }
 

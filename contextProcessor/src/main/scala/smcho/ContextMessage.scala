@@ -16,7 +16,7 @@ class ContextMessage(var host1: Int,
                           var host2: Int,
                           var size:Int,
                           var time: Double,
-                          var content: String) {
+                          var content: String) extends ContentParser {
 
   // <editor-fold desc="Get/Set">
 
@@ -24,7 +24,7 @@ class ContextMessage(var host1: Int,
   def setHost2(host: Int) = this.host2 = host
   def setSize(size: Int) = this.size = size
   def setTime(time: Double) = this.time = time
-  def setId(id:String) = this.content = id
+  def setContent(content:String) = this.content = content
 
   def getHost1() = this.host1
   def getHost2() = this.host2
@@ -36,6 +36,8 @@ class ContextMessage(var host1: Int,
 
   override def toString() : String = makeString()
   def makeString() =  s"[${host1}->${host2}/${size}/${time}/${content}]"
+
+  def parseContent() : Array[(String, String, Int)] = parseContent(this.content)
 }
 
 object ContextMessage extends IdParser  {
@@ -68,4 +70,7 @@ object ContextMessage extends IdParser  {
     apply(0, 0, 0, 0.0, summaries, summaryPool)
   }
     // </editor-fold>
+  // names, summaries) // summariesToId(namesToSummaries(names, summaries))
+  //def getFromNames(names: Iterable[String], summaries: mm[String, Summary]) =
+  //    summariesToId(namesToSummaries(names, summaries))
 }
