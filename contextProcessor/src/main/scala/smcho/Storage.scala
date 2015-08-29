@@ -6,51 +6,63 @@ import scala.collection.mutable.{Map => mm, Set => mSet}
  * Created by smcho on 8/28/15.
  */
 case class Storage() {
-  private var summaries = mm[String, Summary]()
-  private var history = mm[Int, mSet[Tuple3[String, String, Int]]]()
-  private var historyContextMessage = mm[Int, mSet[ContextMessage]]()
+  private var summaryMap = mm[String, Summary]()
+  private var tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
+  private var contextMessageMap = mm[Int, mSet[ContextMessage]]()
 
-  def getHistory() = history
-  def getHistoryContextMessage() = historyContextMessage
-  def getSummaries() = summaries
+  def getTupleMap() = tupleMap
+  def getHistoryContextMessageMap() = contextMessageMap
+  def getSummaryMap() = summaryMap
 
   def reset() = {
-    summaries = mm[String, Summary]()
-    history = mm[Int, mSet[Tuple3[String, String, Int]]]()
-    historyContextMessage = mm[Int, mSet[ContextMessage]]()
+    summaryMap = mm[String, Summary]()
+    tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
+    contextMessageMap = mm[Int, mSet[ContextMessage]]()
   }
 
   def add(host:Int, contextMessage: ContextMessage) = {
-    if (!historyContextMessage.contains(host)) {
-      historyContextMessage.put(host, mSet[ContextMessage]())
+    if (!contextMessageMap.contains(host)) {
+      contextMessageMap.put(host, mSet[ContextMessage]())
     }
-    historyContextMessage.get(host).get += contextMessage
+    contextMessageMap.get(host).get += contextMessage
     // val contents = parseContent(contextMessage.getContent()) // a list of 3 tuples (name, type, size)
     contextMessage.parseContent map {
-      case (name, summaryType, size) => addToHistory(host, (name, summaryType, size))
+      case (name, summaryType, size) => addToTupleMap(host,
+        (contextMessage.getHost1(),
+         contextMessage.getHost2(),
+         contextMessage.getSize(),
+         contextMessage.getTime(), (name, summaryType, size)))
     }
   }
 
-  def addToHistory(host: Int, content: Tuple3[String, String, Int]) = {
-    if (!history.contains(host)) {
-      history.put(host, mSet[Tuple3[String, String, Int]]())
+  def addToContextMessageMap(host:Int, context:ContextMessage) = add(host, context)
+
+  def addToSummaryMap(name:String, summary: Summary) = {
+    summaryMap.put(name, summary)
+  }
+
+  def addToTupleMap(host: Int, content: ContextMessage.cmTuple) = {
+    if (!tupleMap.contains(host)) {
+      tupleMap.put(host,  mSet[ContextMessage.cmTuple]())
     }
-    history.get(host).get += content
+    tupleMap.get(host).get += content
   }
 
   // <editor-fold desc="GET/SET">
 
-  def getHistory(id: Int) = {
-    history.get(id) match {
+  def getTuple(id: Int) = {
+    tupleMap.get(id) match {
       case Some(p) => p
-      case None => mSet[String]()
+      case None => mSet[ContextMessage.cmTuple]()
     }
   }
 
-  def getSummary(name: String) = {
-    summaries.get(name) match {
+  def getSummary(name: String) : Summary = {
+    summaryMap.get(name) match {
       case Some(p) => p
       case None => null
     }
   }
+
+  def print() = {}
 }

@@ -2,14 +2,6 @@ package report;
 
 import applications.PingApplication;
 import core.*;
-import scala.collection.JavaConversions;
-import scala.collection.mutable.Map;
-import scala.collection.mutable.Set;
-import smcho.Database;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Reporter for the <code>PingApplication</code>. Counts the number of pings
@@ -68,19 +60,21 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
 
     @Override
     public void done() {
-        Map<Object, Set<String>> history = Database.getHistory();
 
-        Iterable<Object> keys = JavaConversions.asJavaIterable(history.keySet());
+        smcho.Storage storage = SimScenario.database.getStorage();
 
-        List<Integer> sortedList = new ArrayList<>();
-        for (Object i : keys) {
-            sortedList.add((int)i);
-        }
-        Collections.sort(sortedList);
-
-        for (int key : sortedList) {
-            System.out.printf("%d-%s\n", key, history.get(key).get().toString());
-        }
+        storage.print();
+//        Iterable<Object> keys = JavaConversions.asJavaIterable(history.keySet());
+//
+//        List<Integer> sortedList = new ArrayList<>();
+//        for (Object i : keys) {
+//            sortedList.add((int)i);
+//        }
+//        Collections.sort(sortedList);
+//
+//        for (int key : sortedList) {
+//            System.out.printf("%d-%s\n", key, history.get(key).get().toString());
+//        }
 
 //        write("Ping stats for scenario " + getScenarioName() +
 //                "\nsim_time: " + format(getSimTime()));

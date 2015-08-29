@@ -11,6 +11,7 @@ import movement.MovementModel;
 import movement.map.SimMap;
 import routing.MessageRouter;
 import smcho.Database;
+import smcho.DatabaseWithStrategy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -25,10 +26,11 @@ public class SimScenario implements Serializable {
     /** a way to get a hold of this... */
     private static SimScenario myinstance=null;
 
-
     // smcho added
     public static final String CONTEXTSUMMARY = "ContextSummary";
     public static final String DIRECTORY = "directory";
+    public static final String STRATEGY = "strategy";
+    public static Database database = null;
     // end added
 
     /** namespace of scenario settings ({@value})*/
@@ -414,7 +416,9 @@ public class SimScenario implements Serializable {
             // load inital contexts into the database
             s = new Settings(CONTEXTSUMMARY);
             String contextDirectory = s.getSetting(DIRECTORY);
-            Database.loadContexts(contextDirectory);
+            String strategy = s.getSetting(STRATEGY);
+            database = new DatabaseWithStrategy(strategy);
+            database.load(contextDirectory);
             // end added
 
             for (int j=0; j<nrofHosts; j++) {

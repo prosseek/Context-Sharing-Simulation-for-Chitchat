@@ -23,6 +23,7 @@ object DatabaseWithStrategy {
         val host = getHostAddressFromSummaryName(summaryName)
         val contextMessage = ContextMessage(summary.toString())
         storage.add(host, contextMessage)
+        storage.addToSummaryMap(summaryName, summary)
       }
     }
   }
@@ -36,7 +37,7 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
   // <editor-fold desc="API">
 
   // returns ContextMassage to share for host
-  override def get(host: Int): String = {
+  override def get(host: Int) : Set[Summary] = {
     shareLogic.get(host, storage)
   }
 
@@ -54,4 +55,6 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
     storage.reset()
   }
   // </editor-fold>
+  //
+  override def getStorage(): Storage = storage
 }

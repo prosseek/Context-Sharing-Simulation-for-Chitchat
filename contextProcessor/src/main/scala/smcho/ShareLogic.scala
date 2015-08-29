@@ -11,5 +11,5 @@ trait ShareLogic {
 //  def getSummaries() = summaries
 //  def getHistory() = history
 
-  def get(host: Int, storage: Storage): String
+  def get(host: Int, storage: Storage): Set[Summary]
 }

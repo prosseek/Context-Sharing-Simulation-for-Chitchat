@@ -42,6 +42,8 @@ class ContextMessage(var host1: Int,
 
 object ContextMessage extends IdParser  {
 
+  type cmTuple = (Int, Int, Int, Double, (String, String, Int))
+
   // <editor-fold desc="Constructors">
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, content: String) =

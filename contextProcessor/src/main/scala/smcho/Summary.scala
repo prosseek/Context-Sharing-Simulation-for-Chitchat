@@ -36,6 +36,7 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
   }
 
   override def toString() = makeString()
+
 }
 
 object Summary {
