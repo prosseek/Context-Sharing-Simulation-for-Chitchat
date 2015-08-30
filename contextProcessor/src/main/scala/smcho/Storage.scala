@@ -26,8 +26,8 @@ case class Storage() {
     }
     contextMessageMap.get(host).get += contextMessage
     // val contents = parseContent(contextMessage.getContent()) // a list of 3 tuples (name, type, size)
-    contextMessage.parseContent map {
-      case (name, summaryType, size) => addToTupleMap(host,
+    val contents = contextMessage.parse()
+    contents foreach { case (name, summaryType, size) => addToTupleMap(host,
         (contextMessage.getHost1(),
          contextMessage.getHost2(),
          contextMessage.getSize(),
@@ -64,5 +64,21 @@ case class Storage() {
     }
   }
 
-  def print() = {}
+  def print() = {
+    // print
+    //summaryMap = mm[String, Summary]()
+    println("---------------------------------------")
+    println("summaryMap print")
+    summaryMap.keys.toList.sorted foreach { key =>
+      println (s"KEY $key: VALUE:${summaryMap.get(key).get.toString()}")
+    }
+
+    // tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
+    println("tupleMap (what tuples each node has) print")
+    tupleMap.keys.toList.sorted foreach { key =>
+      println (s"KEY $key: VALUE:${tupleMap.get(key).get.toString()}")
+    }
+    // contextMessageMap = mm[Int, mSet[ContextMessage]]()
+    println("---------------------------------------")
+  }
 }

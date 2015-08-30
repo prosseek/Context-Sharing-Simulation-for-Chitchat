@@ -37,10 +37,10 @@ class ContextMessage(var host1: Int,
   override def toString() : String = makeString()
   def makeString() =  s"[${host1}->${host2}/${size}/${time}/${content}]"
 
-  def parseContent() : Array[(String, String, Int)] = parseContent(this.content)
+  def parse() : Array[(String, String, Int)] = parse(this.content)
 }
 
-object ContextMessage extends IdParser  {
+object ContextMessage extends ContentParser  {
 
   type cmTuple = (Int, Int, Int, Double, (String, String, Int))
 

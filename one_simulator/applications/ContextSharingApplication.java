@@ -33,7 +33,7 @@ public class ContextSharingApplication extends Application implements Connection
     /** Application ID */
     public static final String APP_ID = "edu.texas.mpc.ContextSharingApplication";
 
-    private static final String MESSAGE_FORMAT = "(%d->%d[%d])";
+    //private static final String MESSAGE_FORMAT = "%d->%d/%d/%5.2f/";
 
     // Private vars
     //private int     contextSize = 0;
@@ -41,7 +41,7 @@ public class ContextSharingApplication extends Application implements Connection
     private String   strategy = "";
     private String   directory = "";
 
-    public Database database = null;
+    public static Database database = null;
 
     //region CONSTRUCTORS
     /**
@@ -50,16 +50,13 @@ public class ContextSharingApplication extends Application implements Connection
      * @param s	Settings to use for initializing the application.
      */
     public ContextSharingApplication(Settings s) {
-//        if (s.contains(CONTEXT_SIZE)){
-//            this.contextSize = s.getInt(CONTEXT_SIZE);
-//        }
         Settings s2 = new Settings(CONTEXTSUMMARY);
         this.summaryType = s2.getSetting(SUMMARYTYPE);
         this.strategy = s2.getSetting(STRAGETY);
         this.directory = s2.getSetting(DIRECTORY);
 
-        this.database = new DatabaseWithStrategy(this.strategy);
-        this.database.load(this.directory);
+        ContextSharingApplication.database = new DatabaseWithStrategy(this.strategy);
+        ContextSharingApplication.database.load(this.directory);
 
         super.setAppID(APP_ID);
     }
@@ -94,9 +91,9 @@ public class ContextSharingApplication extends Application implements Connection
 
         if (type == "context") { // message transferred
             if (msg.getTo().getAddress() == host.getAddress()) {
-                System.out.printf(">>> %5.3f %s\n", SimClock.getTime(), msg.getId());
+                System.out.printf(">>> %5.2f %s\n", SimClock.getTime(), msg.getId());
                 ContextMessage contextMessage = messageToContextMessage(msg);
-                //database.addToHistory(host.getAddress(), contextMessage.getId());
+                database.add(host.getAddress(), contextMessage);
 
                 msg.getFrom().deleteMessage(msg.getId(), true);
                 return null;
@@ -140,7 +137,7 @@ public class ContextSharingApplication extends Application implements Connection
         ContextMessage c1 = database.get(h1);
         c1.setHost1(h1); c1.setHost2(h2); c1.setTime(simTime);
         ContextMessage c2 = database.get(host2.getAddress());
-        c2.setHost1(h2); c1.setHost2(h1); c1.setTime(simTime);
+        c2.setHost1(h2); c2.setHost2(h1); c2.setTime(simTime);
 
         // Message is created from the context
         // todo:: Better exception handling than printing the trace
@@ -187,7 +184,8 @@ public class ContextSharingApplication extends Application implements Connection
         DTNHost dtnhost1 = getHost(host1);
         DTNHost dtnhost2 = getHost(host2);
         int size = contextMessage.getSize();
-        String message = contextMessage.getContent() + String.format(MESSAGE_FORMAT, host1, host2, size);
+        double simTime = contextMessage.getTime();
+        String message = contextMessage.getContent(); //String.format(MESSAGE_FORMAT, host1, host2, size, simTime) + contextMessage.getContent();
 
         Message m1 = new Message(dtnhost1, dtnhost2, message, size);
         m1.addProperty("type", "context");
