@@ -28,6 +28,7 @@ public class ContextSharingApplication extends Application implements Connection
     public static final String SUMMARYTYPE = "summaryType";
     public static final String CONTEXTSUMMARY = "ContextSummary";
     public static final String STRAGETY = "strategy";
+    public static final String DIRECTORY = "directory";
 
     /** Application ID */
     public static final String APP_ID = "edu.texas.mpc.ContextSharingApplication";
@@ -38,8 +39,9 @@ public class ContextSharingApplication extends Application implements Connection
     //private int     contextSize = 0;
     private String   summaryType = "";
     private String   strategy = "";
+    private String   directory = "";
 
-    private Database database = null;
+    public Database database = null;
 
     //region CONSTRUCTORS
     /**
@@ -54,8 +56,10 @@ public class ContextSharingApplication extends Application implements Connection
         Settings s2 = new Settings(CONTEXTSUMMARY);
         this.summaryType = s2.getSetting(SUMMARYTYPE);
         this.strategy = s2.getSetting(STRAGETY);
+        this.directory = s2.getSetting(DIRECTORY);
 
         this.database = new DatabaseWithStrategy(this.strategy);
+        this.database.load(this.directory);
 
         super.setAppID(APP_ID);
     }

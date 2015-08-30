@@ -4,6 +4,7 @@
  */
 package core;
 
+import applications.ContextSharingApplication;
 import input.EventQueue;
 import input.EventQueueHandler;
 import movement.MapBasedMovement;
@@ -11,7 +12,6 @@ import movement.MovementModel;
 import movement.map.SimMap;
 import routing.MessageRouter;
 import smcho.Database;
-import smcho.DatabaseWithStrategy;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,9 +27,9 @@ public class SimScenario implements Serializable {
     private static SimScenario myinstance=null;
 
     // smcho added
-    public static final String CONTEXTSUMMARY = "ContextSummary";
-    public static final String DIRECTORY = "directory";
-    public static final String STRATEGY = "strategy";
+//    public static final String CONTEXTSUMMARY = "ContextSummary";
+//    public static final String DIRECTORY = "directory";
+//    public static final String STRATEGY = "strategy";
     public static Database database = null;
     // end added
 
@@ -375,6 +375,9 @@ public class SimScenario implements Serializable {
                             APP_PACKAGE + t.getSetting(APPTYPE_S));
 
                     // smcho added
+                    if (protoApp instanceof ContextSharingApplication) {
+                        database = ((ContextSharingApplication)protoApp).database;
+                    }
                     // If the application implements connectionListner, it should be added to the lister group
                     if (protoApp instanceof ConnectionListener) {
                         addConnectionListener((ConnectionListener) protoApp);
@@ -412,13 +415,7 @@ public class SimScenario implements Serializable {
 
             // creates hosts of ith group
             // smcho added
-
-            // load inital contexts into the database
-            s = new Settings(CONTEXTSUMMARY);
-            String contextDirectory = s.getSetting(DIRECTORY);
-            String strategy = s.getSetting(STRATEGY);
-            database = new DatabaseWithStrategy(strategy);
-            database.load(contextDirectory);
+            //database =
             // end added
 
             for (int j=0; j<nrofHosts; j++) {
