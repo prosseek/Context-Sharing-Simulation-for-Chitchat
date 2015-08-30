@@ -128,21 +128,27 @@ public class ContextSharingApplication extends Application implements Connection
         // Show message
         System.out.printf("!!!! %5.3f, Connected: %d <-> %d\n", SimClock.getTime(), host1.getAddress(), host2.getAddress());
 
-//        // get Context
-//        ContextMessage c1 = database.getContextMessageFromAddress(host1.getAddress(), this.summaryType);
-//        ContextMessage c2 = database.getContextMessageFromAddress(host2.getAddress(), this.summaryType);
-//
-//        // Message is created from the context
-//        // todo:: Better exception handling than printing the trace
-//        try {
-//            Message m1 = contextMessageToMessage(host1.getAddress(), host2.getAddress(), c1);
-//            Message m2 = contextMessageToMessage(host2.getAddress(), host1.getAddress(), c2);
-//            host1.createNewMessage(m1);
-//            host2.createNewMessage(m2);
-//        }
-//        catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        // get Context
+        int h1 = host1.getAddress();
+        int h2 = host2.getAddress();
+        double simTime = SimClock.getTime();
+
+        ContextMessage c1 = database.get(h1);
+        c1.setHost1(h1); c1.setHost2(h2); c1.setTime(simTime);
+        ContextMessage c2 = database.get(host2.getAddress());
+        c2.setHost1(h2); c1.setHost2(h1); c1.setTime(simTime);
+
+        // Message is created from the context
+        // todo:: Better exception handling than printing the trace
+        try {
+            Message m1 = contextMessageToMessage(host1.getAddress(), host2.getAddress(), c1);
+            Message m2 = contextMessageToMessage(host2.getAddress(), host1.getAddress(), c2);
+            host1.createNewMessage(m1);
+            host2.createNewMessage(m2);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

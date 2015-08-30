@@ -51,19 +51,19 @@ object ContextMessage extends IdParser  {
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[String], summaryPool: mm[String, Summary]) = {
     new ContextMessage(host1, host2, size, time,
-      summariesToId(namesToSummaries(summaries, summaryPool).asInstanceOf[Iterable[Summary]]))
+      summariesToContent(namesToSummaries(summaries, summaryPool).asInstanceOf[Iterable[Summary]]))
   }
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[Summary]) =
-    new ContextMessage(host1, host2, size, time, summariesToId(summaries))
+    new ContextMessage(host1, host2, size, time, summariesToContent(summaries))
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: mm[String, Summary]) =
-    new ContextMessage(host1, host2, size, time, summariesToId(summaries.values))
+    new ContextMessage(host1, host2, size, time, summariesToContent(summaries.values))
 
   def apply(content:String) = new ContextMessage(0, 0, 0, 0.0, content)
 
   def apply(summaries: Iterable[Summary]) =
-    new ContextMessage(0, 0, 0, 0.0, summariesToId(summaries))
+    new ContextMessage(0, 0, 0, 0.0, summariesToContent(summaries))
 
   def apply(summaries: mm[String, Summary]): ContextMessage =
     apply(0, 0, 0, 0.0, summaries)

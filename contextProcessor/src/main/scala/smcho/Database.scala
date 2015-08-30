@@ -9,7 +9,7 @@ trait Database {
   // Given a directory, load all the contexts into database
   def load(directory: String)
   // returns Content content (string) to share for host
-  def get(host: Int) : Set[Summary]
+  def get(host: Int) : ContextMessage
   // add received ContextMessage to host
   def add(host: Int, contextMessage: ContextMessage)
   // make initial state

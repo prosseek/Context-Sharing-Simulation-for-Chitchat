@@ -1,6 +1,8 @@
 package smcho
 
 object DatabaseWithStrategy {
+  var storage = Storage()
+
   def apply(strategy: String) = new DatabaseWithStrategy(strategy)
   def apply() = new DatabaseWithStrategy("smcho.SimpleShareLogic")
 
@@ -31,30 +33,34 @@ object DatabaseWithStrategy {
 
 class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass {
 
-  var storage = Storage()
+
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
 
   // <editor-fold desc="API">
 
   // returns ContextMassage to share for host
-  override def get(host: Int) : Set[Summary] = {
-    shareLogic.get(host, storage)
+  override def get(host: Int) : ContextMessage = {
+    val summaries = shareLogic.get(host, DatabaseWithStrategy.storage)
+    val content = ContextMessage.summariesToContent(summaries)
+    val c= ContextMessage(content)
+    c.setSize(ContextMessage.getTotalTime(summaries))
+    c
   }
 
   // Given a directory, load all the contexts into database
   override def load(directory: String) = {
-    DatabaseWithStrategy.load(directory, storage)
+    DatabaseWithStrategy.load(directory, DatabaseWithStrategy.storage)
   }
 
   // add received ContextMessage to host
   override def add(host: Int, contextMessage: ContextMessage) = {
-    storage.add(host, contextMessage)
+    DatabaseWithStrategy.storage.add(host, contextMessage)
   }
 
   override def reset() = {
-    storage.reset()
+    DatabaseWithStrategy.storage.reset()
   }
   // </editor-fold>
   //
-  override def getStorage(): Storage = storage
+  override def getStorage(): Storage = DatabaseWithStrategy.storage
 }

@@ -12,8 +12,8 @@ class IdParserTest extends FunSuite with BeforeAndAfterEach {
   var t: A = _
   var cm0: ContextMessage = _
   val summaries = Summary.loadContexts("contextProcessor/resources/test/sample_contexts")
-  val idString = "summary1|b|46:summary2|l|123"
-  val cm0string = s"0->5/100/10.01/$idString"
+  val contentString = "summary1|b|46:summary2|l|107"
+  val cm0string = s"0->5/100/10.01/$contentString"
 
   override def beforeEach() {
     t = new A()
@@ -27,11 +27,19 @@ class IdParserTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test SummariesToId") {
-    assert(t.summariesToId(summaries) == "summary1|b|46:summary2|b|50")
+    assert(t.summariesToContent(summaries) == "summary1|b|46:summary2|b|50")
     //assert(t.summariesToId(summaries, "l") == "summary1|l|105:summary2|l|107")
   }
 
   test("test parse") {
     assert(t.parse(cm0string).toString.startsWith("(0,5,100,10.01,[Lscala.Tuple3;") == true)
+  }
+
+  test("test totalSize") {
+    assert(t.getTotalTime(summaries.values) == 96)
+    //val contentString = "summary1|b|46:summary2|l|123"
+    val s = t.namesToSummaries(List("summary1b", "summary2l"), summaries)
+    // s foreach {v => println(v.getSize())}
+    assert(t.getTotalTime(s) == 46 + 107)
   }
 }

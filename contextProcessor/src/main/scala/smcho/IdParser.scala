@@ -43,14 +43,14 @@ trait IdParser extends ContentParser {
     }
   }
 
-  def summariesToId(summaries: Iterable[Summary]) : String = {
+  def summariesToContent(summaries: Iterable[Summary]) : String = {
     def makeSummaryName(s : Summary) = {
       s.getName + "|" + s.getSummaryType() +  "|" + s.getSize()
     }
     ("" /: summaries) { (acc, summary) => acc + (if (acc != "") ":" else "") + makeSummaryName(summary) }
   }
 
-  def summariesToId(summaries: mm[String, Summary]) : String = summariesToId(summaries.values)
+  def summariesToContent(summaries: mm[String, Summary]) : String = summariesToContent(summaries.values)
 
 
   // </editor-fold>
@@ -87,5 +87,7 @@ trait IdParser extends ContentParser {
   }
 
   // </editor-fold>
-
+  def getTotalTime(summaries: Iterable[Summary]) = {
+    (0 /: summaries) { (acc, v) => acc + v.getSize()}
+  }
 }
