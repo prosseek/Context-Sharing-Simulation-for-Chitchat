@@ -18,9 +18,6 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
 
     public static Database database = null;
 
-    private int pingsSent=0, pingsReceived=0;
-    private int pongsSent=0, pongsReceived=0;
-
     public void report(int from, int to, String event, int hostAddress)
     {
         System.out.printf("From:%d To:%d - %s (%d)\n", from, to, event, hostAddress);
@@ -30,14 +27,14 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         System.out.printf("Host (%d) To (%d) - %s\n", from, to, event);
     }
 
-    public static void setup(String directory, String strategy)
+    public static void setup(String directory, String strategy, String hostSize)
     {
         // application invokes setup function
         // application can be instantiated multiple times, so this checking code will
         // prevent creating database everytime application is instantiated
         if (database == null) {
             database = new DatabaseWithStrategy(strategy);
-            database.load(directory);
+            database.load(directory, hostSize);
         }
     }
 
@@ -57,21 +54,6 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         else {
             assert (params instanceof Integer);
             int toAddress = (int) params;
-            //report(host.getAddress(), toAddress, event);
-
-            // Increment the counters based on the event type
-            if (event.equalsIgnoreCase("GotPing")) {
-                pingsReceived++;
-            }
-            if (event.equalsIgnoreCase("SentPong")) {
-                pongsSent++;
-            }
-            if (event.equalsIgnoreCase("GotPong")) {
-                pongsReceived++;
-            }
-            if (event.equalsIgnoreCase("SentPing")) {
-                pingsSent++;
-            }
         }
     }
 

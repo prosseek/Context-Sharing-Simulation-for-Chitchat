@@ -13,7 +13,24 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
 
   override def beforeEach() {
     database = DatabaseWithStrategy()
-    database.load("contextProcessor/resources/test/sample_contexts")
+    database.load("contextProcessor/resources/test/sample_contexts", "3,3,3")
+  }
+
+  test("test creation") {
+    // database.getStorage().getSummaryMap() foreach println
+    //    (summary1,summary1|b|46)
+    //    (is0,is0|b|39)
+    //    (is3,is3|b|39)
+    //    (is6,is6|b|39)
+    //    (is5,is5|b|39)
+    //    (is8,is8|b|39)
+    //    (is2,is2|b|39)
+    //    (summary2,summary2|b|50)
+    //    (is4,is4|b|39)
+    //    (is7,is7|b|39)
+    //    (is1,is1|b|39)
+
+    assert(database.getStorage().getSummaryMap().size == (2 + 3*3)) // there are 2 context files, and 3*3*3 new files
   }
 
 //  test("getSummary test") {
