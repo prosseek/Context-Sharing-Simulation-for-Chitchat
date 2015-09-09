@@ -20,7 +20,7 @@ Scenario.endTime = 10000
 btInterface.type = SimpleBroadcastInterface
 # Transmit speed of 2 Mbps = 250kBps
 btInterface.transmitSpeed = 250k
-btInterface.transmitRange = 10
+btInterface.transmitRange = 20
 
 # High speed, long range, interface for group 4
 highspeedInterface.type = SimpleBroadcastInterface
@@ -28,7 +28,7 @@ highspeedInterface.transmitSpeed = 10M
 highspeedInterface.transmitRange = 1000
 
 # Define 1 different node groups
-Scenario.nrofHostGroups = 1
+###Scenario.nrofHostGroups = 1
 
 ## Group-specific settings:
 # groupID : Group's identifier. Used as the prefix of host names
@@ -65,7 +65,7 @@ Group.msgTtl = 300
 Group.nrofHosts = 5
 
 # group1 (pedestrians) specific settings
-Group1.groupID = p
+Group.groupID = p
 
 ## Message creation parameters
 # How many event generators
@@ -82,22 +82,6 @@ Events1.hosts = 0,4
 # Message ID prefix
 Events1.prefix = M
 
-
-## Movement model settings
-# seed for movement models' pseudo random number generator (default = 0)
-MovementModel.rngSeed = 1
-# World's size for Movement Models without implicit size (width, height; meters)
-MovementModel.worldSize = 4500, 3400
-# How long time to move hosts in the world before real simulation
-MovementModel.warmup = 1000
-
-## Map based movement -movement model specific settings
-MapBasedMovement.nrofMapFiles = 4
-
-MapBasedMovement.mapFile1 = data/roads.wkt
-MapBasedMovement.mapFile2 = data/main_roads.wkt
-MapBasedMovement.mapFile3 = data/pedestrian_paths.wkt
-MapBasedMovement.mapFile4 = data/shops.wkt
 
 ## Reports - all report names have to be valid report classes
 

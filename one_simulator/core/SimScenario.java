@@ -4,7 +4,6 @@
  */
 package core;
 
-import applications.ContextSharingApplication;
 import input.EventQueue;
 import input.EventQueueHandler;
 import movement.MapBasedMovement;
@@ -373,28 +372,6 @@ public class SimScenario implements Serializable {
                     // Load an instance of the application
                     protoApp = (Application)t.createIntializedObject(
                             APP_PACKAGE + t.getSetting(APPTYPE_S));
-
-                    // smcho added
-                    if (protoApp instanceof ContextSharingApplication) {
-                        database = ((ContextSharingApplication)protoApp).database;
-                    }
-                    // If the application implements connectionListner, it should be added to the lister group
-                    if (protoApp instanceof ConnectionListener) {
-                        addConnectionListener((ConnectionListener) protoApp);
-                    }
-                    if (protoApp instanceof MessageListener) {
-                        addMessageListener((MessageListener) protoApp);
-                    }
-                    if (protoApp instanceof MovementListener) {
-                        addMovementListener((MovementListener) protoApp);
-                    }
-                    if (protoApp instanceof UpdateListener) {
-                        addUpdateListener((UpdateListener) protoApp);
-                    }
-                    if (protoApp instanceof ApplicationListener) {
-                        addApplicationListener((ApplicationListener) protoApp);
-                    }
-                    // smcho added end
 
                     // Set application listeners
                     protoApp.setAppListeners(this.appListeners);
