@@ -45,6 +45,22 @@ object Summary {
   def apply(contextSummary: ContextSummary, name:String) : Summary = new Summary(contextSummary, name, "b")
   def apply(contextSummary: ContextSummary) : Summary = new Summary(contextSummary, "", "b")
 
+  def loadContext(directory: String, contextName: String, replacementFilePath: String) = {
+    val absoluteDirectory = new File(".").getAbsoluteFile() + "/" + directory
+    var filePath = absoluteDirectory + "/" + contextName
+    val key = uFile.getBasename(filePath)
+
+    if (!(new File(filePath).exists())) {
+      if (new File(replacementFilePath).isAbsolute)
+        filePath = replacementFilePath
+      else {
+        filePath = new File(".").getAbsoluteFile() + "/" + replacementFilePath
+      }
+    }
+
+    Summary(contextSummary = uFile.fileToSummary(filePath)(0), name = key)
+  }
+
   def loadContexts(directory: String) = {
     val summaries = mm[String, Summary]();
     // executed in one simulator, the "." is inside the one simulator directory, so there should be some changes
@@ -53,7 +69,7 @@ object Summary {
 
     val files = new java.io.File(absoluteDirectory).listFiles.filter(_.getName.endsWith(".txt")) // context is in txt format
 
-    for (file <- files) {
+    for (file <- files if !file.getName().endsWith("default.txt")) {
       val fileName = file.toString
       val key = uFile.getBasename(fileName)
       // todo:: fileToSummary should return a summary not a list of summaries (remove (0))

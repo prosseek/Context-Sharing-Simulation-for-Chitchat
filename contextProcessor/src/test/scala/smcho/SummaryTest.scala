@@ -37,4 +37,15 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
         }
     }
   }
+
+  test("testLoad loadContext") {
+
+    intercept[Exception] {
+      Summary.loadContext("contextProcessor/resources/test/sample_contexts", "hello7.txt", "default.txt")
+    }
+    val res2 = Summary.loadContext("contextProcessor/resources/test/sample_contexts", "default.txt", "default.txt")
+    // Even the name is different, the contextSummary content should be the same.
+    //assert(res1.contextSummary.hashCode == res2.contextSummary.hashCode)
+    assert(res2.contextSummary.getSize() == (69,81,81))
+  }
 }

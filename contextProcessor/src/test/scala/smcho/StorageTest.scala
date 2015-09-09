@@ -43,9 +43,13 @@ class StorageTest extends FunSuite with BeforeAndAfterEach {
   test("test GetSummary") {
     // Map[String, Summary]
     storage.reset
-    DatabaseWithStrategy.load("contextProcessor/resources/test/sample_contexts", storage)
+    DatabaseWithStrategy.load("contextProcessor/resources/test/sample_contexts", storage, "")
     val h3 = storage.getSummaryMap()
     val expected = "Map(summary1 -> summary1|b|46, summary2 -> summary2|b|50)"
     assert(h3.toString == expected)
+
+    // exists test
+    assert(storage.exists("summary1"))
+    assert(!storage.exists("Hello1"))
   }
 }

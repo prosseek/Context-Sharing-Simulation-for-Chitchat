@@ -7,7 +7,9 @@ package smcho
  */
 trait Database {
   // Given a directory, load all the contexts into database
-  def load(directory: String)
+  // hostSize is a string separated by ","
+  // 3,4,5,6 <- 4 groups each member count of 3/4/5/6
+  def load(directory: String, hostSize:String)
   // returns Content content (string) to share for host
   def get(host: Int) : ContextMessage
   // add received ContextMessage to host

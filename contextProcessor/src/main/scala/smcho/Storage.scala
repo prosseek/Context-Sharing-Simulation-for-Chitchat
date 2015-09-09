@@ -64,6 +64,10 @@ case class Storage() {
     }
   }
 
+  def exists(name: String) = {
+    summaryMap.keySet(name)
+  }
+
   def print() = {
     // print
     //summaryMap = mm[String, Summary]()
