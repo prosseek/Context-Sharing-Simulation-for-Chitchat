@@ -1,7 +1,10 @@
 package core
 
-import grapevineType.BottomType.BottomType
+import scala.io.Source
+import net.liftweb.json._
 
+import grapevineType.BottomType.BottomType
+import scala.collection.mutable.{Map => mm}
 /**
  * The summary contains a key -> value set.
  * The key is a string, and value is gv type
@@ -42,10 +45,49 @@ abstract class ContextSummary {
 
   // def zip(): Array[Byte];
   def serialize(): Array[Byte];
-}
 
-object ContextSummary {
-  def load(filePath:String) = {
+  def toJsonString() : String
 
+  def loadJson(filePath:String) = {
+    implicit val formats = DefaultFormats
+    def convertJsonMap(m:Map[String, Any]) = {
+      def toInt(value:Any) = {
+        if (value.isInstanceOf[scala.math.BigInt]) {
+          value.asInstanceOf[scala.math.BigInt].toInt
+        }
+        else
+          value
+      }
+      val newMap = mm[String, Any]()
+
+      m foreach {
+        case (key, value) =>
+          newMap(key) = value
+          if (value.isInstanceOf[scala.math.BigInt]) {
+            newMap(key) = value.asInstanceOf[scala.math.BigInt].toInt
+          }
+          if (value.isInstanceOf[List[_]]) {
+            val oldList = value.asInstanceOf[List[_]]
+
+            if (oldList.size == 2) {
+              val res = (toInt(oldList(0)), toInt(oldList(1)))
+              newMap(key) = res
+            }
+            if (oldList.size == 3) {
+              val res = (toInt(oldList(0)), toInt(oldList(1)), toInt(oldList(2)))
+              newMap(key) = res
+            }
+            if (oldList.size == 4) {
+              val res = (toInt(oldList(0)), toInt(oldList(1)), toInt(oldList(2)), toInt(oldList(3)))
+              newMap(key) = res
+            }
+          }
+      }
+      newMap.toMap
+    }
+
+    val res = parse(Source.fromFile(filePath).mkString(""))
+    val json = res.values.asInstanceOf[Map[String, Any]]
+    convertJsonMap(json)
   }
 }

@@ -76,4 +76,6 @@ class CompleteSummary  extends GrapevineSummary {
   }
 
   override def getSerializedSize(): Int = serialize().size
+
+  override def toJsonString(): String = ???
 }

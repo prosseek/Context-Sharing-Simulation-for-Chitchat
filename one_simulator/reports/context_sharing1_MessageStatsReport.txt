@@ -1,17 +1,17 @@
 Message stats for scenario context_sharing1
-sim_time: 10000.0000
-created: 28
-started: 37
-relayed: 37
+sim_time: 1000.0100
+created: 4
+started: 5
+relayed: 5
 aborted: 0
 dropped: 0
 removed: 0
-delivered: 16
-delivery_prob: 0.5714
+delivered: 4
+delivery_prob: 1.0000
 response_prob: 0.0000
-overhead_ratio: 1.3125
-latency_avg: 0.0138
-latency_med: 0.0100
+overhead_ratio: 0.2500
+latency_avg: 0.0150
+latency_med: 0.0200
 hopcount_avg: 1.0000
 hopcount_med: 1
 buffertime_avg: NaN

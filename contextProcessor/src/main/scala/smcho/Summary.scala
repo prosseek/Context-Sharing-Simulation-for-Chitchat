@@ -2,6 +2,8 @@ package smcho
 
 import java.io.File
 import scala.collection.mutable.{Map => mm}
+import net.liftweb.json.DefaultFormats
+import net.liftweb.json.Serialization.{write => jsonWrite}
 
 import util.io.{File => uFile}
 import core.{BloomierFilterSummary, LabeledSummary, ContextSummary}
@@ -37,6 +39,10 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
 
   override def toString() = makeString()
 
+  def toJsonString() = {
+    implicit val formats = DefaultFormats
+    jsonWrite(this)
+  }
 }
 
 object Summary {

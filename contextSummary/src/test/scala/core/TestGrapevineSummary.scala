@@ -15,6 +15,8 @@ class TestClass extends GrapevineSummary {
   // def zip(): Array[Byte];
   // This is just quick and dirty way of removing errors
   override def serialize(): Array[Byte] = Array[Byte]()
+
+  override def toJsonString(): String = ???
 }
 
 /**

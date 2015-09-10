@@ -1,5 +1,7 @@
 package core
 
+import java.io.File
+
 import grapevineType.BottomType
 import grapevineType.BottomType._
 import org.scalatest.{BeforeAndAfter, FunSuite}
@@ -92,5 +94,18 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     assert(ls.get("a") == m("a"))
     assert(ls.check("level of a") == BottomType.NoError)
     assert(ls.get("level of a") == m("level of a"))
+  }
+  test("test json") {
+    t.create(map = map1, m = 8, k = 3, q = 8*4)
+    val expectedSize = t.getM()/8 + 4 * 4
+    println(t.toJsonString())
+  }
+  test("test json read") {
+    t.create("contextSummary/src/test/scala/resource/simple.json", m = 8, k = 3, q = 8 * 4)
+    assert(t.getSize() == (21,23,23))
+  }
+  test("test json read2") {
+    t.create("contextSummary/src/test/scala/resource/simple2.json", m = 8, k = 3, q = 8 * 4)
+    assert(t.getSize() == (67,68,68))
   }
 }
