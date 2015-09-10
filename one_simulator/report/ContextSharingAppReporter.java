@@ -64,6 +64,8 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         smcho.Storage storage = database.getStorage();
 
         storage.print();
+        storage.toJsonString();
+        // JsonWriter.writeDatabase(database, "../results/hello.json");
 //        Iterable<Object> keys = JavaConversions.asJavaIterable(history.keySet());
 //
 //        List<Integer> sortedList = new ArrayList<>();

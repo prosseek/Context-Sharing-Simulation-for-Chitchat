@@ -1,6 +1,9 @@
 package smcho
 
+import net.liftweb.json.DefaultFormats
+
 import scala.collection.mutable.{Map => mm, Set => mSet}
+import net.liftweb.json.Serialization.{write => jsonWrite}
 
 /**
  * Created by smcho on 8/28/15.
@@ -84,5 +87,25 @@ case class Storage() {
     }
     // contextMessageMap = mm[Int, mSet[ContextMessage]]()
     println("---------------------------------------")
+  }
+
+  def toJsonString() = {
+
+    // 1. summaryMap
+    //   class Summary(val contextSummary: ContextSummary, var name:String, var summaryType: String) {
+    //   private var summaryMap = mm[String, Summary]()
+    summaryMap.keys.toList.sorted foreach { key =>
+      implicit val formats = DefaultFormats
+
+      // 1. summaryMap gets all the summary read from directory or created in between
+      // {"contextSummary":{},"name":"is0","summaryType":"b"}
+      val contextSummaryString = jsonWrite(summaryMap.get(key).get)
+
+      summaryMap.get(key) foreach {key =>
+        println(key)
+      }
+
+      // println (s"KEY $key: VALUE:${summaryMap.get(key).get.toString()}")
+    }
   }
 }

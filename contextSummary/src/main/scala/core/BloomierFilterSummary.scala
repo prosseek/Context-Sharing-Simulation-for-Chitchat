@@ -5,7 +5,10 @@ import grapevineType.BottomType._
 import grapevineType._
 import util.conversion.{Joiner, Util}
 
+import net.liftweb.json._
+
 import scala.collection.mutable.{Map => MMap}
+import scala.io.Source
 
 /**
  * Created by smcho on 8/16/14.
@@ -19,7 +22,16 @@ class BloomierFilterSummary extends GrapevineSummary {
   var complete:Boolean = false
   var initM:Int = -1
 
-  def createFromGrapevineMap(map: Map[String, Any], m:Int, k:Int, q:Int, maxTry:Int = 20, complete:Boolean = false): Unit = {
+//  def createFromGrapevineMap(map: Map[String, Any], m:Int, k:Int, q:Int, maxTry:Int = 20, complete:Boolean = false): Unit = {
+//  }
+
+  def create(json:String, m:Int, k:Int, q:Int): Unit = {
+    create(json, m, k, q, 20, 0, false)
+  }
+
+  def create(jsonFilePath:String, m:Int, k:Int, q:Int, maxTry:Int, initialSeed:Int, complete:Boolean): Unit = {
+    val jsonMap: Map[String, Any] = loadJson(jsonFilePath)
+    create(jsonMap, m, k, q, maxTry, initialSeed, complete)
   }
 
   def create(map: Map[String, Any], m:Int, k:Int, q:Int, maxTry:Int = 20, initialSeed:Int = 0, complete:Boolean = false): Unit = {
@@ -46,6 +58,10 @@ class BloomierFilterSummary extends GrapevineSummary {
     (byteArrayBloomierFilter.getSize(), s.size, z.size)
   }
 
+  /**
+   *
+   * @return
+   */
   def getDetailedSize() = {
     byteArrayBloomierFilter.getDetailedSize()
   }
@@ -56,6 +72,18 @@ class BloomierFilterSummary extends GrapevineSummary {
 
   def getN() = {
     byteArrayBloomierFilter.getN()
+  }
+
+  /**
+   *
+   * @return
+   */
+  def getK() = {
+    k
+  }
+
+  def getQ() = {
+    q
   }
   /**
    * Returns the value from the input key
@@ -82,6 +110,12 @@ class BloomierFilterSummary extends GrapevineSummary {
     check(key, useRelation = false)
   }
 
+  /**
+   *
+   * @param key
+   * @param useRelation
+   * @return
+   */
   def check(key: String, useRelation:Boolean = false): BottomType = {
     val j = new Joiner
     val value = j.join(byteArrayBloomierFilter, key) // Option[Array[Byte]]
@@ -103,6 +137,10 @@ class BloomierFilterSummary extends GrapevineSummary {
     }
   }
 
+  /**
+   *
+   * @param filePath
+   */
   override def load(filePath:String) :Unit = {
     super.load(filePath) // fill in the dataStructure
     val baMap = grapevineToByteArrayMap(super.getMap, Util.getByteSize(q))
@@ -124,4 +162,12 @@ class BloomierFilterSummary extends GrapevineSummary {
    * @return
    */
   override def getSerializedSize(): Int = getSize()._1
+
+  /**
+   *
+   * @return
+   */
+  override def toJsonString(): String = {
+    s"""{"type":"b", "size":${getSerializedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
+  }
 }
