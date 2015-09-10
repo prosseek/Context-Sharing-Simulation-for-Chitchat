@@ -30,7 +30,12 @@ class BloomierFilterSummary extends GrapevineSummary {
   }
 
   def create(jsonFilePath:String, m:Int, k:Int, q:Int, maxTry:Int, initialSeed:Int, complete:Boolean): Unit = {
-    val jsonMap: Map[String, Any] = loadJson(jsonFilePath)
+
+    val (x,y,z) = ContextSummary.loadJson(jsonFilePath)
+
+    this.jsonMap = x; this.jsonSize = y; this.jsonCompressedSize = z
+
+    val jsonMap: Map[String, GrapevineType] = this.jsonMap.asInstanceOf[Map[String, GrapevineType]]
     create(jsonMap, m, k, q, maxTry, initialSeed, complete)
   }
 

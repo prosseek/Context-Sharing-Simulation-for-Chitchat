@@ -66,5 +66,7 @@ class LabeledSummary extends GrapevineSummary {
     ab
   }
 
-  override def toJsonString(): String = ???
+  override def toJsonString(): String = {
+
+  }
 }

@@ -1,53 +1,17 @@
 package core
 
+import java.io.File
+
+import util.compression.CompressorHelper
+import util.conversion.ByteArrayTool
+
 import scala.io.Source
 import net.liftweb.json._
 
 import grapevineType.BottomType.BottomType
 import scala.collection.mutable.{Map => mm}
-/**
- * The summary contains a key -> value set.
- * The key is a string, and value is gv type
- */
-abstract class ContextSummary {
-  /**
-   * Returns the size of the summary
-   *
-   * @return
-   */
-  def getSize() : (Int, Int, Int);
 
-  def getSerializedSize() : Int;
-
-  /**
-   * Returns the value from the input key
-   * The returned value can be null, so Option type is used.
-   *
-   * @param key
-   * @return
-   */
-  def get(key:String): Any
-
-  def check(key:String): BottomType
-
-  /**
-   * create a context summary from dictionary.
-   * From the dict (Map of String -> Object), it generates a summary
-   * wholeDict is used for complete dictionary
-   *
-   *
-   * @param dict
-   */
-  def create(dict:Map[String, Any]);
-
-  def load(filePath:String);
-  def save(filePath:String);
-
-  // def zip(): Array[Byte];
-  def serialize(): Array[Byte];
-
-  def toJsonString() : String
-
+object ContextSummary {
   def loadJson(filePath:String) = {
     implicit val formats = DefaultFormats
     def convertJsonMap(m:Map[String, Any]) = {
@@ -86,8 +50,73 @@ abstract class ContextSummary {
       newMap.toMap
     }
 
-    val res = parse(Source.fromFile(filePath).mkString(""))
+    // File size
+    val jsonSize = new File(filePath).length.toInt
+    val source = Source.fromFile(filePath).mkString("")
+    val ba = ByteArrayTool.stringToByteArray(source)
+    val z = CompressorHelper.compress(ba)
+    val jsonCompressedSize = z.length
+    val res = parse(source)
     val json = res.values.asInstanceOf[Map[String, Any]]
-    convertJsonMap(json)
+    val map = convertJsonMap(json)
+    (map, jsonSize, jsonCompressedSize)
   }
+}
+
+/**
+ * The summary contains a key -> value set.
+ * The key is a string, and value is gv type
+ */
+abstract class ContextSummary {
+
+  protected var jsonSize = 0
+  protected var jsonCompressedSize = 0
+  protected var jsonMap: Map[String, Any] = null
+
+  def getJsonSize() = {
+    jsonSize
+  }
+  def getJsonCompressedSize() = {
+    jsonCompressedSize
+  }
+  def getJsonMap() = {
+    jsonMap
+  }
+  /**
+   * Returns the size of the summary
+   *
+   * @return
+   */
+  def getSize() : (Int, Int, Int);
+
+  def getSerializedSize() : Int;
+
+  /**
+   * Returns the value from the input key
+   * The returned value can be null, so Option type is used.
+   *
+   * @param key
+   * @return
+   */
+  def get(key:String): Any
+
+  def check(key:String): BottomType
+
+  /**
+   * create a context summary from dictionary.
+   * From the dict (Map of String -> Object), it generates a summary
+   * wholeDict is used for complete dictionary
+   *
+   *
+   * @param dict
+   */
+  def create(dict:Map[String, Any]);
+
+  def load(filePath:String);
+  def save(filePath:String);
+
+  // def zip(): Array[Byte];
+  def serialize(): Array[Byte];
+
+  def toJsonString() : String
 }

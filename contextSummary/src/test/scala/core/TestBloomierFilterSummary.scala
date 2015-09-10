@@ -2,7 +2,7 @@ package core
 
 import java.io.File
 
-import grapevineType.BottomType
+import grapevineType.{GrapevineType, BottomType}
 import grapevineType.BottomType._
 import org.scalatest.{BeforeAndAfter, FunSuite}
 
@@ -13,6 +13,18 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
   var message = "hello, world?"
   var t: BloomierFilterSummary = _
   var map1: Map[String, Any] = Map("a_f" -> 10.0, "message" -> "hi", "c count" -> 20, "d count" -> 30)
+
+  def test(width:Int, map:Map[String, Any]) = {
+    t.create(map = map, m = 8, k = 3, q = 8*width)
+    if (t.check("latitude") == NoError)
+      assert(t.get("latitude") == (10,10,10,10))
+    if (t.check("time") == NoError)
+      assert(t.get("time") == (11,11))
+    if (t.check("date") == NoError)
+      assert(t.get("date") == (2014,10, 1))
+
+    println(s"width = ${width}, ${t.getSize}, ${t.getSerializedSize}")
+  }
 
   def getMap(message:String) = {
     var map: Map[String, Any] = Map("latitude" ->(10, 10, 10, 10),
@@ -38,21 +50,8 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
       assert(t.get("a_f") == 10.0)
     }
   }
-  test ("test 1") {
-    def test(width:Int, map:Map[String, Any]) = {
-      t.create(map = map, m = 8, k = 3, q = 8*width)
-      if (t.check("latitude") == NoError)
-        assert(t.get("latitude") == (10,10,10,10))
-      if (t.check("time") == NoError)
-        assert(t.get("time") == (11,11))
-      if (t.check("date") == NoError)
-        assert(t.get("date") == (2014,10, 1))
 
-//      if (t.check("message") == NoError)
-//        assert(t.get("message") == message)
-      println(s"width = ${width}, ${t.getSize}, ${t.getSerializedSize}")
-    }
-
+  test ("test size from Map") {
     message = "Hello, world"
     test(1, getMap(message))
     test(2, getMap(message))
@@ -67,6 +66,21 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     ls.create(dict = getMap(message))
     println(s"Labeled - ${ls.getSize}")
   }
+
+  test ("test size from Json") {
+    val (map, jsonSize, jsonCompressedSize) = ContextSummary.loadJson("contextSummary/src/test/scala/resource/unittest.json")
+    test(1, map)
+    test(2, map)
+    test(3, map)
+    test(4, map)
+    test(5, map)
+    test(6, map)
+    test(7, map)
+    test(8, map)
+
+    println(s"json - ${jsonSize}-${jsonCompressedSize}")
+  }
+
   test ("load") {
     val ls = t
     ls.load("experiment/data/sample_context.txt")
@@ -103,9 +117,14 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
   test("test json read") {
     t.create("contextSummary/src/test/scala/resource/simple.json", m = 8, k = 3, q = 8 * 4)
     assert(t.getSize() == (21,23,23))
+
+    assert(t.getJsonSize() == 55)
+    assert(t.getJsonCompressedSize() == 47)
   }
   test("test json read2") {
     t.create("contextSummary/src/test/scala/resource/simple2.json", m = 8, k = 3, q = 8 * 4)
     assert(t.getSize() == (67,68,68))
+    assert(t.getJsonSize() == 232)
+    assert(t.getJsonCompressedSize() == 168)
   }
 }
