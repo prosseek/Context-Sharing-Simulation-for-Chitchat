@@ -10,45 +10,50 @@ import net.liftweb.json._
 import scala.collection.mutable.{Map => MMap}
 import scala.io.Source
 
+object BloomierFilterSummary {
+  def apply(t: Map[String, Any]) : BloomierFilterSummary =
+    new BloomierFilterSummary(t, 0, 0)
+  def apply(t: (Map[String, Any], Int, Int)) : BloomierFilterSummary  = new BloomierFilterSummary(t._1, t._2, t._3)
+  def apply(filePath:String) : BloomierFilterSummary = BloomierFilterSummary(ContextSummary.loadJsonAll(filePath))
+}
+
 /**
  * Created by smcho on 8/16/14.
  */
-class BloomierFilterSummary extends GrapevineSummary {
+case class BloomierFilterSummary(jsonMap: Map[String, Any],
+                            jsonSize:Int,
+                            jsonCompressedSize:Int) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
+
   var instance: GrapevineType = _
   var byteArrayBloomierFilter: ByteArrayBloomierFilter = _
-  var k:Int = 3
-  var q:Int = 4*8
-  var maxTry:Int = 20
-  var complete:Boolean = false
-  var initM:Int = -1
+  var k:Int = _
+  var q:Int = _
+  var maxTry:Int = _
+  var complete:Boolean = _
+  var initM:Int = _
 
-//  def createFromGrapevineMap(map: Map[String, Any], m:Int, k:Int, q:Int, maxTry:Int = 20, complete:Boolean = false): Unit = {
+//  def setup(json:String, m:Int, k:Int, q:Int): Unit = {
+//    setup(json, m, k, q, 20, 0, false)
 //  }
 
-  def create(json:String, m:Int, k:Int, q:Int): Unit = {
-    create(json, m, k, q, 20, 0, false)
-  }
+//  def setup(jsonFilePath:String, m:Int, k:Int, q:Int, maxTry:Int, initialSeed:Int, complete:Boolean): Unit = {
+//
+//    val (x,y,z) = ContextSummary.loadJsonAll(jsonFilePath)
+//
+//    this.jsonMap = x; this.jsonSize = y; this.jsonCompressedSize = z
+//
+//    val jsonMap: Map[String, GrapevineType] = this.jsonMap.asInstanceOf[Map[String, GrapevineType]]
+//    setup(jsonMap, m, k, q, maxTry, initialSeed, complete)
+//  }
 
-  def create(jsonFilePath:String, m:Int, k:Int, q:Int, maxTry:Int, initialSeed:Int, complete:Boolean): Unit = {
-
-    val (x,y,z) = ContextSummary.loadJson(jsonFilePath)
-
-    this.jsonMap = x; this.jsonSize = y; this.jsonCompressedSize = z
-
-    val jsonMap: Map[String, GrapevineType] = this.jsonMap.asInstanceOf[Map[String, GrapevineType]]
-    create(jsonMap, m, k, q, maxTry, initialSeed, complete)
-  }
-
-  def create(map: Map[String, Any], m:Int, k:Int, q:Int, maxTry:Int = 20, initialSeed:Int = 0, complete:Boolean = false): Unit = {
+  def setup(m:Int, k:Int, q:Int, maxTry:Int = 20, initialSeed:Int = 0, complete:Boolean = false): Unit = {
     this.initM = m
     this.k = k
     this.q = q
     this.maxTry = maxTry
     this.complete = complete
 
-    super.create(map) // any map to grapevineDataTypeMap
-    val baMap = grapevineToByteArrayMap(super.getMap, Util.getByteSize(q))
-    //println(!complete)
+    val baMap = grapevineToByteArrayMap(getMap(), Util.getByteSize(q))
     byteArrayBloomierFilter = new ByteArrayBloomierFilter(map = baMap, initialM = m, k = k, q = q, initialSeed = initialSeed, maxTry = maxTry, complete = complete)
   }
 
@@ -157,7 +162,7 @@ class BloomierFilterSummary extends GrapevineSummary {
     var ab = Array[Byte]()
     // get the contents
 
-    dataStructure.foreach { case (key, value) =>
+    map.foreach { case (key, value) =>
     }
     return ab
   }
@@ -172,7 +177,7 @@ class BloomierFilterSummary extends GrapevineSummary {
    *
    * @return
    */
-  override def toJsonString(): String = {
-    s"""{"type":"b", "size":${getSerializedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
+  override def toString(): String = {
+    s"""{"type":"b", "complete":${if (complete) 1 else 0}, "size":${getSerializedSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
   }
 }

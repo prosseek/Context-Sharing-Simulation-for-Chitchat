@@ -3,20 +3,17 @@ package core
 import grapevineType.BottomType._
 import org.scalatest._
 
-// Grapevine is an abstract class, so we need to make a concrete class just to test GrapevineSummary
-class TestClass extends GrapevineSummary {
-  override def getSize(): (Int, Int, Int) = (0,0,0)
-  override def getSerializedSize = 0
-  override def get(key: String): Option[Any] = None
-  override def check(key: String): BottomType = {
-    NoError
-  }
+object TG {
+  def apply(t: (Map[String, Any], Int, Int)) : TG  = new TG(t._1, t._2, t._3)
+  def apply(filePath:String) : TG = TG(ContextSummary.loadJsonAll(filePath))
+}
 
-  // def zip(): Array[Byte];
-  // This is just quick and dirty way of removing errors
-  override def serialize(): Array[Byte] = Array[Byte]()
-
-  override def toJsonString(): String = ???
+case class TG(var m: Map[String, Any], var j:Int = 0, var jc:Int = 0) extends GrapevineSummary(m, j, jc) {
+  override def getSize(): (Int, Int, Int) = ???
+  override def getSerializedSize(): Int = ???
+  override def get(key: String): Any = ???
+  override def serialize(): Array[Byte] = ???
+  override def check(key: String): BottomType = ???
 }
 
 /**
@@ -25,8 +22,10 @@ class TestClass extends GrapevineSummary {
 
 class TestGrapevineSummary extends FunSuite with BeforeAndAfter  {
   var t: GrapevineSummary = _
+  val m = Map[String, Any]("number of apples"->10, "age of kids"->4, "speed of a car"->14, "latitude"->(32, 22, 44, 33), "date"->(2014,10,1), "time"->(11,11))
+
   before {
-    t = new TestClass
+    t = TG(m)
   }
 
   test ("Test create from key") {
@@ -38,8 +37,7 @@ class TestGrapevineSummary extends FunSuite with BeforeAndAfter  {
 //    "date" -> classOf[DateType],
 //    "time" -> classOf[TimeType]
 
-    val m = Map[String, Any]("number of apples"->10, "age of kids"->4, "speed of a car"->14, "latitude"->(32, 22, 44, 33), "date"->(2014,10,1), "time"->(11,11))
-    t.create(m)
+      t.setup(m)
 
     assert(t.getValue("number of apples").get == m("number of apples"))
     assert(t.getValue("age of kids").get == m("age of kids"))
@@ -52,7 +50,7 @@ class TestGrapevineSummary extends FunSuite with BeforeAndAfter  {
 
   test ("Test create from value") {
     val m = Map[String, Any]("A count"->10, "B_f"->20.5, "C"->"Hello")
-    t.create(m)
+    t.setup(m)
 
     assert(t.getValue("A count").get == m("A count"))
     assert(t.getValue("B_f").get == m("B_f"))

@@ -40,19 +40,19 @@ object String {
     }
   }
 
-  def parseSummary(input:String) = {
-    val map = MMap[String, Any]()
-    val ls = new LabeledSummary
-
-    input.split("\n").foreach { i =>
-      //val s = i.replaceAll("""\s+""", "")
-      if (i.trim.size > 0)
-        parseLine(i.trim) match {
-          case (key, value) => map(key) = value
-        }
-    }
-
-    ls.create(map.toMap)
-    ls
-  }
+//  def parseSummary(input:String) = {
+//    val map = MMap[String, Any]()
+//    val ls = new LabeledSummary(map)
+//
+//    input.split("\n").foreach { i =>
+//      //val s = i.replaceAll("""\s+""", "")
+//      if (i.trim.size > 0)
+//        parseLine(i.trim) match {
+//          case (key, value) => map(key) = value
+//        }
+//    }
+//
+//    ls.setup(map.toMap)
+//    ls
+//  }
 }

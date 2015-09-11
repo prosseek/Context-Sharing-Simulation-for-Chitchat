@@ -8,15 +8,19 @@ import util.conversion.Util
 
 import scala.collection.mutable
 
+object CompleteSummary {
+  def apply(t: Map[String, Any]) : CompleteSummary =
+    new CompleteSummary(t, 0, 0)
+  def apply(t: (Map[String, Any], Int, Int)) : CompleteSummary  = new CompleteSummary(t._1, t._2, t._3)
+  def apply(filePath:String) : CompleteSummary = CompleteSummary(ContextSummary.loadJsonAll(filePath))
+}
+
 /**
  * Created by smcho on 1/5/15.
  */
-class CompleteSummary  extends GrapevineSummary {
-
-  def setDataStructure(l:LabeledSummary) = {
-    this.dataStructure.empty
-    this.dataStructure ++= l.dataStructure
-  }
+case class CompleteSummary(jsonMap: Map[String, Any],
+                      jsonSize:Int = 0,
+                      jsonCompressedSize:Int = 0) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
 
 //  def maxBits(size:Int) = {
 //    math.ceil(log2(size)).toInt
@@ -28,9 +32,9 @@ class CompleteSummary  extends GrapevineSummary {
 
   // This should be the bit size, not byte
   def getTheorySize(): Int = {
-    val size1 = (0 /: dataStructure) { (acc, value) => acc + value._2.getSize }
+    val size1 = (0 /: map) { (acc, value) => acc + value._2.getSize }
     //val size2 = Util.getByteSizeFromSize(math.ceil(dataStructure.size * log2(dataStructure.size.toDouble)).toInt)
-    val size2 = Util.getByteSizeFromSize(dataStructure.size)
+    val size2 = Util.getByteSizeFromSize(map.size)
     //val size2 = math.ceil(dataStructure.size * log2(dataStructure.size.toDouble)).toInt
     size1 + size2
   }
@@ -56,7 +60,7 @@ class CompleteSummary  extends GrapevineSummary {
 
   override def serialize(): Array[Byte] = {
 
-    val size = dataStructure.size
+    val size = map.size
     val sizeByteArray = shortToByteArray(size.toShort)
 
     val bitsForSize = math.ceil(log2(size.toDouble)).toInt
@@ -64,18 +68,20 @@ class CompleteSummary  extends GrapevineSummary {
     // get the contents
     var bitSet = mutable.BitSet()
 
-    dataStructure.zipWithIndex.foreach { case (ds, index) =>
+    map.zipWithIndex.foreach { case (ds, index) =>
       val bs = intToBitSet(index, shift = index * bitsForSize)
       bitSet ++= bs
       val value = ds._2
       val byteArrayValue = value.toByteArray()
       ab ++= byteArrayValue
     }
-    val goalBitSetSize = Util.getByteSizeFromSize(dataStructure.size)
+    val goalBitSetSize = Util.getByteSizeFromSize(map.size)
     return sizeByteArray ++ bitSetToByteArray(bitSet, goalBitSetSize) ++ ab
   }
 
   override def getSerializedSize(): Int = serialize().size
 
-  override def toJsonString(): String = ???
+  override def toString(): String = {
+    s"""{"type":"c", "size":${getSerializedSize()}}"""
+  }
 }

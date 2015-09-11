@@ -9,10 +9,20 @@ import scala.collection.mutable.{Map => MMap}
 /**
  * Created by smcho on 8/10/14.
  */
-abstract class GrapevineSummary extends ContextSummary {
-  val dataStructure = MMap[String, GrapevineType]()
 
-  def grapevineToByteArrayMap(inputMap:Map[String, GrapevineType], goalByteSize:Int)  = {
+/**
+ * create the GrapeVineSummary, and the map is already setup with GrapevineType
+ * @param jsonMap
+ * @param jsonSize
+ * @param jsonCompressedSize
+ */
+abstract class GrapevineSummary(jsonMap: Map[String, Any],
+                                jsonSize:Int,
+                                jsonCompressedSize:Int) extends ContextSummary(jsonMap, jsonSize, jsonCompressedSize) {
+  val map:MMap[String, GrapevineType] = null
+  setup(jsonMap)
+
+  protected def grapevineToByteArrayMap(inputMap:Map[String, GrapevineType], goalByteSize:Int)  = {
     val splitter = new Splitter
     val tableWidth = goalByteSize
     assert(inputMap.size > 0, "Null input map")
@@ -30,30 +40,30 @@ abstract class GrapevineSummary extends ContextSummary {
   protected def set(key:String, t:Class[_], v:Any):Unit = {
     val gv = t.newInstance.asInstanceOf[GrapevineType]
     gv.set(v)
-    dataStructure(key) = gv
+    map(key) = gv
   }
 
   protected def set(key:String, v:GrapevineType):Unit = {
-    dataStructure(key) = v
+    map(key) = v
   }
 
-  def copy(gvSummary:GrapevineSummary) = {
-    // copy all the dataStructure
-    // copy dataStructure
-    dataStructure.empty
-
-    gvSummary.dataStructure.keySet.foreach { k =>
-      dataStructure(k) = gvSummary.dataStructure(k)
-    }
-  }
+//  def copy(gvSummary:GrapevineSummary) = {
+//    // copy all the dataStructure
+//    // copy dataStructure
+//    gMap.empty
+//
+//    gvSummary.gMap.keySet.foreach { k =>
+//      gMap(k) = gvSummary.gMap(k)
+//    }
+//  }
 
   def getValue(key:String) : Option[Any] = {
-    if (dataStructure.contains(key)) Some(dataStructure(key).get)
+    if (map.contains(key)) Some(map(key).get)
     else None
   }
 
   def getMap() = {
-    dataStructure.toMap
+    map.toMap
   }
 
   /**
@@ -62,7 +72,7 @@ abstract class GrapevineSummary extends ContextSummary {
    *
    * @param dict
    */
-  override def create(dict: Map[String, Any]): Unit = {
+  override def setup(dict: Map[String, Any]): Unit = {
     dict.foreach { case (key, v) =>
       if (v == null) {
         // do nothing when the input value is null
@@ -88,7 +98,7 @@ abstract class GrapevineSummary extends ContextSummary {
 
   override def toString() = {
     val sb = new StringBuilder
-    dataStructure.foreach { case (key, gvData) =>
+    map.foreach { case (key, gvData) =>
         sb.append(s"${key} => ${gvData.get}: ${gvData.getTypeName}\n")
     }
     sb.toString
@@ -96,21 +106,9 @@ abstract class GrapevineSummary extends ContextSummary {
 
   def toFileString() = {
     val sb = new StringBuilder
-    dataStructure.foreach { case (key, gvData) =>
+    map.foreach { case (key, gvData) =>
       sb.append(s"${key} -> ${gvData.get}\n")
     }
     sb.toString
-  }
-
-  override def load(filePath: String): Unit = {
-    val summaries = File.fileToSummary(filePath)
-    val summary = summaries(0)
-    copy(summary)
-  }
-
-  override def save(filePath: String): Unit = {
-    val f = new PrintWriter(new File(filePath))
-    (f.write(toFileString()))
-    f.close()
   }
 }

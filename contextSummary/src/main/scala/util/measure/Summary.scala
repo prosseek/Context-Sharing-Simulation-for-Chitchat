@@ -1,6 +1,8 @@
 package util.measure
 
-import core.{BloomierFilterSummary, GrapevineSummary, CompleteSummary}
+import java.awt.Label
+
+import core.{LabeledSummary, BloomierFilterSummary, GrapevineSummary, CompleteSummary}
 import util.io.File
 import util.compression._
 import scala.collection.mutable.{ArrayBuffer, ListBuffer}
@@ -10,17 +12,17 @@ import scala.collection.mutable.{ArrayBuffer, ListBuffer}
  */
 object Summary {
   def getSizeNormalDetail(summary:GrapevineSummary, byteWidth:Int) = {
-    val bfs = new BloomierFilterSummary
-    bfs.create(summary.getMap, m = -1, k = 3, q = byteWidth*8, complete=false)
+    val bfs = BloomierFilterSummary(summary.getMap)
+    bfs.setup(m = -1, k = 3, q = byteWidth*8, complete=false)
     val x = bfs.getDetailedSize()
-    bfs.create(summary.getMap, m = -1, k = 3, q = byteWidth*8, complete=true)
+    bfs.setup(m = -1, k = 3, q = byteWidth*8, complete=true)
     val y = bfs.getDetailedSize()
     (x, y)
   }
 
   def getSize(summary:GrapevineSummary, byteWidth:Int, complete:Boolean) = {
-    val bfs = new BloomierFilterSummary
-    bfs.create(summary.getMap, m = -1, k = 3, q = byteWidth*8, complete=complete)
+    val bfs = BloomierFilterSummary(summary.getMap)
+    bfs.setup(m = -1, k = 3, q = byteWidth*8, complete=complete)
     bfs.getSize()
 //    val serial = bfs.serialize()
 //    val compressed = CompressorHelper.compress(serial)
@@ -35,10 +37,10 @@ object Summary {
   }
 
   def getSizeAverage(summary:GrapevineSummary, byteWidth:Int, complete:Boolean, count:Int) = {
-    val bfs = new BloomierFilterSummary
+    val bfs = BloomierFilterSummary(summary.getMap)
     val sizes = ArrayBuffer[Int]()
     (0 until count).foreach { c =>
-      bfs.create(summary.getMap, m = -1, k = 3, q = byteWidth * 8, initialSeed = c, complete = complete)
+      bfs.setup(m = -1, k = 3, q = byteWidth * 8, initialSeed = c, complete = complete)
       sizes += bfs.getSize._1
     }
     sizes.sum.toFloat / sizes.size
@@ -53,10 +55,9 @@ object Summary {
   }
 
   def getSizes(summaryPath:String, start:Int = 1, stop:Int = 10) :Array[Array[AnyVal]] = {
-    val summaries = File.fileToSummary(summaryPath)
-    val summary = summaries(0)
-    val completeSummary = new CompleteSummary()
-    completeSummary.setDataStructure(summary)
+    val labeledSummary = LabeledSummary(summaryPath)
+    val completeSummary = CompleteSummary(summaryPath)
+    //completeSummary.setDataStructure(summary)
 
     val listCount = (start to stop).toList
     var listBFNormal = ListBuffer[Float]()
@@ -68,10 +69,10 @@ object Summary {
     var listBFZipSerialNormal = ListBuffer[Float]()
     var listBFZipSerialComplte = ListBuffer[Float]()
 
-    val labeledSize = summary.getSize()
+    val labeledSize = labeledSummary.getSize()
     listCount.foreach { i =>
-      val sizeNormal = getSizeNormal(summary, i)
-      val sizeComplete = getSizeComplete(summary, i)
+      val sizeNormal = getSizeNormal(labeledSummary, i)
+      val sizeComplete = getSizeComplete(labeledSummary, i)
 
       listBFNormal += sizeNormal._1 //getSizeNormalAverage(summary, i)
       listBFComplte += sizeComplete._1 //getSizeCompleteAverage(summary, i)
@@ -86,9 +87,9 @@ object Summary {
 //      println(s"${summaryPath}/${getSizeNormalDetail(summary, i)}")
 //    }
     val totalSize = stop - start + 1
-    val listLabeled = List.fill(totalSize)(summary.getSize()._1)
-    val listSerialLabeled = List.fill(totalSize)(summary.getSize()._2)
-    val listZipSerialLabeled = List.fill(totalSize)(summary.getSize()._3)
+    val listLabeled = List.fill(totalSize)(labeledSummary.getSize()._1)
+    val listSerialLabeled = List.fill(totalSize)(labeledSummary.getSize()._2)
+    val listZipSerialLabeled = List.fill(totalSize)(labeledSummary.getSize()._3)
 
     val listComplete = List.fill(totalSize)(completeSummary.getSize()._1)
     val listSerialComplete = List.fill(totalSize)(completeSummary.getSize()._2)

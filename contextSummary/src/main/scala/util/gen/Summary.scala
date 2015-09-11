@@ -1,6 +1,6 @@
 package util.gen
 
-import core.{BloomierFilterSummary, ContextSummary}
+import core.{BloomierFilterSummary, LabeledSummary, ContextSummary}
 import grapevineType._
 import util.io.File
 import scala.collection.mutable.{Map => MMap}
@@ -41,9 +41,9 @@ object Summary {
       strs = getDictionaryStrings()
 
     val mp = getRandomMap(strs, n, t)
-    val bfs = new BloomierFilterSummary
+    val bfs = BloomierFilterSummary(mp)
 
-    bfs.create(map=mp, m = m, k = k, q = byteWidth * 8, complete = false)
+    bfs.setup(m = m, k = k, q = byteWidth * 8, complete = false)
     bfs
     //bfs.create()
   }
@@ -77,26 +77,24 @@ object Summary {
       mp += (getRandomString(strings) -> StringType(getRandomString(strings)))
     }
 
-    val bfs = new BloomierFilterSummary
-    bfs.create(mp.toMap, m = -1, k = k, q = byteWidth*8, complete=complete)
+    val bfs = BloomierFilterSummary(summary)
+    bfs.setup(m = -1, k = k, q = byteWidth*8, complete=complete)
     bfs
   }
 
   def getBF(summary:Map[String, GrapevineType], m:Int = -1, k:Int = 3, byteWidth:Int=4, complete:Boolean = false) = {
-    val bfs = new BloomierFilterSummary
-    bfs.create(summary, m = m, k = k, q = byteWidth*8, complete=complete)
+    val bfs = BloomierFilterSummary(summary)
+    bfs.setup(m = m, k = k, q = byteWidth*8, complete=complete)
     bfs
   }
 
   def getLabeledSummary(summaryPath:String) = {
-    val summaries = File.fileToSummary(summaryPath)
-    summaries(0)
+    LabeledSummary(summaryPath)
   }
 
   def getBF(summaryPath:String, m:Int, k:Int, byteWidth:Int, complete:Boolean) :ContextSummary = {
-    val summaries = File.fileToSummary(summaryPath)
-    val summary = summaries(0)
-
-    getBF(summary.getMap, m = m, k = k, byteWidth = byteWidth, complete = complete)
+    val bfs = BloomierFilterSummary(summaryPath)
+    bfs.setup(m = m, k = k, q = byteWidth*8, complete=complete)
+    bfs
   }
 }

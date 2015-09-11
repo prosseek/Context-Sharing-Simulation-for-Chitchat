@@ -48,4 +48,8 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
     //assert(res1.contextSummary.hashCode == res2.contextSummary.hashCode)
     assert(res2.contextSummary.getSize() == (69,81,81))
   }
+
+  test("test summary toJsonString") {
+
+  }
 }
