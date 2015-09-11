@@ -15,6 +15,7 @@ object BloomierFilterSummary {
     new BloomierFilterSummary(t, 0, 0)
   def apply(t: (Map[String, Any], Int, Int)) : BloomierFilterSummary  = new BloomierFilterSummary(t._1, t._2, t._3)
   def apply(filePath:String) : BloomierFilterSummary = BloomierFilterSummary(ContextSummary.loadJsonAll(filePath))
+  def apply(l:LabeledSummary) : BloomierFilterSummary = BloomierFilterSummary(l.getJsonMap())
 }
 
 /**

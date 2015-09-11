@@ -16,7 +16,7 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
   private var sizeBloomier = bloomierSummary.getSize()
 
   private def getBloomier(labeledSummary: LabeledSummary) = {
-    val bf = new BloomierFilterSummary
+    val bf = BloomierFilterSummary(labeledSummary)
     val m : Int = math.ceil(labeledSummary.getKeys().length * 1.5).toInt
     bf.setup(labeledSummary.getMap(), m = m, k = 3, q = 8 * 2)
     bf
@@ -27,7 +27,14 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
 
   def getName() = this.name
   def getSummaryType() = this.summaryType
-  def getSize(summaryType: String = this.summaryType) = if (summaryType == "b") sizeBloomier else sizeLabeled
+  def getSize(summaryType: String = this.summaryType) = {
+    summaryType match {
+      case "b" => sizeBloomier
+      case "l" => sizeLabeled
+      case "j" => labeledSummary.getJsonSize()
+      case _ => throw new Exception(s"Format error ${summaryType}")
+    }
+  }
   def getKeys() = labeledSummary.getKeys()
   def makeString(summaryType: String = this.summaryType) = {
     s"${name}|${summaryType}|${getSize(summaryType)}"
@@ -38,11 +45,6 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
   }
 
   override def toString() = makeString()
-
-  def toJsonString() = {
-    implicit val formats = DefaultFormats
-    jsonWrite(this)
-  }
 }
 
 object Summary {
@@ -64,7 +66,7 @@ object Summary {
       }
     }
 
-    val labeled = new LabeledSummary()
+    val labeled = LabeledSummary("")
     labeled.load(filePath)
 
     Summary(contextSummary = labeled, name = key)
@@ -78,11 +80,11 @@ object Summary {
 
     val files = new java.io.File(absoluteDirectory).listFiles.filter(_.getName.endsWith(".txt")) // context is in txt format
 
-    for (file <- files if !file.getName().endsWith("default.txt")) {
+    for (file <- files if !file.getName().endsWith("default.json")) {
       val fileName = file.toString
       val key = uFile.getBasename(fileName)
       // todo:: fileToSummary should return a summary not a list of summaries (remove (0))
-      summaries(key) = Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
+      //summaries(key) = Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
     }
     summaries
   }

@@ -22,6 +22,13 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     t2 = BloomierFilterSummary(filePath)
   }
 
+  test ("test create from Labeled") {
+    val l = LabeledSummary(filePath)
+    val bf = BloomierFilterSummary(l)
+    bf.setup(m = 10, k = 3, q = 8*5)
+    assert(l.getSize() == 52)
+    assert(bf.getSize() == 32)
+  }
   test ("Size test") {
     // map1 size
     t.setup(m = 8, k = 3, q = 8*4)
