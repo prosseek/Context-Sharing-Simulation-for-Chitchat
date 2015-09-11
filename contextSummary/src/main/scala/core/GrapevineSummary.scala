@@ -1,6 +1,8 @@
 package core
 
 import grapevineType._
+import util.compression.CompressorHelper._
+import util.conversion.ByteArrayTool._
 import util.conversion.{ByteArrayTool, Splitter}
 import util.io.File
 import java.io._
@@ -10,52 +12,75 @@ import scala.collection.mutable.{Map => MMap}
  * Created by smcho on 8/10/14.
  */
 
+object GrapevineSummary {
+  def apply(t: Map[String, Any]) : GrapevineSummary =
+    new GrapevineSummary(t, 0, 0)
+  def apply(t: (Map[String, Any], Int, Int)) : GrapevineSummary  = new GrapevineSummary(t._1, t._2, t._3)
+  def apply(filePath:String) : GrapevineSummary = GrapevineSummary(ContextSummary.loadJsonAll(filePath))
+}
+
+
 /**
  * create the GrapeVineSummary, and the map is already setup with GrapevineType
  * @param jsonMap
  * @param jsonSize
  * @param jsonCompressedSize
  */
-abstract class GrapevineSummary(jsonMap: Map[String, Any],
+class GrapevineSummary(jsonMap: Map[String, Any],
                                 jsonSize:Int,
                                 jsonCompressedSize:Int) extends ContextSummary(jsonMap, jsonSize, jsonCompressedSize) {
-  val map:MMap[String, GrapevineType] = null
+  val map = MMap[String, GrapevineType]()
   setup(jsonMap)
 
-  protected def grapevineToByteArrayMap(inputMap:Map[String, GrapevineType], goalByteSize:Int)  = {
-    val splitter = new Splitter
-    val tableWidth = goalByteSize
-    assert(inputMap.size > 0, "Null input map")
-    inputMap.map { case (key, value) =>
-      {
-        var ba = value.toByteArray()
-        if (ba.size < tableWidth) {
-          ba = ByteArrayTool.adjust(value = ba, originalSize = ba.size, goalSize = tableWidth)
-        }
-        splitter.split(key, ba, goalByteSize)
-      }
-    }.reduce { _ ++ _}
+  // this is the size in bytes
+  def getTheorySize(): Int = {
+    (0 /: map) { (acc, value) => acc + value._2.getSize } + // sum value size
+    (0 /: map.keys) {(acc, value) => acc + value.length}     // sum of keys
+    // dataStructure.size     // 1 byte is used for identifying the type
   }
 
-  protected def set(key:String, t:Class[_], v:Any):Unit = {
+  override def serialize(): Array[Byte] = {
+    var ab = Array[Byte]()
+    // get the contents
+
+    // KEY_STRING + 0 + SIZE_OF_BYTES + VALUE_AS_BYTE_ARRAY
+    map.foreach { case (key, value) =>
+      val byteArrayValue = value.toByteArray()
+      val id = value.getId()
+      ab ++= (stringToByteArray(key) ++ Array[Byte](id.toByte) ++ byteArrayValue)
+    }
+    ab
+  }
+
+  override def getSizes() = {
+    val serial = serialize()
+    val compressed = compress(serial)
+
+    (getTheorySize(), serial.length, compressed.length)
+  }
+
+  override def getSize() = getTheorySize()
+
+  def set(key:String, t:Class[_], v:Any):Unit = {
     val gv = t.newInstance.asInstanceOf[GrapevineType]
     gv.set(v)
     map(key) = gv
   }
 
-  protected def set(key:String, v:GrapevineType):Unit = {
+  def set(key:String, v:GrapevineType):Unit = {
     map(key) = v
   }
 
-//  def copy(gvSummary:GrapevineSummary) = {
-//    // copy all the dataStructure
-//    // copy dataStructure
-//    gMap.empty
-//
-//    gvSummary.gMap.keySet.foreach { k =>
-//      gMap(k) = gvSummary.gMap(k)
-//    }
-//  }
+  def contains(key:String) = {
+    map.contains(key)
+  }
+
+  override def get(key:String) = {
+    getValue(key) match {
+      case Some(p) => p
+      case None => null
+    }
+  }
 
   def getValue(key:String) : Option[Any] = {
     if (map.contains(key)) Some(map(key).get)
@@ -104,11 +129,11 @@ abstract class GrapevineSummary(jsonMap: Map[String, Any],
     sb.toString
   }
 
-  def toFileString() = {
-    val sb = new StringBuilder
-    map.foreach { case (key, gvData) =>
-      sb.append(s"${key} -> ${gvData.get}\n")
-    }
-    sb.toString
-  }
+//  def toFileString() = {
+//    val sb = new StringBuilder
+//    map.foreach { case (key, gvData) =>
+//      sb.append(s"${key} -> ${gvData.get}\n")
+//    }
+//    sb.toString
+//  }
 }

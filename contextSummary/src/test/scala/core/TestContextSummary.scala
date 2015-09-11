@@ -15,12 +15,11 @@ object C {
 }
 
 case class C(var m: Map[String, Any], var j:Int = 0, var jc:Int = 0) extends ContextSummary(m, j, jc) {
-  override def getSize(): (Int, Int, Int) = ???
-  override def getSerializedSize(): Int = ???
+  override def getSizes(): (Int, Int, Int) = ???
+  override def getSize(): Int = ???
   override def get(key: String): Any = ???
   override def setup(dict: Map[String, Any]): Unit = ???
   override def serialize(): Array[Byte] = ???
-  override def check(key: String): BottomType = ???
 }
 
 class TestContextSummary extends FunSuite with BeforeAndAfter {
@@ -28,6 +27,10 @@ class TestContextSummary extends FunSuite with BeforeAndAfter {
   before {
     val filePath = "contextSummary/src/test/scala/resource/unittest.json"
     c = C(filePath)
+  }
+
+  test("test getKeys") {
+    assert(c.getKeys().toSet == Set("date", "latitude", "message", "time"))
   }
 
   test("test map values") {

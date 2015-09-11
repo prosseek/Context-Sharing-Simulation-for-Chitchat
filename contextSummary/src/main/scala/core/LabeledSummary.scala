@@ -20,25 +20,7 @@ case class LabeledSummary(jsonMap: Map[String, Any],
                      jsonSize:Int,
                      jsonCompressedSize:Int) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
 
-  def getKeys(): List[String] = {
-    getMap().keySet.toList
-  }
 
-  // this is the size in bytes
-  def getTheorySize(): Int = {
-    (0 /: map) { (acc, value) => acc + value._2.getSize } + // sum value size
-    (0 /: map.keys) {(acc, value) => acc + value.length}     // sum of keys
-    // dataStructure.size     // 1 byte is used for identifying the type
-  }
-
-  override def getSize() = {
-    val serial = serialize()
-    val compressed = compress(serial)
-
-    (getTheorySize(), serial.length, compressed.length)
-  }
-
-  override def getSerializedSize() = getTheorySize()
 
 //  def getCompleteSize(): Int = {
 //    def log2(x : Double) = {
@@ -59,26 +41,13 @@ case class LabeledSummary(jsonMap: Map[String, Any],
       //throw new RuntimeException(s"No matching value for key ${key}")
   }
 
-  override def check(key: String): BottomType = {
-    if (getValue(key).isEmpty) Bottom // this is structural check to return Buttom
-    else NoError
-  }
-
-  override def serialize(): Array[Byte] = {
-    var ab = Array[Byte]()
-    // get the contents
-
-    // KEY_STRING + 0 + SIZE_OF_BYTES + VALUE_AS_BYTE_ARRAY
-    map.foreach { case (key, value) =>
-      val byteArrayValue = value.toByteArray()
-      val id = value.getId()
-      ab ++= (stringToByteArray(key) ++ Array[Byte](id.toByte) ++ byteArrayValue)
-    }
-    ab
-  }
+//  override def check(key: String): BottomType = {
+//    if (getValue(key).isEmpty) Bottom // this is structural check to return Buttom
+//    else NoError
+//  }
 
   override def toString(): String = {
-    s"""{"type":"l", "size":${getSerializedSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}"""
+    s"""{"type":"l", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}"""
 
   }
 }

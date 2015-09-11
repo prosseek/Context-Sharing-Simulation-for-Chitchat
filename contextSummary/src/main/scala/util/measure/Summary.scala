@@ -23,7 +23,7 @@ object Summary {
   def getSize(summary:GrapevineSummary, byteWidth:Int, complete:Boolean) = {
     val bfs = BloomierFilterSummary(summary.getMap)
     bfs.setup(m = -1, k = 3, q = byteWidth*8, complete=complete)
-    bfs.getSize()
+    bfs.getSizes()
 //    val serial = bfs.serialize()
 //    val compressed = CompressorHelper.compress(serial)
 //    (bfs.getSize, serial.size, compressed.size)
@@ -41,7 +41,7 @@ object Summary {
     val sizes = ArrayBuffer[Int]()
     (0 until count).foreach { c =>
       bfs.setup(m = -1, k = 3, q = byteWidth * 8, initialSeed = c, complete = complete)
-      sizes += bfs.getSize._1
+      sizes += bfs.getSizes._1
     }
     sizes.sum.toFloat / sizes.size
   }
@@ -69,7 +69,7 @@ object Summary {
     var listBFZipSerialNormal = ListBuffer[Float]()
     var listBFZipSerialComplte = ListBuffer[Float]()
 
-    val labeledSize = labeledSummary.getSize()
+    val labeledSize = labeledSummary.getSizes()
     listCount.foreach { i =>
       val sizeNormal = getSizeNormal(labeledSummary, i)
       val sizeComplete = getSizeComplete(labeledSummary, i)
@@ -87,13 +87,13 @@ object Summary {
 //      println(s"${summaryPath}/${getSizeNormalDetail(summary, i)}")
 //    }
     val totalSize = stop - start + 1
-    val listLabeled = List.fill(totalSize)(labeledSummary.getSize()._1)
-    val listSerialLabeled = List.fill(totalSize)(labeledSummary.getSize()._2)
-    val listZipSerialLabeled = List.fill(totalSize)(labeledSummary.getSize()._3)
+    val listLabeled = List.fill(totalSize)(labeledSummary.getSizes()._1)
+    val listSerialLabeled = List.fill(totalSize)(labeledSummary.getSizes()._2)
+    val listZipSerialLabeled = List.fill(totalSize)(labeledSummary.getSizes()._3)
 
-    val listComplete = List.fill(totalSize)(completeSummary.getSize()._1)
-    val listSerialComplete = List.fill(totalSize)(completeSummary.getSize()._2)
-    val listZipSerialComplete = List.fill(totalSize)(completeSummary.getSize()._3)
+    val listComplete = List.fill(totalSize)(completeSummary.getSizes()._1)
+    val listSerialComplete = List.fill(totalSize)(completeSummary.getSizes()._2)
+    val listZipSerialComplete = List.fill(totalSize)(completeSummary.getSizes()._3)
 
     Array[Array[AnyVal]](
       listCount.toArray,

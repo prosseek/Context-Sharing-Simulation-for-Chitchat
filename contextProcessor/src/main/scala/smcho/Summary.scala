@@ -12,8 +12,8 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
 
   private val labeledSummary = contextSummary.asInstanceOf[LabeledSummary]
   private val bloomierSummary = getBloomier(labeledSummary)
-  private val sizeLabeled = labeledSummary.getSerializedSize()
-  private var sizeBloomier = bloomierSummary.getSerializedSize()
+  private val sizeLabeled = labeledSummary.getSize()
+  private var sizeBloomier = bloomierSummary.getSize()
 
   private def getBloomier(labeledSummary: LabeledSummary) = {
     val bf = new BloomierFilterSummary
