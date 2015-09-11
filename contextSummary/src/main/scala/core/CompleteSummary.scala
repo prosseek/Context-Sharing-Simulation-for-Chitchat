@@ -22,7 +22,7 @@ case class CompleteSummary(jsonMap: Map[String, Any],
                       jsonSize:Int = 0,
                       jsonCompressedSize:Int = 0) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
 
-  override def rep() = ???
+  override def repr() = ???
 //  def maxBits(size:Int) = {
 //    math.ceil(log2(size)).toInt
 //  }

@@ -25,7 +25,10 @@ class TestLabeledSummary extends FunSuite with BeforeAndAfter {
 //  }
 
   test ("test toString") {
-    assert(t.toJsonString() == "{\"type\":\"l\", \"size\":80, \"jsonSize\":0, \"jsonCompSize\":0}")
-    assert(t2.toJsonString() == """{"type":"l", "size":52, "jsonSize":107, "jsonCompSize":85}""")
+    val expected = """{"type":"l", "size":80, "jsonSize":144, "jsonCompSize":117}"""
+    assert(t.repr() == expected)
+
+    val expected2 = """{"type":"l", "size":52, "jsonSize":105, "jsonCompSize":85}"""
+    assert(t2.repr() == expected2)
   }
 }

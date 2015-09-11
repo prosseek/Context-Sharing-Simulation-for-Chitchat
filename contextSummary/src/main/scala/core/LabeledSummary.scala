@@ -31,7 +31,7 @@ case class LabeledSummary(jsonMap: Map[String, Any],
 //    size1 + size2
 //  }
 
-  def toJsonString(): String = {
+  override def repr(): String = {
     s"""{"type":"l", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}}"""
   }
 }

@@ -132,7 +132,7 @@ class GrapevineSummary(jsonMap: Map[String, Any],
     setup(this._jsonMap)
   }
 
-  override def rep() = {
+  override def repr() = {
     val sb = new StringBuilder
     map.foreach { case (key, gvData) =>
       sb.append(s"${key} => ${gvData.get}: ${gvData.getTypeName}\n")

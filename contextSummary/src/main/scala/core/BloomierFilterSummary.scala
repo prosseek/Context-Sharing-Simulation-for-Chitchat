@@ -193,7 +193,7 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
    *
    * @return
    */
-  override def rep(): String = {
+  override def repr(): String = {
     s"""{"type":"b", "complete":${if (complete) 1 else 0}, "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
   }
 }

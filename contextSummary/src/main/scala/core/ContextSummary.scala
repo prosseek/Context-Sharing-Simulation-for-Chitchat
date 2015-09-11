@@ -68,6 +68,45 @@ object ContextSummary {
     val map = convertJsonMap(json)
     (map, jsonSize, jsonCompressedSize)
   }
+
+  def toString(map:Map[String, Any]) : String = {
+
+    def tupleToString(item:Any) = {
+      if (item.isInstanceOf[Tuple2[_,_]]) {
+        val t = item.asInstanceOf[Tuple2[_,_]]
+        s"[${t._1}, ${t._2}]"
+      }
+      else if (item.isInstanceOf[Tuple3[_,_,_]]) {
+        val t = item.asInstanceOf[Tuple3[_,_,_]]
+        s"[${t._1}, ${t._2}, ${t._3}]"
+      }
+      else if (item.isInstanceOf[Tuple4[_,_,_,_]]) {
+        val t = item.asInstanceOf[Tuple4[_,_,_,_]]
+        s"[${t._1}, ${t._2}, ${t._3}, ${t._4}]"
+      }
+      else s"${item}"
+    }
+
+    val res = new StringBuilder
+    res ++= "{\n"
+    map foreach {
+      case (key, value) => {
+        res ++= s"""  "${key}":"""
+        if (value.isInstanceOf[Tuple2[_,_]] || value.isInstanceOf[Tuple3[_,_,_]] || value.isInstanceOf[Tuple4[_,_,_,_]]) {
+          res ++= tupleToString(value)
+        }
+        else if (value.isInstanceOf[String]) {
+          res ++= s""""${value}""""
+        }
+        else {
+          res ++= s"${value}"
+        }
+        res ++= ",\n"
+      }
+    }
+    val leng = res.length
+    res.toString.substring(0, leng-2) + "\n}\n"
+  }
 }
 
 /**
@@ -80,7 +119,11 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   protected var _jsonSize =  jsonSize
   protected var _jsonCompressedSize = jsonCompressedSize
 
-  def rep() : String
+  if (jsonSize == 0) {
+    setup(jsonMap)
+  }
+
+  def repr() : String
 
   def getKeys(): List[String] = {
     _jsonMap.keySet.toList
@@ -126,8 +169,9 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
    */
   def setup(jsonMap:Map[String, Any]) = {
     this._jsonMap = jsonMap
-    this._jsonSize = 0
-    this._jsonCompressedSize = 0
+    val string = ContextSummary.toString(jsonMap)
+    this._jsonSize = string.length()
+    this._jsonCompressedSize = CompressorHelper.compress(ByteArrayTool.stringToByteArray(string)).length
   }
 
   def load(filePath: String): Unit = {
@@ -147,41 +191,6 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   def serialize(): Array[Byte]
 
   override def toString() : String = {
-
-    def tupleToString(item:Any) = {
-      if (item.isInstanceOf[Tuple2[_,_]]) {
-        val t = item.asInstanceOf[Tuple2[_,_]]
-        s"[${t._1}, ${t._2}]"
-      }
-      else if (item.isInstanceOf[Tuple3[_,_,_]]) {
-        val t = item.asInstanceOf[Tuple3[_,_,_]]
-        s"[${t._1}, ${t._2}, ${t._3}]"
-      }
-      else if (item.isInstanceOf[Tuple4[_,_,_,_]]) {
-        val t = item.asInstanceOf[Tuple4[_,_,_,_]]
-        s"[${t._1}, ${t._2}, ${t._3}, ${t._4}]"
-      }
-      else s"${item}"
-    }
-
-    val res = new StringBuilder
-    res ++= "{\n"
-    getJsonMap() foreach {
-      case (key, value) => {
-        res ++= s"""  "${key}":"""
-        if (value.isInstanceOf[Tuple2[_,_]] || value.isInstanceOf[Tuple3[_,_,_]] || value.isInstanceOf[Tuple4[_,_,_,_]]) {
-          res ++= tupleToString(value)
-        }
-        else if (value.isInstanceOf[String]) {
-          res ++= s""""${value}""""
-        }
-        else {
-          res ++= s"${value}"
-        }
-        res ++= ",\n"
-      }
-    }
-    val leng = res.length
-    res.toString.substring(0, leng-2) + "\n}\n"
+    ContextSummary.toString(getJsonMap())
   }
 }
