@@ -22,7 +22,9 @@ case class CompleteSummary(jsonMap: Map[String, Any],
                       jsonSize:Int = 0,
                       jsonCompressedSize:Int = 0) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
 
-  override def repr() = ???
+  override def repr(): String = {
+    s"""{"type":"c", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}}"""
+  }
 //  def maxBits(size:Int) = {
 //    math.ceil(log2(size)).toInt
 //  }
@@ -81,8 +83,4 @@ case class CompleteSummary(jsonMap: Map[String, Any],
   }
 
   override def getSize(): Int = serialize().size
-
-  override def toString(): String = {
-    s"""{"type":"c", "size":${getSize()}}"""
-  }
 }

@@ -1,5 +1,9 @@
 package core
 
+import core.BloomierFilterSummary
+
+import scala.reflect.macros.Context
+
 import java.io.File
 
 import grapevineType.{GrapevineType, BottomType}
@@ -14,6 +18,12 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
   var t: BloomierFilterSummary = _
   var t2: BloomierFilterSummary = _
 
+  //  {
+  //    "latitude": [10, 10, 10, 10],
+  //    "message": "Hello, world",
+  //    "time": [11, 11],
+  //    "date":[2014, 10, 1]
+  //  }
   val filePath = "contextSummary/src/test/scala/resource/unittest.json"
   val m = Map[String, Any]("number of apples"->10, "age of kids"->4, "speed of a car"->14, "latitude"->(32, 22, 44, 33), "date"->(2014,10,1), "time"->(11,11))
 
@@ -22,6 +32,28 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     t2 = BloomierFilterSummary(filePath)
   }
 
+  test ("test initM") {
+    val bf = BloomierFilterSummary(filePath)
+    bf.setup(m = 10, k = 3, q = 8*5)
+    assert(bf.getInitM() == 10)
+    assert(bf.getM() == 10)
+
+    bf.setup(m = 0, k = 3, q = 8*5)
+    assert(bf.getInitN() == 4) // 4 items
+    assert(bf.getN() == 6) // folded to make 6 items
+    assert(bf.getInitM() == 6) // m = 0 -> 4*1.5 (automatic change)
+    assert(bf.getM() == 7) // ultimate change
+
+    assert(bf.get("time") == (11,11))
+  }
+
+  test ("test create from Labeled") {
+    val l = LabeledSummary(filePath)
+    val bf = BloomierFilterSummary(l)
+    bf.setup(m = 10, k = 3, q = 8*5)
+    assert(l.getSize() == 52)
+    assert(bf.getSize() == 32)
+  }
   test ("Size test") {
     // map1 size
     t.setup(m = 8, k = 3, q = 8*4)
@@ -101,6 +133,7 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     val ls = LabeledSummary(getMap("Hello, world"))
     ls.setup(jsonMap = getMap(message))
     println(s"Labeled - ${ls.getSizes}")
+    println(s"Output from ${new Exception().getStackTrace.head.getFileName}")
   }
 
   test ("test size from Json") {
