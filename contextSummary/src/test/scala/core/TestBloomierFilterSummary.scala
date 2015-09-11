@@ -160,4 +160,9 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     assert(t.get("level of a") == mp("level of a"))
   }
 
+  test ("test rep") {
+    t.setup(m=10, k=3, q=4*4)
+    val expect = """{"type":"b", "complete":0, "size":16, "jsonSize":0, "jsonCompSize":0, "n":7, "m":10, "k":3, "q":16}"""
+    assert(t.rep() == expect)
+  }
 }
