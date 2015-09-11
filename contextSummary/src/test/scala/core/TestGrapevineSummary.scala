@@ -101,4 +101,9 @@ class TestGrapevineSummary extends FunSuite with BeforeAndAfter  {
     assert(t.getValue("C").get == m("C"))
     assert(t.getValue("D").isEmpty)
   }
+
+  test("test load") {
+    t.load("contextSummary/src/test/scala/resource/sample_context.json")
+    assert(t.get("abc") == "Hello, world")
+  }
 }

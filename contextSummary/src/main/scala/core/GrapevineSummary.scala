@@ -29,7 +29,7 @@ object GrapevineSummary {
 class GrapevineSummary(jsonMap: Map[String, Any],
                                 jsonSize:Int,
                                 jsonCompressedSize:Int) extends ContextSummary(jsonMap, jsonSize, jsonCompressedSize) {
-  val map = MMap[String, GrapevineType]()
+  var map : MMap[String, GrapevineType] = _
   setup(jsonMap)
 
   // this is the size in bytes
@@ -95,10 +95,16 @@ class GrapevineSummary(jsonMap: Map[String, Any],
    * 1. check if key has Grapevine type info
    * 2. check if value is integer/floating point number
    *
-   * @param dict
+   * @param jsonMap
    */
-  override def setup(dict: Map[String, Any]): Unit = {
-    dict.foreach { case (key, v) =>
+  override def setup(jsonMap: Map[String, Any]): Unit = {
+
+    // setup this as
+    super.setup(jsonMap)
+    // refresh the map
+    map = MMap[String, GrapevineType]()
+
+    jsonMap.foreach { case (key, v) =>
       if (v == null) {
         // do nothing when the input value is null
       }
@@ -121,19 +127,16 @@ class GrapevineSummary(jsonMap: Map[String, Any],
     }
   }
 
-  override def toString() = {
+  override def load(filePath: String): Unit = {
+    super.load(filePath)
+    setup(this._jsonMap)
+  }
+
+  override def rep() = {
     val sb = new StringBuilder
     map.foreach { case (key, gvData) =>
-        sb.append(s"${key} => ${gvData.get}: ${gvData.getTypeName}\n")
+      sb.append(s"${key} => ${gvData.get}: ${gvData.getTypeName}\n")
     }
     sb.toString
   }
-
-//  def toFileString() = {
-//    val sb = new StringBuilder
-//    map.foreach { case (key, gvData) =>
-//      sb.append(s"${key} -> ${gvData.get}\n")
-//    }
-//    sb.toString
-//  }
 }

@@ -20,6 +20,8 @@ case class C(var m: Map[String, Any], var j:Int = 0, var jc:Int = 0) extends Con
   override def get(key: String): Any = ???
   override def setup(dict: Map[String, Any]): Unit = ???
   override def serialize(): Array[Byte] = ???
+  override def contains(key: String): Boolean = ???
+  override def rep(): String = ???
 }
 
 class TestContextSummary extends FunSuite with BeforeAndAfter {

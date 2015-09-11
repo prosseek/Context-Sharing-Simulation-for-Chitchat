@@ -48,20 +48,6 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     }.reduce { _ ++ _}
   }
 
-  //  def setup(json:String, m:Int, k:Int, q:Int): Unit = {
-//    setup(json, m, k, q, 20, 0, false)
-//  }
-
-//  def setup(jsonFilePath:String, m:Int, k:Int, q:Int, maxTry:Int, initialSeed:Int, complete:Boolean): Unit = {
-//
-//    val (x,y,z) = ContextSummary.loadJsonAll(jsonFilePath)
-//
-//    this.jsonMap = x; this.jsonSize = y; this.jsonCompressedSize = z
-//
-//    val jsonMap: Map[String, GrapevineType] = this.jsonMap.asInstanceOf[Map[String, GrapevineType]]
-//    setup(jsonMap, m, k, q, maxTry, initialSeed, complete)
-//  }
-
   def setup(m:Int, k:Int, q:Int, maxTry:Int = 20, initialSeed:Int = 0, complete:Boolean = false): Unit = {
     this.initM = m
     this.k = k
@@ -73,6 +59,10 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     byteArrayBloomierFilter = new ByteArrayBloomierFilter(map = baMap, initialM = m, k = k, q = q, initialSeed = initialSeed, maxTry = maxTry, complete = complete)
   }
 
+  def setup(jsonMap: Map[String, Any], m:Int, k:Int, q:Int): Unit = {
+    super.setup(jsonMap)
+    this.setup(m,k,q)
+  }
   /**
    * Returns the size of the summary
    *
@@ -125,15 +115,22 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     // [2014/08/21] bug
     // It should call the method, not the value
     if (check(key) == NoError) instance.get()
-    else None
+    else null
   }
 
-  def _get(key: String): Any = {
-    instance.get()
-  }
+//  def instanceGet(key: String): Any = {
+//    instance.get()
+//  }
 
   def check(key:String): BottomType = {
     check(key, useRelation = false)
+  }
+
+  override def contains(key:String) = {
+    check(key, useRelation = false) match {
+      case NoError => true
+      case _ => false
+    }
   }
 
   /**
@@ -169,8 +166,11 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
    */
   override def load(filePath:String) :Unit = {
     super.load(filePath) // fill in the dataStructure
-    val baMap = grapevineToByteArrayMap(super.getMap, Util.getByteSize(q))
-    byteArrayBloomierFilter = new ByteArrayBloomierFilter(map = baMap, initialM = this.initM, k = k, q = q, initialSeed = 0, maxTry = maxTry, complete = complete)
+  }
+
+  def load(filePath:String, m:Int, k:Int, q:Int) :Unit = {
+    load(filePath)
+    setup(m, k, q)
   }
 
   /* NOT FINISHED */
@@ -193,7 +193,7 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
    *
    * @return
    */
-  override def toString(): String = {
+  override def rep(): String = {
     s"""{"type":"b", "complete":${if (complete) 1 else 0}, "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
   }
 }
