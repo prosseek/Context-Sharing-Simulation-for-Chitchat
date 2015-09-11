@@ -3,7 +3,7 @@ package core
 import bloomierFilter.ByteArrayBloomierFilter
 import grapevineType.BottomType._
 import grapevineType._
-import util.conversion.{Joiner, Util}
+import util.conversion.{ByteArrayTool, Splitter, Joiner, Util}
 
 import net.liftweb.json._
 
@@ -32,7 +32,23 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
   var complete:Boolean = _
   var initM:Int = _
 
-//  def setup(json:String, m:Int, k:Int, q:Int): Unit = {
+
+  protected def grapevineToByteArrayMap(inputMap:Map[String, GrapevineType], goalByteSize:Int)  = {
+    val splitter = new Splitter
+    val tableWidth = goalByteSize
+    assert(inputMap.size > 0, "Null input map")
+    inputMap.map { case (key, value) =>
+    {
+      var ba = value.toByteArray()
+      if (ba.size < tableWidth) {
+        ba = ByteArrayTool.adjust(value = ba, originalSize = ba.size, goalSize = tableWidth)
+      }
+      splitter.split(key, ba, goalByteSize)
+    }
+    }.reduce { _ ++ _}
+  }
+
+  //  def setup(json:String, m:Int, k:Int, q:Int): Unit = {
 //    setup(json, m, k, q, 20, 0, false)
 //  }
 
@@ -62,7 +78,7 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
    *
    * @return
    */
-  override def getSize(): (Int, Int, Int) = {
+  override def getSizes(): (Int, Int, Int) = {
     val s = byteArrayBloomierFilter.serialize()
     val z = util.compression.CompressorHelper.compress(s)
     (byteArrayBloomierFilter.getSize(), s.size, z.size)
@@ -116,7 +132,7 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     instance.get()
   }
 
-  override def check(key:String): BottomType = {
+  def check(key:String): BottomType = {
     check(key, useRelation = false)
   }
 
@@ -171,13 +187,13 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
    * todo:: the serialized size is not correct as it is missing the header size.
    * @return
    */
-  override def getSerializedSize(): Int = getSize()._1
+  override def getSize(): Int = getSizes()._1
 
   /**
    *
    * @return
    */
   override def toString(): String = {
-    s"""{"type":"b", "complete":${if (complete) 1 else 0}, "size":${getSerializedSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
+    s"""{"type":"b", "complete":${if (complete) 1 else 0}, "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}, "n":${getN()}, "m":${getM()}, "k":${getK()}, "q":${getQ()}}"""
   }
 }

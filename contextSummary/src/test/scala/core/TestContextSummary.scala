@@ -15,19 +15,25 @@ object C {
 }
 
 case class C(var m: Map[String, Any], var j:Int = 0, var jc:Int = 0) extends ContextSummary(m, j, jc) {
-  override def getSize(): (Int, Int, Int) = ???
-  override def getSerializedSize(): Int = ???
+  override def getSizes(): (Int, Int, Int) = ???
+  override def getSize(): Int = ???
   override def get(key: String): Any = ???
   override def setup(dict: Map[String, Any]): Unit = ???
   override def serialize(): Array[Byte] = ???
-  override def check(key: String): BottomType = ???
 }
 
 class TestContextSummary extends FunSuite with BeforeAndAfter {
+  val m = Map[String, Any]("number of apples"->10, "age of kids"->4, "speed of a car"->14, "latitude"->(32, 22, 44, 33), "date"->(2014,10,1), "time"->(11,11))
   var c: C = _
+  var c2: C = _
   before {
+    c = C(m)
     val filePath = "contextSummary/src/test/scala/resource/unittest.json"
-    c = C(filePath)
+    c2 = C(filePath)
+  }
+
+  test("test getKeys") {
+    assert(c.getKeys().toSet == Set("date", "latitude", "message", "time"))
   }
 
   test("test map values") {
@@ -42,6 +48,11 @@ class TestContextSummary extends FunSuite with BeforeAndAfter {
     assert(m.get("message").get == "Hello, world")
     assert(m.get("time").get == (11,11))
     assert(m.get("date").get == (2014,10,1))
+  }
+
+  test("test size") {
+    assert(c.getJsonSize() == 0)
+    assert(c2.getJsonSize() == 107)
   }
 
   test("test Load") {

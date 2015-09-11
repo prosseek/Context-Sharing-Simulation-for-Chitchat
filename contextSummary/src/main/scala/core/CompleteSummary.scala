@@ -31,7 +31,7 @@ case class CompleteSummary(jsonMap: Map[String, Any],
   }
 
   // This should be the bit size, not byte
-  def getTheorySize(): Int = {
+  override def getTheorySize(): Int = {
     val size1 = (0 /: map) { (acc, value) => acc + value._2.getSize }
     //val size2 = Util.getByteSizeFromSize(math.ceil(dataStructure.size * log2(dataStructure.size.toDouble)).toInt)
     val size2 = Util.getByteSizeFromSize(map.size)
@@ -39,7 +39,7 @@ case class CompleteSummary(jsonMap: Map[String, Any],
     size1 + size2
   }
 
-  override def getSize() = {
+  override def getSizes() = {
     val serial = serialize()
     val compressed = compress(serial)
 
@@ -53,10 +53,10 @@ case class CompleteSummary(jsonMap: Map[String, Any],
     else None
   }
 
-  override def check(key: String): BottomType = {
-    if (getValue(key).isEmpty) Bottom // this is structural check to return Buttom
-    else NoError
-  }
+//  def check(key: String): BottomType = {
+//    if (getValue(key).isEmpty) Bottom // this is structural check to return Buttom
+//    else NoError
+//  }
 
   override def serialize(): Array[Byte] = {
 
@@ -79,9 +79,9 @@ case class CompleteSummary(jsonMap: Map[String, Any],
     return sizeByteArray ++ bitSetToByteArray(bitSet, goalBitSetSize) ++ ab
   }
 
-  override def getSerializedSize(): Int = serialize().size
+  override def getSize(): Int = serialize().size
 
   override def toString(): String = {
-    s"""{"type":"c", "size":${getSerializedSize()}}"""
+    s"""{"type":"c", "size":${getSize()}}"""
   }
 }

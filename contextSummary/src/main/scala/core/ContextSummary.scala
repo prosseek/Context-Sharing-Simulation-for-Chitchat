@@ -80,6 +80,10 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   protected var _jsonSize =  jsonSize
   protected var _jsonCompressedSize = jsonCompressedSize
 
+  def getKeys(): List[String] = {
+    _jsonMap.keySet.toList
+  }
+
   def getJsonSize() = {
     this._jsonSize
   }
@@ -91,11 +95,11 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   }
   /**
    * Returns the size of the summary
-   *
+   * (getTheorySize(), serial.length, compressed.length)
    * @return
    */
-  def getSize() : (Int, Int, Int)
-  def getSerializedSize() : Int
+  def getSizes() : (Int, Int, Int)
+  def getSize() : Int
 
   /**
    * Returns the value from the input key
@@ -106,7 +110,7 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
    */
   def get(key:String): Any
 
-  def check(key:String): BottomType
+  //def check(key:String): BottomType
 
   /**
    * create a context summary from dictionary.
