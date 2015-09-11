@@ -80,6 +80,8 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   protected var _jsonSize =  jsonSize
   protected var _jsonCompressedSize = jsonCompressedSize
 
+  def rep() : String
+
   def getKeys(): List[String] = {
     _jsonMap.keySet.toList
   }
@@ -101,6 +103,8 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
   def getSizes() : (Int, Int, Int)
   def getSize() : Int
 
+  def contains(key:String) : Boolean
+
   /**
    * Returns the value from the input key
    * The returned value can be null, so Option type is used.
@@ -118,9 +122,13 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
    * wholeDict is used for complete dictionary
    *
    *
-   * @param dict
+   * @param jsonMap
    */
-  def setup(dict:Map[String, Any])
+  def setup(jsonMap:Map[String, Any]) = {
+    this._jsonMap = jsonMap
+    this._jsonSize = 0
+    this._jsonCompressedSize = 0
+  }
 
   def load(filePath: String): Unit = {
     val (x,y,z) = ContextSummary.loadJsonAll(filePath)
@@ -158,7 +166,7 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
 
     val res = new StringBuilder
     res ++= "{\n"
-    this.jsonMap foreach {
+    getJsonMap() foreach {
       case (key, value) => {
         res ++= s"""  "${key}":"""
         if (value.isInstanceOf[Tuple2[_,_]] || value.isInstanceOf[Tuple3[_,_,_]] || value.isInstanceOf[Tuple4[_,_,_,_]]) {
