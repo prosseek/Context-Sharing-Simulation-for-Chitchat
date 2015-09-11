@@ -1,13 +1,24 @@
 package core
 
 import grapevineType.BottomType._
+import grapevineType.GrapevineType
 import util.conversion.Util
 import util.conversion.ByteArrayTool._
 import util.compression.CompressorHelper._
 /**
  * Created by smcho on 8/10/14.
  */
-class LabeledSummary extends GrapevineSummary {
+
+object LabeledSummary {
+  def apply(t: Map[String, Any]) : LabeledSummary =
+    new LabeledSummary(t, 0, 0)
+  def apply(t: (Map[String, Any], Int, Int)) : LabeledSummary  = new LabeledSummary(t._1, t._2, t._3)
+  def apply(filePath:String) : GrapevineSummary = LabeledSummary(ContextSummary.loadJsonAll(filePath))
+}
+
+case class LabeledSummary(jsonMap: Map[String, Any],
+                     jsonSize:Int,
+                     jsonCompressedSize:Int) extends GrapevineSummary(jsonMap, jsonSize, jsonCompressedSize) {
 
   def getKeys(): List[String] = {
     getMap().keySet.toList
@@ -15,8 +26,8 @@ class LabeledSummary extends GrapevineSummary {
 
   // this is the size in bytes
   def getTheorySize(): Int = {
-    (0 /: dataStructure) { (acc, value) => acc + value._2.getSize } + // sum value size
-    (0 /: dataStructure.keys) {(acc, value) => acc + value.length}     // sum of keys
+    (0 /: map) { (acc, value) => acc + value._2.getSize } + // sum value size
+    (0 /: map.keys) {(acc, value) => acc + value.length}     // sum of keys
     // dataStructure.size     // 1 byte is used for identifying the type
   }
 
@@ -58,7 +69,7 @@ class LabeledSummary extends GrapevineSummary {
     // get the contents
 
     // KEY_STRING + 0 + SIZE_OF_BYTES + VALUE_AS_BYTE_ARRAY
-    dataStructure.foreach { case (key, value) =>
+    map.foreach { case (key, value) =>
       val byteArrayValue = value.toByteArray()
       val id = value.getId()
       ab ++= (stringToByteArray(key) ++ Array[Byte](id.toByte) ++ byteArrayValue)
@@ -66,7 +77,8 @@ class LabeledSummary extends GrapevineSummary {
     ab
   }
 
-  override def toJsonString(): String = {
+  override def toString(): String = {
+    s"""{"type":"l", "size":${getSerializedSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}"""
 
   }
 }

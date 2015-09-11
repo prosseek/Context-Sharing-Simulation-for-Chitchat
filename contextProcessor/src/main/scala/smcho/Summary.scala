@@ -18,7 +18,7 @@ class Summary(val contextSummary: ContextSummary, var name:String, var summaryTy
   private def getBloomier(labeledSummary: LabeledSummary) = {
     val bf = new BloomierFilterSummary
     val m : Int = math.ceil(labeledSummary.getKeys().length * 1.5).toInt
-    bf.create(labeledSummary.getMap(), m = m, k = 3, q = 8 * 2)
+    bf.setup(labeledSummary.getMap(), m = m, k = 3, q = 8 * 2)
     bf
   }
 
@@ -64,7 +64,10 @@ object Summary {
       }
     }
 
-    Summary(contextSummary = uFile.fileToSummary(filePath)(0), name = key)
+    val labeled = new LabeledSummary()
+    labeled.load(filePath)
+
+    Summary(contextSummary = labeled, name = key)
   }
 
   def loadContexts(directory: String) = {
@@ -82,5 +85,9 @@ object Summary {
       summaries(key) = Summary(contextSummary = uFile.fileToSummary(fileName)(0), name = key)
     }
     summaries
+  }
+
+  def toJsonString() = {
+    """"""
   }
 }
