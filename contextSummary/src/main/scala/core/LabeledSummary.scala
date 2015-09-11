@@ -13,7 +13,7 @@ object LabeledSummary {
   def apply(t: Map[String, Any]) : LabeledSummary =
     new LabeledSummary(t, 0, 0)
   def apply(t: (Map[String, Any], Int, Int)) : LabeledSummary  = new LabeledSummary(t._1, t._2, t._3)
-  def apply(filePath:String) : GrapevineSummary = LabeledSummary(ContextSummary.loadJsonAll(filePath))
+  def apply(filePath:String) : LabeledSummary = LabeledSummary(ContextSummary.loadJsonAll(filePath))
 }
 
 case class LabeledSummary(jsonMap: Map[String, Any],
@@ -31,7 +31,7 @@ case class LabeledSummary(jsonMap: Map[String, Any],
 //    size1 + size2
 //  }
 
-  override def toString(): String = {
-    s"""{"type":"l", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}"""
+  def toJsonString(): String = {
+    s"""{"type":"l", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}}"""
   }
 }
