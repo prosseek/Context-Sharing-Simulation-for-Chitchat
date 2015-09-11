@@ -4,6 +4,7 @@ project/
 target/
 /.idea/workspace.xml
 .DS_Store
+*unittest_test_result.*
 
 *.class
 

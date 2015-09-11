@@ -153,20 +153,23 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
     }
 
     val res = new StringBuilder
-    res ++= "{\\n"
+    res ++= "{\n"
     this.jsonMap foreach {
       case (key, value) => {
-        res ++= s"${key}:"
+        res ++= s"""  "${key}":"""
         if (value.isInstanceOf[Tuple2[_,_]] || value.isInstanceOf[Tuple3[_,_,_]] || value.isInstanceOf[Tuple4[_,_,_,_]]) {
           res ++= tupleToString(value)
+        }
+        else if (value.isInstanceOf[String]) {
+          res ++= s""""${value}""""
         }
         else {
           res ++= s"${value}"
         }
-        res ++= ",\\n"
+        res ++= ",\n"
       }
     }
     val leng = res.length
-    res.toString.substring(0, leng-2) + "\\n}\\n"
+    res.toString.substring(0, leng-2) + "\n}\n"
   }
 }
