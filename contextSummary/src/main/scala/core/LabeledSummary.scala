@@ -31,23 +31,7 @@ case class LabeledSummary(jsonMap: Map[String, Any],
 //    size1 + size2
 //  }
 
-  override def get(key: String): Any = {
-    val r = getValue(key)
-    if (r.nonEmpty)
-    //MMap[String, Tuple2[GrapevineType, Object]]()
-      r.get
-    else
-      None
-      //throw new RuntimeException(s"No matching value for key ${key}")
-  }
-
-//  override def check(key: String): BottomType = {
-//    if (getValue(key).isEmpty) Bottom // this is structural check to return Buttom
-//    else NoError
-//  }
-
   override def toString(): String = {
     s"""{"type":"l", "size":${getSize()}, "jsonSize":${getJsonSize()}, "jsonCompSize":${getJsonCompressedSize()}"""
-
   }
 }

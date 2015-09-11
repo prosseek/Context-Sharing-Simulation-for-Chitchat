@@ -36,6 +36,10 @@ class TestContextSummary extends FunSuite with BeforeAndAfter {
     assert(c.getKeys().toSet == Set("date", "latitude", "message", "time"))
   }
 
+  test("test getKeys") {
+    assert(c.getKeys().toSet == Set("date", "latitude", "message", "time"))
+  }
+
   test("test map values") {
     //    {
     //      "latitude": [10, 10, 10, 10],

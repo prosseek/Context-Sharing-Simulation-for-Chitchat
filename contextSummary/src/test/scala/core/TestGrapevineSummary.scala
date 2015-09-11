@@ -20,6 +20,10 @@ class TestGrapevineSummary extends FunSuite with BeforeAndAfter  {
     t2 = GrapevineSummary(filePath)
   }
 
+  test("test serialize") {
+    assert(t2.serialize().length == 52)
+  }
+
   test ("test toString") {
     val result =
       """date => (2014,10,1): DateType
