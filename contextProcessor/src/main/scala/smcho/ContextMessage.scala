@@ -13,36 +13,21 @@ import java.nio.file.{Files, Paths}
   */
 
 class ContextMessage(var host1: Int,
-                          var host2: Int,
-                          var size:Int,
-                          var time: Double,
-                          var content: String) extends ContentParser {
+                     var host2: Int,
+                     var size:Int,
+                     var time: Double,
+                     var nameTypes: String) extends ContentParser {
 
-  // <editor-fold desc="Get/Set">
+  override def toString() : String = s"[${host1}->${host2}/${size}/${time}/${nameTypes}]"
+  def repr() = s"""{"host1":${host1}, "host2":${host2}, "size":${size}, "time":${time}, "nameTypes":${nameTypes}}"""
 
-//  def setHost1(host: Int) = this.host1 = host
-//  def setHost2(host: Int) = this.host2 = host
-//  def setSize(size: Int) = this.size = size
-//  def setTime(time: Double) = this.time = time
-//  def setContent(content:String) = this.content = content
-//
-//  def getHost1() = this.host1
-//  def getHost2() = this.host2
-//  def getSize() = this.size
-//  def getTime() = this.time
-//  def getContent() = this.content
-
-  // </editor-fold>
-
-  override def toString() : String = makeString()
-  def makeString() =  s"[${host1}->${host2}/${size}/${time}/${content}]"
-
-  def parse() : Array[(String, String, Int)] = parse(this.content)
+  def parse() : Array[(String, String, Int)] = parse(this.nameTypes)
 }
 
-object ContextMessage extends ContentParser  {
+object ContextMessage extends ContentParser {
 
-  type cmTuple = (Int, Int, Int, Double, (String, String, Int))
+  def summariesToContent(m:Iterable[Summary]) = ???
+  //type cmTuple = (Int, Int, Int, Double, (String, String, Int))
 
   // <editor-fold desc="Constructors">
 

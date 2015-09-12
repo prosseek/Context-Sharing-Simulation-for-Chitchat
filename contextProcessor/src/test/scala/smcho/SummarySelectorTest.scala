@@ -5,7 +5,7 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
 /**
  * Created by smcho on 8/12/15.
  */
-class ContextMessageTest extends FunSuite with BeforeAndAfterEach {
+class SummarySelectorTest extends FunSuite with BeforeAndAfterEach {
 
   val jsonDir = "contextProcessor/src/test/resources"
   var idstring: String = _
@@ -18,7 +18,7 @@ class ContextMessageTest extends FunSuite with BeforeAndAfterEach {
   test("Create ContextMessage") {
     val id = "Hello"
     val d = ContextMessage(host1 = 0, host2 = 3, size = 100, time = 10.0, content=id)
-   // assert(d.content == id)
+    //assert(d.content == id)
     assert(d.size == 100)
     assert(d.host1 == 0)
     assert(d.host2 == 3)
@@ -28,7 +28,7 @@ class ContextMessageTest extends FunSuite with BeforeAndAfterEach {
   test("Simpler ContextMessage creating") {
     val id = "Hello"
     val d = ContextMessage(id)
-   // assert(d.content == id)
+    //assert(d.content == id)
     assert(d.size == 0)
     assert(d.host1 == 0)
     assert(d.host2 == 0)

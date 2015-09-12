@@ -54,30 +54,30 @@ trait ContentParser {
 
 
   def nameTypesToSummaries(names: Iterable[String], summaryPool: mm[String, Summary]) = {
-
-    names flatMap { name =>
-      val n = name.dropRight(1)
-      var t = name.takeRight(1)
-      if (!(t == "b" || t == "l" || t == "j")) t = "b"
-
-      if (summaryPool.contains(n)) {
-        val r = summaryPool.get(n).get.copy()
-        r.summaryType = t
-        Some(r)
-      }
-      else
-        None
-    }
+  null
+//    names flatMap { name =>
+//      val n = name.dropRight(1)
+//      var t = name.takeRight(1)
+//      if (!(t == "b" || t == "l" || t == "j")) t = "b"
+//
+//      if (summaryPool.contains(n)) {
+//        val r = summaryPool.get(n).get.copy()
+//        r.defaultSummaryType = t
+//        Some(r)
+//      }
+//      else
+//        None
+//    }
   }
 
-  def summariesToContent(summaries: Iterable[Summary]) : String = {
-    def makeSummaryName(s : Summary) = {
-      s.name + "|" + s.summaryType +  "|" + s.size
-    }
-    ("" /: summaries) { (acc, summary) => acc + (if (acc != "") ":" else "") + makeSummaryName(summary) }
-  }
-
-  def summariesToContent(summaries: mm[String, Summary]) : String = summariesToContent(summaries.values)
+//  def summariesToContent(summaries: Iterable[Summary]) : String = {
+//    def makeSummaryName(s : Summary) = {
+//      s.name + "|" + s.defaultSummaryType +  "|" + s.size
+//    }
+//    ("" /: summaries) { (acc, summary) => acc + (if (acc != "") ":" else "") + makeSummaryName(summary) }
+//  }
+//
+//  def summariesToContent(summaries: mm[String, Summary]) : String = summariesToContent(summaries.values)
 
 
   // </editor-fold>
@@ -115,7 +115,7 @@ trait ContentParser {
 
   // </editor-fold>
   def getTotalTime(summaries: Iterable[Summary]) = {
-    (0 /: summaries) { (acc, v) => acc + v.size}
+//    (0 /: summaries) { (acc, v) => acc + v.size}
   }
 
 }

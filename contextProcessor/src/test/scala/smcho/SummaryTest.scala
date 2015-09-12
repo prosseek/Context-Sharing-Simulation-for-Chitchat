@@ -11,7 +11,7 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   var t : Summary = _
 
   override def beforeEach(): Unit = {
-    t = new Summary(name="hello", filePath=jsonFilePath, summaryType = "b")
+    t = new Summary(name="hello", filePath=jsonFilePath)
   }
 
   test("test name") {
@@ -23,12 +23,6 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   test("test filePath") {
     assert(t.filePath == jsonFilePath)
     assert(t.confFilePath == confFilePath)
-  }
-
-  test("test summaryType") {
-    assert(t.summaryType == "b")
-    t.summaryType = "l"
-    assert(t.summaryType == "l")
   }
 
   test("test getConfigurationFilePath") {
@@ -47,20 +41,14 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   test("test sizes") {
     val expected = (105,52,29)
     assert(t.sizes == expected)
-    t.summaryType = "b"
-    assert(t.size == expected._3)
-    t.summaryType = "l"
-    assert(t.size == expected._2)
-    t.summaryType = "j"
-    assert(t.size == expected._1)
   }
 
   test("toString test") {
-    assert(t.toString() == "hello|b|29")
+    assert(t.toString() == "hello|[105,52,29]")
   }
 
   test("test repr") {
-    val expected = """{"name":"hello", "summaryType":"b", "sizes":[105,52,29], "filePath":"contextProcessor/src/test/resources/unittest.json"}"""
+    val expected = """{"name":"hello", "sizes":[105,52,29], "filePath":"contextProcessor/src/test/resources/unittest.json"}"""
     assert(t.repr == expected)
   }
 
@@ -77,10 +65,10 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test loadContext") {
-    var s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "unittest", othername = "default", summaryType = "b")
-    assert(s.toString() == "unittest|b|29")
-    s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "a", othername = "unittest", summaryType = "b")
-    assert(s.toString() == "a|b|29")
+    var s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "unittest", othername = "default")
+    assert(s.toString() == "unittest|[105,52,29]")
+    s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "a", othername = "unittest")
+    assert(s.toString() == "a|[105,52,29]")
     assert(s.filePath.endsWith("unittest.json"))
   }
 

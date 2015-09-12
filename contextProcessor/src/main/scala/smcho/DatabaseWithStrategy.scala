@@ -79,7 +79,7 @@ object DatabaseWithStrategy {
             }
           }
           // defaultGroupFilePath now contains the file path of default file
-          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath, "b")
+          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath)
           val contextMessage = ContextMessage(s.toString())
           val host = i
           storage.add(host, contextMessage)
@@ -99,10 +99,11 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
   // returns ContextMassage to share for host
   override def get(host: Int) : ContextMessage = {
     val summaries = shareLogic.get(host, storage)
-    val content = ContextMessage.summariesToContent(summaries)
-    val c= ContextMessage(content)
-    c.size = ContextMessage.getTotalTime(summaries)
-    c
+//    val content = ContextMessage.summariesToContent(summaries)
+//    val c= ContextMessage(content)
+//    c.size = ContextMessage.getTotalTime(summaries)
+//    c
+    null
   }
 
   // Given a directory, load all the contexts into database

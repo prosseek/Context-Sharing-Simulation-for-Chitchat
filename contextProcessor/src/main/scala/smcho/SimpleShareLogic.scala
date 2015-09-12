@@ -10,16 +10,17 @@ class SimpleShareLogic extends ShareLogic {
     //val contexts = getHistory(host)
 
     // 1. get the whole tuple that it contains
-    val tuples = storage.getTuple(host)
-    // maybe I can do some analysis based on the information
-    val res = tuples flatMap  { t =>
-      t match {
-        case (host1, host2, totalSize, time, (name, summaryType, size)) => {
-          Some(storage.getSummary(name))
-        }
-        case _ => None
-      }
-    }
-    res.toSet
+//    val tuples = storage.getTuple(host)
+//    // maybe I can do some analysis based on the information
+//    val res = tuples flatMap  { t =>
+//      t match {
+//        case (host1, host2, totalSize, time, (name, summaryType, size)) => {
+//          Some(storage.getSummary(name))
+//        }
+//        case _ => None
+//      }
+//    }
+//    res.toSet
+    null
   }
 }

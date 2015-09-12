@@ -11,7 +11,7 @@ import java.io.FileInputStream
 import java.util.Properties
 import scala.collection.JavaConversions._
 
-class Summary(var name:String, val filePath:String, var summaryType: String) {
+class Summary(var name:String, val filePath:String) {
 
   val confFilePath = Summary.getConfigurationFilePath(filePath)
   val conf = Summary.readProperty(confFilePath)
@@ -33,8 +33,6 @@ class Summary(var name:String, val filePath:String, var summaryType: String) {
     bf
   }
 
-  def size : Int = size(this.summaryType)
-
   def size(summaryType: String) = {
     summaryType match {
       case "b" => sizeBloomier
@@ -46,12 +44,12 @@ class Summary(var name:String, val filePath:String, var summaryType: String) {
   def sizes = (sizeJson, sizeLabeled, sizeBloomier)
   def keys = labeledSummary.getKeys()
 
-  def copy(newSummaryType: String = "b") = {
-    new Summary(name=name, filePath=filePath, summaryType=newSummaryType)
-  }
+//  def copy(newSummaryType: String = "b") = {
+//    new Summary(name=name, filePath=filePath, defaultSummaryType=newSummaryType)
+//  }
 
-  def repr = s"""{"name":"${name}", "summaryType":"${summaryType}", "sizes":[${sizes._1},${sizes._2},${sizes._3}], "filePath":"${filePath}"}"""
-  override def toString() = s"${name}|${summaryType}|${size}"
+  def repr = s"""{"name":"${name}", "sizes":[${sizes._1},${sizes._2},${sizes._3}], "filePath":"${filePath}"}"""
+  override def toString() = s"${name}|[${sizes._1},${sizes._2},${sizes._3}]"
 }
 
 object Summary {
@@ -71,7 +69,7 @@ object Summary {
     else throw new Exception(s"No configuration file ${confFilePath}")
   }
 
-  def loadContext(directory: String, name: String, othername: String, summaryType:String) = {
+  def loadContext(directory: String, name: String, othername: String) = {
     val absoluteDirectory = new File(".").getAbsoluteFile() + "/" + directory
     var filePath = absoluteDirectory + "/" + name + ".json"
 
@@ -82,7 +80,7 @@ object Summary {
       else
         filePath = otherFilePath
     }
-    new Summary(name = name, filePath = filePath, summaryType = summaryType)
+    new Summary(name = name, filePath = filePath)
   }
 
   def loadContexts(directory: String) : mm[String, Summary] = loadContexts(directory, "b")
@@ -99,7 +97,7 @@ object Summary {
       val fileName = file.toString
       val key = uFile.getBasename(fileName).replace(".json","")
       // todo:: fileToSummary should return a summary not a list of summaries (remove (0))
-      summaries(key) = Summary.loadContext(directory = directory, name = key, othername = "default", summaryType = summaryType)
+      summaries(key) = Summary.loadContext(directory = directory, name = key, othername = "default")
     }
     summaries
   }
@@ -123,7 +121,7 @@ object Summary {
           val defaultName = s"default${index+1}"
           sum += 1
           if (!summaries.contains(name)) {
-            summaries(name) = loadContext(directory = directory, name = name, othername = defaultName, summaryType=summaryType)
+            summaries(name) = loadContext(directory = directory, name = name, othername = defaultName)
           }
         }
       }
