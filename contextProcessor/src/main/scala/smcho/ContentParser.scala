@@ -33,7 +33,7 @@ trait ContentParser {
    *
    *
    * @param id
-   * @param summaryPool
+   * @param summaries
    * @return
    */
 //  def idToSummaries(id:String, summaryPool: mm[String, Summary]) = {
@@ -46,10 +46,10 @@ trait ContentParser {
 //    namesToSummaries(names, summaryPool)
 //  }
 
-    def contentToSummaries(content:String, summaryPool: mm[String, Summary]) = {
+    def contentToSummaries(content:String, summaries: mm[String, Summary]) = {
       val contents = parse(content)
       val names = contents map { case (name, summaryType, size) => name + summaryType}
-      namesToSummaries(names, summaryPool)
+      namesToSummaries(names, summaries)
     }
 
 
@@ -69,7 +69,7 @@ trait ContentParser {
 
   def summariesToContent(summaries: Iterable[Summary]) : String = {
     def makeSummaryName(s : Summary) = {
-      s.getName + "|" + s.getSummaryType() +  "|" + s.getSize()
+      s.name + "|" + s.summaryType +  "|" + s.size
     }
     ("" /: summaries) { (acc, summary) => acc + (if (acc != "") ":" else "") + makeSummaryName(summary) }
   }
@@ -112,7 +112,7 @@ trait ContentParser {
 
   // </editor-fold>
   def getTotalTime(summaries: Iterable[Summary]) = {
-    (0 /: summaries) { (acc, v) => acc + v.getSize()}
+    (0 /: summaries) { (acc, v) => acc + v.size}
   }
 
 }

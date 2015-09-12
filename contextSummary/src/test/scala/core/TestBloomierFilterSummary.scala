@@ -95,7 +95,7 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
     t.setup(map)
     assert(t.getKeys().toSet == Set("latitude", "message to you", "time", "date"))
 
-    t.setup(map, m = 6, k = 3, q = 8*4)
+    t.setup(map, m = 6, k = 3, q = 8*4, complete=false)
     assert(t.get("date") == (2014,10,10))
   }
 
@@ -181,7 +181,7 @@ class TestBloomierFilterSummary extends FunSuite with BeforeAndAfter {
       file.delete()
     }
     val mp = Map[String, Any]("a" -> "helloa", "level of a" -> 3)
-    t.setup(mp, m=4, k=3, q=8*5)
+    t.setup(mp, m=4, k=3, q=8*5, complete=false)
 
     assert(t.get("a") == "helloa")
     t.save(filePath)
