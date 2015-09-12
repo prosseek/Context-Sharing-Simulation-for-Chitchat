@@ -31,10 +31,10 @@ case class Storage() {
     // val contents = parseContent(contextMessage.getContent()) // a list of 3 tuples (name, type, size)
     val contents = contextMessage.parse()
     contents foreach { case (name, summaryType, size) => addToTupleMap(host,
-        (contextMessage.getHost1(),
-         contextMessage.getHost2(),
-         contextMessage.getSize(),
-         contextMessage.getTime(), (name, summaryType, size)))
+        (contextMessage.host1,
+         contextMessage.host2,
+         contextMessage.size,
+         contextMessage.time, (name, summaryType, size)))
     }
   }
 

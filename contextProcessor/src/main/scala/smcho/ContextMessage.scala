@@ -20,17 +20,17 @@ class ContextMessage(var host1: Int,
 
   // <editor-fold desc="Get/Set">
 
-  def setHost1(host: Int) = this.host1 = host
-  def setHost2(host: Int) = this.host2 = host
-  def setSize(size: Int) = this.size = size
-  def setTime(time: Double) = this.time = time
-  def setContent(content:String) = this.content = content
-
-  def getHost1() = this.host1
-  def getHost2() = this.host2
-  def getSize() = this.size
-  def getTime() = this.time
-  def getContent() = this.content
+//  def setHost1(host: Int) = this.host1 = host
+//  def setHost2(host: Int) = this.host2 = host
+//  def setSize(size: Int) = this.size = size
+//  def setTime(time: Double) = this.time = time
+//  def setContent(content:String) = this.content = content
+//
+//  def getHost1() = this.host1
+//  def getHost2() = this.host2
+//  def getSize() = this.size
+//  def getTime() = this.time
+//  def getContent() = this.content
 
   // </editor-fold>
 
@@ -49,9 +49,9 @@ object ContextMessage extends ContentParser  {
   def apply(host1: Int, host2: Int, size:Int, time: Double, content: String) =
     new ContextMessage(host1, host2, size, time, content)
 
-  def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[String], summaryPool: mm[String, Summary]) = {
+  def apply(host1: Int, host2: Int, size:Int, time: Double, nameTypes: Iterable[String], summaries: mm[String, Summary]) = {
     new ContextMessage(host1, host2, size, time,
-      summariesToContent(nameTypesToSummaries(summaries, summaryPool).asInstanceOf[Iterable[Summary]]))
+      summariesToContent(nameTypesToSummaries(nameTypes, summaries).asInstanceOf[Iterable[Summary]]))
   }
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[Summary]) =
@@ -68,8 +68,8 @@ object ContextMessage extends ContentParser  {
   def apply(summaries: mm[String, Summary]): ContextMessage =
     apply(0, 0, 0, 0.0, summaries)
 
-  def apply(summaries: Iterable[String], summaryPool: mm[String, Summary]):ContextMessage = {
-    apply(0, 0, 0, 0.0, summaries, summaryPool)
+  def apply(nameTypes: Iterable[String], summaries: mm[String, Summary]):ContextMessage = {
+    apply(0, 0, 0, 0.0, nameTypes, summaries)
   }
     // </editor-fold>
   // names, summaries) // summariesToId(namesToSummaries(names, summaries))

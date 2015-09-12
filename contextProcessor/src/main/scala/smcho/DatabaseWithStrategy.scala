@@ -101,7 +101,7 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
     val summaries = shareLogic.get(host, storage)
     val content = ContextMessage.summariesToContent(summaries)
     val c= ContextMessage(content)
-    c.setSize(ContextMessage.getTotalTime(summaries))
+    c.size = ContextMessage.getTotalTime(summaries)
     c
   }
 
