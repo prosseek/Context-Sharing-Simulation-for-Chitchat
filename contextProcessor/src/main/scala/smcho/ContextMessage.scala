@@ -51,7 +51,7 @@ object ContextMessage extends ContentParser  {
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[String], summaryPool: mm[String, Summary]) = {
     new ContextMessage(host1, host2, size, time,
-      summariesToContent(namesToSummaries(summaries, summaryPool).asInstanceOf[Iterable[Summary]]))
+      summariesToContent(nameTypesToSummaries(summaries, summaryPool).asInstanceOf[Iterable[Summary]]))
   }
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[Summary]) =

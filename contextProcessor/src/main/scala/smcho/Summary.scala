@@ -20,6 +20,7 @@ class Summary(var name:String, val filePath:String, var summaryType: String) {
 
   val sizeLabeled = labeledSummary.getSize()
   var sizeBloomier = bloomierSummary.getSize()
+  var sizeJson = labeledSummary.getJsonSize()
 
   private def bloomier(labeledSummary: LabeledSummary) = {
     val bf = BloomierFilterSummary(labeledSummary)
@@ -42,11 +43,11 @@ class Summary(var name:String, val filePath:String, var summaryType: String) {
       case _ => throw new Exception(s"Format error ${summaryType}")
     }
   }
-  def sizes = (labeledSummary.getJsonSize(), sizeLabeled, sizeBloomier)
+  def sizes = (sizeJson, sizeLabeled, sizeBloomier)
   def keys = labeledSummary.getKeys()
 
   def copy(newSummaryType: String = "b") = {
-    new Summary(filePath, name, newSummaryType)
+    new Summary(name=name, filePath=filePath, summaryType=newSummaryType)
   }
 
   def repr = s"""{"name":"${name}", "summaryType":"${summaryType}", "sizes":[${sizes._1},${sizes._2},${sizes._3}], "filePath":"${filePath}"}"""

@@ -10,14 +10,17 @@ class T extends ContentParser
 
 class ContentParserTest extends FunSuite {
 
+  val jsonDir = "contextProcessor/src/test/resources"
+
   var cm0: ContextMessage = _
-  val summaries = null; // Summary.loadContexts("contextProcessor/resources/test/sample_contexts")
-  val contentString = "summary1|b|46:summary2|l|107"
+  val summaries = Summary.loadContexts(jsonDir)
+  val contentString = "g1c0|b|46:unittest|l|107"
   val t = new T
 
   test("test ParseContent") {
     val idString = "summary1|b|33:summary2|l|123"
     val res = t.parse(idString)
+    assert(res.size == 2)
     res foreach { v =>
       v._1 match {
         case "summary1" => assert(v == ("summary1","b",33))
@@ -38,8 +41,7 @@ class ContentParserTest extends FunSuite {
   test("test idToSummaries") {
     // summary1 and summary2 is selected
     val s = t.contentToSummaries(contentString, summaries)
-    // println(s.toString)
-    assert(s.toString == "ArrayBuffer(summary1|b|46, summary2|l|107)")//(s.length == 2) // there are two summaries
+    assert(s.toString == "ArrayBuffer(g1c0|b|29, unittest|l|52)")//(s.length == 2) // there are two summaries
   }
 
   test("test SummariesToId") {
@@ -57,9 +59,9 @@ class ContentParserTest extends FunSuite {
   test("test totalSize") {
     // assert(t.getTotalTime(summaries.values) == 96)
     //val contentString = "summary1|b|46:summary2|l|123"
-    val s = t.namesToSummaries(List("summary1b", "summary2l"), summaries)
+    val s = t.nameTypesToSummaries(List("unittestb", "g1c0l"), summaries)
     // s foreach {v => println(v.getSize())}
-    assert(t.getTotalTime(s) == 46 + 107)
+    assert(t.getTotalTime(s) == 29 + 52)
   }
 
 }

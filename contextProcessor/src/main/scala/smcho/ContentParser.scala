@@ -49,21 +49,24 @@ trait ContentParser {
     def contentToSummaries(content:String, summaries: mm[String, Summary]) = {
       val contents = parse(content)
       val names = contents map { case (name, summaryType, size) => name + summaryType}
-      namesToSummaries(names, summaries)
+      nameTypesToSummaries(names, summaries)
     }
 
 
-  def namesToSummaries(names: Iterable[String], summaryPool: mm[String, Summary]) = {
-    val namePattern = """([a-zA-Z]+\d+)([a-z])?""".r
+  def nameTypesToSummaries(names: Iterable[String], summaryPool: mm[String, Summary]) = {
+
     names flatMap { name =>
-      name match {
-        case namePattern(summaryName, summaryType) if (summaryPool.contains(summaryName)) => {
-          var sType = summaryType
-          if (sType == null || !(sType == "b" || sType == "l")) sType = "b"
-          Some(summaryPool.get(summaryName).get.copy(sType))
-        }
-        case _ => None
+      val n = name.dropRight(1)
+      var t = name.takeRight(1)
+      if (!(t == "b" || t == "l" || t == "j")) t = "b"
+
+      if (summaryPool.contains(n)) {
+        val r = summaryPool.get(n).get.copy()
+        r.summaryType = t
+        Some(r)
       }
+      else
+        None
     }
   }
 
