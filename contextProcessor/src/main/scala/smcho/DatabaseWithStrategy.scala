@@ -42,6 +42,7 @@ object DatabaseWithStrategy {
     }
 
     // 1. load all the contexts in a directory
+    /*
     val summaries = Summary.loadContexts(directory)
 
     // from the loaded contexts, setup the initial contexts into the history
@@ -53,6 +54,7 @@ object DatabaseWithStrategy {
         storage.addToSummaryMap(summaryName, summary)
       }
     }
+    */
 
     // 2. make all the default context by copying default.txt up to the size of hostSize
     if (hostSize.length() > 0) {
@@ -77,11 +79,11 @@ object DatabaseWithStrategy {
             }
           }
           // defaultGroupFilePath now contains the file path of default file
-          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath)
+          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath, "b")
           val contextMessage = ContextMessage(s.toString())
           val host = i
           storage.add(host, contextMessage)
-          storage.addToSummaryMap(fileName.replace(".txt",""), s)
+          //storage.addToSummaryMap(fileName.replace(".txt",""), s)
         }
       }
     }

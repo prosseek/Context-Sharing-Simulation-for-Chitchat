@@ -66,9 +66,9 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     byteArrayBloomierFilter = new ByteArrayBloomierFilter(map = baMap, initialM = this.initM, k = k, q = q, initialSeed = initialSeed, maxTry = maxTry, complete = complete)
   }
 
-  def setup(jsonMap: Map[String, Any], m:Int, k:Int, q:Int): Unit = {
+  def setup(jsonMap: Map[String, Any], m:Int, k:Int, q:Int, complete:Boolean): Unit = {
     super.setup(jsonMap)
-    this.setup(m,k,q)
+    this.setup(m = m,k = k,q = q,complete = complete)
   }
   /**
    * Returns the size of the summary
