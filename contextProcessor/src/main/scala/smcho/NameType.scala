@@ -2,16 +2,22 @@ package smcho
 
 import scala.collection.mutable.{Map => MM}
 
+object NameType {
+  def split(name: String) = {
+    (name.dropRight(1), name.takeRight(1))
+  }
+}
+
 /**
  * Created by smcho on 9/12/15.
  */
-case class NameType(val nameType:String, val summaries:MM[String, Summary]) {
-  if (!NameParser.isValidName(nameType)) {
-    throw new Exception(s"Wrong nametype ${nameType}")
+case class NameType(val name:String, val summaries:MM[String, Summary]) {
+  if (!NameParser.isValidName(name)) {
+    throw new Exception(s"Wrong nametype ${name}")
   }
 
-  val (name, groupId, hostId, summaryType) = NameParser.getParams(nameType).get
-  val summary = getSummaryFromSummaries(name, summaries)
+  val (summaryName, groupId, hostId, summaryType) = NameParser.getParams(name).get
+  val summary = getSummaryFromSummaries(summaryName, summaries)
   val keys = summary.labeledSummary.getKeys()
 
   def getSummaryFromSummaries(name:String, summaries: MM[String, Summary]) = {

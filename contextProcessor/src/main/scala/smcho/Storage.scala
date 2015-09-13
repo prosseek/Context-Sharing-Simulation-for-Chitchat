@@ -67,22 +67,6 @@ case class Storage() {
     summaryMap.put(name, summary)
   }
 
-//  def addToTupleMap(host: Int, content: ContextMessage.cmTuple) = {
-//    if (!tupleMap.contains(host)) {
-//      tupleMap.put(host,  mSet[ContextMessage.cmTuple]())
-//    }
-//    tupleMap.get(host).get += content
-//  }
-
-  // <editor-fold desc="GET/SET">
-
-//  def getTuple(id: Int) = {
-//    tupleMap.get(id) match {
-//      case Some(p) => p
-//      case None => mSet[ContextMessage.cmTuple]()
-//    }
-//  }
-
   def getSummary(name: String) : Summary = {
     summaryMap.get(name) match {
       case Some(p) => p
