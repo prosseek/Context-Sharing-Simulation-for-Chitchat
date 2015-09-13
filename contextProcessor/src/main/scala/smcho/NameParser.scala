@@ -12,7 +12,7 @@ object NameParser {
     }
 
     def getParams(nameType:String) = {
-      val p = """^(g(\d+)c(\d+))([blj])""".r
+      val p = """^(g(\d+)c(\d+))([blj])$""".r
       nameType match {
         case p(name, groupId, hostId, summaryType) => Some(name, groupId.toInt, hostId.toInt, summaryType)
         case _ => None
@@ -23,6 +23,14 @@ object NameParser {
       getParams(nameType) match {
         case Some((name, groupId, hostId, summaryType)) => groupId
         case None => -1
+      }
+    }
+
+    def getGroupIdIgnoringSummaryType(nameType:String) = {
+      val p = """^(g(\d+)c(\d+))([blj])?$""".r
+      nameType match {
+        case p(name, groupId, hostId, summaryType) => groupId.toInt
+        case _ => throw new Exception(s"Error no correct format: ${nameType}")
       }
     }
 
