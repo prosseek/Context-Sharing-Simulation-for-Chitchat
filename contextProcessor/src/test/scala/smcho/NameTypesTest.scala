@@ -92,4 +92,11 @@ class NameTypesTest extends FunSuite with BeforeAndAfterEach {
     val expected = "g1c0l|52:g3c1j|105"
     assert(v1.toString == expected)
   }
+
+  test("test repr") {
+    val ntString1 = "g3c1j:g3c1j:g1c0l:g3c1j"
+    val v1 = NameTypes(ntString1, summaries)
+    val expected = s"""{"name":"$ntString1", "sortedName":"g1c0l:g3c1j", "size":157}"""
+    assert(v1.repr == expected)
+  }
 }

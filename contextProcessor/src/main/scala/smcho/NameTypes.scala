@@ -49,10 +49,11 @@ object NameTypes {
 /**
  * Created by smcho on 9/12/15.
  */
-case class NameTypes(nameTypesString:String, summaries:mm[String, Summary]) {
+case class NameTypes(name:String, summaries:mm[String, Summary]) {
   // Add nameTypes to the cache
-  val nameTypeStrings = NameTypes.split(nameTypesString)
-  val nameTypes: Seq[NameType] = NameTypes.add(nameTypesString, summaries)
+  val nameTypeStrings = NameTypes.split(name)
+  val sortedName = NameTypes.nameSort(name)
+  val nameTypes: Seq[NameType] = NameTypes.add(name, summaries)
 
   def count() = nameTypes.size
 
@@ -72,8 +73,7 @@ case class NameTypes(nameTypesString:String, summaries:mm[String, Summary]) {
       }
       null
     }
-    else
-      null
+    else null
   }
 
   override def toString() = {
@@ -81,5 +81,9 @@ case class NameTypes(nameTypesString:String, summaries:mm[String, Summary]) {
         acc ++= s"${value.name}|${value.size()}:"
     }
     result.toString.dropRight(1)
+  }
+  
+  def repr() = {
+    s"""{"name":"${name}", "sortedName":"${sortedName}", "size":${size}}"""
   }
 }
