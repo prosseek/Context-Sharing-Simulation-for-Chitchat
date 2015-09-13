@@ -79,4 +79,12 @@ case class NameType(val nameType:String, val summaries:MM[String, Summary]) {
       case "b" => summary.bloomierSummary.get(key)
     }
   }
+
+  def size() = {
+    summaryType match {
+      case "j" => summary.labeledSummary.getJsonSize()
+      case "l" => summary.labeledSummary.getSize()
+      case "b" => summary.bloomierSummary.getSize()
+    }
+  }
 }

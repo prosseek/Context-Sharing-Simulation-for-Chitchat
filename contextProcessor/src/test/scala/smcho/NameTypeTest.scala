@@ -50,10 +50,26 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
     assert(nameType.summary.toString() == "g1c0|[105,52,29]")
   }
 
-  test("test get") {
+  test("test get/sizes") {
     nameType = NameType("g1c0l", summaries)
     assert(nameType.get("h") == null)
     assert(nameType.get("latitude") == (10, 10, 10, 10))
+    assert(nameType.size() == 52)
+
+    nameType = NameType("g1c0b", summaries)
+    assert(nameType.get("h") == null)
+    assert(nameType.get("latitude") == (10, 10, 10, 10))
+    assert(nameType.size() == 29)
+
+    nameType = NameType("g1c0j", summaries)
+    assert(nameType.get("h") == null)
+    assert(nameType.get("latitude") == (10, 10, 10, 10))
+    assert(nameType.size() == 105)
+  }
+
+  test("test size") {
+    nameType = NameType("g1c0l", summaries)
+
 
     nameType = NameType("g1c0b", summaries)
     assert(nameType.get("h") == null)
