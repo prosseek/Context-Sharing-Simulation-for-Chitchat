@@ -16,17 +16,18 @@ class ContextMessage(var host1: Int,
                      var host2: Int,
                      var size:Int,
                      var time: Double,
-                     var nameTypes: String) extends ContentParser {
+                     var nameTypes: String) {
 
   override def toString() : String = s"[${host1}->${host2}/${size}/${time}/${nameTypes}]"
   def repr() = s"""{"host1":${host1}, "host2":${host2}, "size":${size}, "time":${time}, "nameTypes":${nameTypes}}"""
 
-  def parse() : Array[(String, String, Int)] = parse(this.nameTypes)
+  def parse() : Array[(String, String, Int)] = ??? // parse(this.nameTypes)
 }
 
-object ContextMessage extends ContentParser {
-
+object ContextMessage {
   def summariesToContent(m:Iterable[Summary]) = ???
+  def nameTypesToSummaries(i:AnyVal, j:AnyVal) = ???
+
   //type cmTuple = (Int, Int, Int, Double, (String, String, Int))
 
   // <editor-fold desc="Constructors">
@@ -35,8 +36,9 @@ object ContextMessage extends ContentParser {
     new ContextMessage(host1, host2, size, time, content)
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, nameTypes: Iterable[String], summaries: mm[String, Summary]) = {
-    new ContextMessage(host1, host2, size, time,
-      summariesToContent(nameTypesToSummaries(nameTypes, summaries).asInstanceOf[Iterable[Summary]]))
+    null
+  //  new ContextMessage(host1, host2, size, time,
+  //    summariesToContent(nameTypesToSummaries(nameTypes, summaries).asInstanceOf[Iterable[Summary]]))
   }
 
   def apply(host1: Int, host2: Int, size:Int, time: Double, summaries: Iterable[Summary]) =

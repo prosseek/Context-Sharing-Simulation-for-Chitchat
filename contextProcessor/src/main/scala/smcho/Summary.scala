@@ -96,8 +96,9 @@ object Summary {
     for (file <- files if !file.getName().replace(".json","").matches("default.*$")) {
       val fileName = file.toString
       val key = uFile.getBasename(fileName).replace(".json","")
-      // todo:: fileToSummary should return a summary not a list of summaries (remove (0))
-      summaries(key) = Summary.loadContext(directory = directory, name = key, othername = "default")
+
+      val groupId = 5
+      summaries(key) = Summary.loadContext(directory = directory, name = key, othername = s"default${groupId}")
     }
     summaries
   }
