@@ -14,9 +14,15 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
 
   }
 
+  test("test splitNameTypes") {
+    val input = "g3c14l"
+    val expected = ("g3c14", "l")
+    assert(NameType.split(input) == expected)
+  }
+
   test("test constructor") {
     val n = NameType("g1c0l", summaries)
-    assert(n.name == "g1c0")
+    assert(n.summaryName == "g1c0")
     assert(n.groupId == 1)
     assert(n.hostId == 0)
     assert(n.summaryType == "l")
