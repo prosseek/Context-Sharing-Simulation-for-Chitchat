@@ -31,4 +31,19 @@ class NameParserTest extends FunSuite {
     assert(NameParser.getName(input) == stringExpected)
   }
 
+  test("test getGroupIdIgnoringSummaryType") {
+    var input = "g3c0l"
+    var expected = 3
+    assert(NameParser.getGroupIdIgnoringSummaryType(input) == expected)
+
+    input = "g3c0"
+    expected = 3
+    assert(NameParser.getGroupIdIgnoringSummaryType(input) == expected)
+
+    input = "XXX"
+    intercept[Exception] {
+      assert(NameParser.getGroupIdIgnoringSummaryType(input) == expected)
+    }
+  }
+
 }

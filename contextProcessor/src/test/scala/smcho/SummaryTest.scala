@@ -6,8 +6,8 @@ import org.scalatest.{BeforeAndAfterEach, FunSuite}
  * Created by smcho on 8/21/15.
  */
 class SummaryTest extends FunSuite with BeforeAndAfterEach {
-  val jsonFilePath = "contextProcessor/src/test/resources/unittest.json"
-  val confFilePath = "contextProcessor/src/test/resources/unittest.conf"
+  val jsonFilePath = "contextProcessor/src/test/resources/g1c0.json"
+  val confFilePath = "contextProcessor/src/test/resources/g1c0.conf"
   var t : Summary = _
 
   override def beforeEach(): Unit = {
@@ -48,7 +48,7 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test repr") {
-    val expected = """{"name":"hello", "sizes":[105,52,29], "filePath":"contextProcessor/src/test/resources/unittest.json"}"""
+    val expected = """{"name":"hello", "sizes":[105,52,29], "filePath":"contextProcessor/src/test/resources/g1c0.json"}"""
     assert(t.repr == expected)
   }
 
@@ -65,23 +65,36 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test loadContext") {
-    var s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "unittest", othername = "default")
-    assert(s.toString() == "unittest|[105,52,29]")
-    s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "a", othername = "unittest")
+    var s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "g1c0", othername = "default")
+    assert(s.toString() == "g1c0|[105,52,29]")
+    s = Summary.loadContext(directory = "contextProcessor/src/test/resources/", name = "a", othername = "g1c0")
     assert(s.toString() == "a|[105,52,29]")
-    assert(s.filePath.endsWith("unittest.json"))
+    assert(s.filePath.endsWith("g1c0.json"))
   }
 
   test("test loadContexts") {
     val res = Summary.loadContexts(directory = "contextProcessor/src/test/resources/")
-    assert(res.size == 2) // there is only one context in the directory
+    assert(res.size == 1) // there is only one context in the directory
 
     val res2 = Summary.loadContexts(directory = "contextProcessor/src/test/resources/", List(5,5,5))
-    assert(res2.size == (5+5+5+2-1)) // default (5+5+5), +2 existing -1 (g1c0)
+    assert(res2.size == (5+5+5+1-1)) // default (5+5+5), +2 existing -1 (g1c0)
+
+    // check if there is no file, the default is setup correctly
+    res2 foreach {
+      case (key, summary) => {
+        val group = NameParser.getGroupIdIgnoringSummaryType(key)
+        if (key != "g1c0")
+          assert(summary.filePath.contains(s"default${group}"))
+      }
+
+    }
   }
 
   test("test summariesToJsonString") {
     val summaries = Summary.loadContexts(directory = "contextProcessor/src/test/resources/")
-    println(Summary.summariesToJsonString(summaries))
+    val expected = """[
+                     |{"g1c0":{"name":"g1c0", "sizes":[105,52,29], "filePath":"/Users/smcho/Desktop/code/ContextSharingSimulation/./contextProcessor/src/test/resources//g1c0.json"}
+                     |]""".stripMargin
+    assert(Summary.summariesToJsonString(summaries) == expected)
   }
 }

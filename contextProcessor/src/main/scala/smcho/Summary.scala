@@ -97,7 +97,7 @@ object Summary {
       val fileName = file.toString
       val key = uFile.getBasename(fileName).replace(".json","")
 
-      val groupId = 5
+      val groupId = NameParser.getGroupIdIgnoringSummaryType(key)
       summaries(key) = Summary.loadContext(directory = directory, name = key, othername = s"default${groupId}")
     }
     summaries
