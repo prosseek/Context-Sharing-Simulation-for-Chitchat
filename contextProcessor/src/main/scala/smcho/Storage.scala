@@ -10,89 +10,37 @@ import net.liftweb.json.Serialization.{write => jsonWrite}
  */
 
 object Storage {
-  def storageToJSonString(storage: Storage) = {
+  var storage: Storage = null
+  var summaries: Iterable[Summary] = _
+  var summariesMap: mm[String, Summary] = _
+  val hostTocontextMessagesMap = mm[Int, mSet[ContextMessage]]()
 
-    // 1. summaryMap
-    //   class Summary(val contextSummary: ContextSummary, var name:String, var summaryType: String) {
-    //   private var summaryMap = mm[String, Summary]()
-    storage.summaryMap.keys.toList.sorted foreach { key =>
-      implicit val formats = DefaultFormats
-
-      // 1. summaryMap gets all the summary read from directory or created in between
-      // {"contextSummary":{},"name":"is0","summaryType":"b"}
-      val contextSummaryString = jsonWrite(storage.summaryMap.get(key).get)
-
-      storage.summaryMap.get(key) foreach {key =>
-        println(key)
-      }
-
-      // println (s"KEY $key: VALUE:${summaryMap.get(key).get.toString()}")
-    }
+  def apply(directory:String) = {
+    if (storage == null) storage = new Storage(directory)
+    storage
   }
 }
 
-case class Storage() {
-  private var _summaryMap = mm[String, Summary]()
-  //private var _tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
-  private var _contextMessageMap = mm[Int, mSet[ContextMessage]]()
+class Storage(directory:String) {
+  Storage.summariesMap = Summary.loadContexts(directory)
+  Storage.summaries = Storage.summariesMap.values
 
-  def summaryMap = _summaryMap
-  //def tupleMap = _tupleMap
-  def contextMessageMap = _contextMessageMap
 
-  def reset() = {
-    _summaryMap = mm[String, Summary]()
-    //_tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
-    _contextMessageMap = mm[Int, mSet[ContextMessage]]()
+  override def toString = {
+    repr()
   }
 
-  def add(host:Int, contextMessage: ContextMessage) = {
-    if (!contextMessageMap.contains(host)) {
-      contextMessageMap.put(host, mSet[ContextMessage]())
+  def repr() = {
+    val summariesInJson = "HI"
+    s"""{"summaries":"${summariesInJson}"}"""
+  }
+
+  def add(host:Int, c:ContextMessage) = {
+    if (!Storage.hostTocontextMessagesMap.contains(host)) {
+      Storage.hostTocontextMessagesMap(host) = mSet[ContextMessage]()
     }
-    contextMessageMap.get(host).get += contextMessage
-    // val contents = parseContent(contextMessage.getContent()) // a list of 3 tuples (name, type, size)
-    val contents = contextMessage.parse()
-//    contents foreach { case (name, summaryType, size) => addToTupleMap(host,
-//        (contextMessage.host1,
-//         contextMessage.host2,
-//         contextMessage.size,
-//         contextMessage.time, (name, summaryType, size)))
-//    }
-  }
-
-  def addToContextMessageMap(host:Int, context:ContextMessage) = add(host, context)
-
-  def addToSummaryMap(name:String, summary: Summary) = {
-    summaryMap.put(name, summary)
-  }
-
-  def getSummary(name: String) : Summary = {
-    summaryMap.get(name) match {
-      case Some(p) => p
-      case None => null
-    }
-  }
-
-  def exists(name: String) = {
-    summaryMap.keySet(name)
-  }
-
-  def print() = {
-    // print
-    //summaryMap = mm[String, Summary]()
-    println("---------------------------------------")
-    println("summaryMap print")
-    summaryMap.keys.toList.sorted foreach { key =>
-      println (s"KEY $key: VALUE:${summaryMap.get(key).get.toString()}")
-    }
-
-    // tupleMap = mm[Int, mSet[ContextMessage.cmTuple]]()
-//    println("tupleMap (what tuples each node has) print")
-//    tupleMap.keys.toList.sorted foreach { key =>
-//      println (s"KEY $key: VALUE:${tupleMap.get(key).get.toString()}")
-//    }
-    // contextMessageMap = mm[Int, mSet[ContextMessage]]()
-    println("---------------------------------------")
+    val set = Storage.hostTocontextMessagesMap(host)
+    set += c
+    Storage.hostTocontextMessagesMap(host) = set
   }
 }

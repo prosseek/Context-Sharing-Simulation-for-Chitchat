@@ -44,11 +44,16 @@ class NameTypesTest extends FunSuite with BeforeAndAfterEach {
 
   test("test getNameTypeSeq") {
     val ntString = "g1c0l:g3c1j"
-    val result = NameTypes.getNameTypeSeq(ntString, summaries)
+    val result = NameTypes.getNameTypeIterable(ntString, summaries)
     assert(result.size == 2)
 
     val names = (("" /: result) {(acc, value) => acc + value.name + ":"}).dropRight(1)
     assert(NameTypes.nameSort(names) == NameTypes.nameSort(ntString))
+  }
+
+  test("test size") {
+    val ntString2 = "g3c1j:g1c0l:g3c1j"
+    assert(NameTypes.size(ntString2, summaries) == 52 + 105)
   }
 
   // Class test
@@ -80,7 +85,7 @@ class NameTypesTest extends FunSuite with BeforeAndAfterEach {
     assert(v1.count == 2)
   }
 
-  test("test size") {
+  test("test size in class") {
     val ntString1 = "g1c0l:g3c1j"
     val v1 = NameTypes(ntString1, summaries)
     assert(v1.size == 52 + 105)

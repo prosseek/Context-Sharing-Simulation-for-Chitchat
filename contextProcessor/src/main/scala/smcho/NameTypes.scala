@@ -1,11 +1,16 @@
 package smcho
 
+import scala.collection.mutable
 import scala.collection.mutable.{Map => mm}
 
 object NameTypes {
-  val cacheMap = mm[String, Seq[NameType]]()
+  val cacheMap = mm[String, Iterable[NameType]]()
 
-  def size() = cacheMap.size
+  def count() = cacheMap.size
+
+  def size(names:String, summaries:mm[String, Summary]) = {
+    NameTypes(names, summaries).size()
+  }
 
   def split(names:String) = {
     names.split(":").toSet.toList
@@ -20,21 +25,21 @@ object NameTypes {
    * @param nameTypes
    * @return
    */
-  def getNameTypeSeq(nameTypes:String, summaries:mm[String, Summary]) = {
+  def getNameTypeIterable(nameTypes:String, summariesMap:mm[String, Summary]) = {
     (scala.collection.mutable.ListBuffer[NameType]() /: split(nameTypes)) {
-      (acc, value) => acc += NameType(value, summaries)
+      (acc, value) => acc += NameType(value, summariesMap)
     }
   }
 
   def add(nameTypes:String, summaries:mm[String, Summary]) = {
     val sortedName = nameSort(nameTypes)
     if (!cacheMap.contains(sortedName)) {
-      cacheMap(sortedName) = getNameTypeSeq(sortedName, summaries)
+      cacheMap(sortedName) = getNameTypeIterable(sortedName, summaries)
     }
     cacheMap(sortedName)
   }
 
-  def set(nameTypes: String, value: Seq[NameType]) = {
+  def set(nameTypes: String, value: Iterable[NameType]) = {
     cacheMap(nameSort(nameTypes)) = value
   }
 
@@ -49,11 +54,11 @@ object NameTypes {
 /**
  * Created by smcho on 9/12/15.
  */
-case class NameTypes(name:String, summaries:mm[String, Summary]) {
+case class NameTypes(name:String, summariesMap:mm[String, Summary]) {
   // Add nameTypes to the cache
   val nameTypeStrings = NameTypes.split(name)
   val sortedName = NameTypes.nameSort(name)
-  val nameTypes: Seq[NameType] = NameTypes.add(name, summaries)
+  val nameTypes: Iterable[NameType] = NameTypes.add(name, summariesMap)
 
   def count() = nameTypes.size
 

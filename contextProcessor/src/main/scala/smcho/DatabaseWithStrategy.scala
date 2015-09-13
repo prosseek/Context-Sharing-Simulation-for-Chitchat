@@ -33,7 +33,7 @@ object DatabaseWithStrategy {
      * @param items
      * @param index
      */
-    def getGroupIndex(items:Seq[Int], index:Int): Int = {
+    def getGroupIndex(items:Iterable[Int], index:Int): Int = {
       items.zipWithIndex foreach { case (v, i) =>
         // println(v,i)
         if (v > index) return (i+1)
@@ -65,33 +65,33 @@ object DatabaseWithStrategy {
       // For example with {1,2,3} => totalSize of 6
       // we iterate 0 .. 5
       Range(0, totalSize).foreach { i =>
-        val fileName = contextName + i + ".txt"
-        // If the context is not provided
-        if (!storage.exists(fileName)) {
-          // get what group 'i' is in
-          val groupIndex = getGroupIndex(accumulation, i)
-          var defaultGroupFilePath = directory + "/" + s"default${groupIndex}.txt"
-          if (!(new File(defaultGroupFilePath).exists())) {
-            defaultGroupFilePath = directory + "/" + "default.txt"
-            if (!(new File(defaultGroupFilePath).exists())) {
-              // No default file, raise an error to stop
-              throw new Exception(s"No default file in directory ${directory}")
-            }
-          }
-          // defaultGroupFilePath now contains the file path of default file
-          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath)
-          val contextMessage = ContextMessage(s.toString())
-          val host = i
-          storage.add(host, contextMessage)
-          //storage.addToSummaryMap(fileName.replace(".txt",""), s)
-        }
+//        val fileName = contextName + i + ".txt"
+//        // If the context is not provided
+//        if (!storage.exists(fileName)) {
+//          // get what group 'i' is in
+//          val groupIndex = getGroupIndex(accumulation, i)
+//          var defaultGroupFilePath = directory + "/" + s"default${groupIndex}.txt"
+//          if (!(new File(defaultGroupFilePath).exists())) {
+//            defaultGroupFilePath = directory + "/" + "default.txt"
+//            if (!(new File(defaultGroupFilePath).exists())) {
+//              // No default file, raise an error to stop
+//              throw new Exception(s"No default file in directory ${directory}")
+//            }
+//          }
+//          // defaultGroupFilePath now contains the file path of default file
+//          val s = Summary.loadContext(directory, fileName, defaultGroupFilePath)
+//          val contextMessage = null // ContextMessage(s.toString())
+//          val host = i
+//          storage.add(host, contextMessage)
+//          //storage.addToSummaryMap(fileName.replace(".txt",""), s)
+//        }
       }
     }
   }
 }
 
 class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass {
-  val storage = Storage()
+  val storage = null // Storage()
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
 
   // <editor-fold desc="API">
@@ -113,11 +113,11 @@ class DatabaseWithStrategy(val strategy: String) extends Database with LoadClass
 
   // add received ContextMessage to host
   override def add(host: Int, contextMessage: ContextMessage) = {
-    storage.add(host, contextMessage)
+   // storage.add(host, contextMessage)
   }
 
   override def reset() = {
-    storage.reset()
+  //  storage.reset()
   }
   // </editor-fold>
   //

@@ -53,7 +53,6 @@ class Summary(var name:String, val filePath:String) {
 }
 
 object Summary {
-
   def summariesToJsonString(summaries:mm[String, Summary]) = {
     var sb = new StringBuilder()
     sb ++= "[\n"
@@ -83,10 +82,8 @@ object Summary {
     new Summary(name = name, filePath = filePath)
   }
 
-  def loadContexts(directory: String) : mm[String, Summary] = loadContexts(directory, "b")
-
-  def loadContexts(directory: String, summaryType:String) = {
-    val summaries = mm[String, Summary]();
+  def loadContexts(directory: String) = {
+    val summariesMap = mm[String, Summary]();
     // executed in one simulator, the "." is inside the one simulator directory, so there should be some changes
     // such as symbolic links should be added.
     val absoluteDirectory = new File(".").getAbsoluteFile() + "/" + directory
@@ -98,20 +95,19 @@ object Summary {
       val key = uFile.getBasename(fileName).replace(".json","")
 
       val groupId = NameParser.getGroupIdIgnoringSummaryType(key)
-      summaries(key) = Summary.loadContext(directory = directory, name = key, othername = s"default${groupId}")
+      summariesMap(key) = Summary.loadContext(directory = directory, name = key, othername = s"default${groupId}")
     }
-    summaries
+    summariesMap
   }
 
   /**
    * g1c0 ... gNcX : N is the number of groups, X-1 is the number of hosts
    * @param directory
    * @param defaults
-   * @param summaryType
    * @return
    */
-  def loadContexts(directory: String, defaults:List[Int], summaryType:String = "b") : mm[String, Summary] = {
-    val summaries = loadContexts(directory, summaryType)
+  def loadContexts(directory: String, defaults:List[Int]) : mm[String, Summary] = {
+    val summariesMap = loadContexts(directory)
     val absoluteDirectory = new File(".").getAbsoluteFile() + "/" + directory
 
     var sum = 0
@@ -121,14 +117,13 @@ object Summary {
           val name = s"g${index+1}c${sum}"
           val defaultName = s"default${index+1}"
           sum += 1
-          if (!summaries.contains(name)) {
-            summaries(name) = loadContext(directory = directory, name = name, othername = defaultName)
+          if (!summariesMap.contains(name)) {
+            summariesMap(name) = loadContext(directory = directory, name = name, othername = defaultName)
           }
         }
       }
     }
-
-    summaries
+    summariesMap
   }
 
   def readProperty(filePath:String) = {
