@@ -14,32 +14,8 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
 
   }
 
-  test("test GetGroupId") {
-    var input = "g3c0l"
-
-    var expected = 3
-    assert(NameType.getGroupId(input) == expected)
-    expected = 0
-    assert(NameType.getHostId(input) == expected)
-    var stringExpected = "l"
-    assert(NameType.getSummaryType(input) == stringExpected)
-    stringExpected = "g3c0"
-    assert(NameType.getName(input) == stringExpected)
-
-    input = "xg33c0p"
-
-    expected = -1
-    assert(NameType.getGroupId(input) == expected)
-    expected = -1
-    assert(NameType.getHostId(input) == expected)
-    stringExpected = ""
-    assert(NameType.getSummaryType(input) == stringExpected)
-    stringExpected = ""
-    assert(NameType.getName(input) == stringExpected)
-  }
-
   test("test constructor") {
-    val n = NameType("g1c0l", null)
+    val n = NameType("g1c0l", summaries)
     assert(n.name == "g1c0")
     assert(n.groupId == 1)
     assert(n.hostId == 0)
@@ -47,7 +23,8 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test constructor 2") {
-    assert(nameType.summary.toString() == "g1c0|[105,52,29]")
+    val n = NameType("g1c0l", summaries)
+    assert(n.summary.toString() == "g1c0|[105,52,29]")
   }
 
   test("test get/sizes") {
