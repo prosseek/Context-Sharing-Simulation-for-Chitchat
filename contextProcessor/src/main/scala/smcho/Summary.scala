@@ -21,6 +21,7 @@ class Summary(var name:String, val filePath:String) {
   val sizeLabeled = labeledSummary.getSize()
   var sizeBloomier = bloomierSummary.getSize()
   var sizeJson = labeledSummary.getJsonSize()
+  var fileName = filePath.split("/").takeRight(1)(0)
 
   private def bloomier(labeledSummary: LabeledSummary) = {
     val bf = BloomierFilterSummary(labeledSummary)
@@ -48,7 +49,7 @@ class Summary(var name:String, val filePath:String) {
 //    new Summary(name=name, filePath=filePath, defaultSummaryType=newSummaryType)
 //  }
 
-  def repr = s"""{"name":"${name}", "sizes":[${sizes._1},${sizes._2},${sizes._3}], "filePath":"${filePath}"}"""
+  def repr() = s"""{"name":"${name}", "sizes":[${sizes._1},${sizes._2},${sizes._3}], "fileName":"${fileName}"}"""
   override def toString() = s"${name}|[${sizes._1},${sizes._2},${sizes._3}]"
 }
 

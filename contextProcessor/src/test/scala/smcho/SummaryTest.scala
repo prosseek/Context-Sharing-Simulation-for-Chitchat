@@ -48,7 +48,7 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test repr") {
-    val expected = """{"name":"hello", "sizes":[105,52,29], "filePath":"contextProcessor/src/test/resources/g1c0.json"}"""
+    val expected = """{"name":"hello", "sizes":[105,52,29], "fileName":"g1c0.json"}"""
     assert(t.repr == expected)
   }
 

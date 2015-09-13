@@ -27,12 +27,37 @@ class Storage(directory:String) {
 
 
   override def toString = {
-    repr()
+    s"""summary has ${Storage.summaries.size} items, map has ${Storage.summaries.size} items"""
   }
 
   def repr() = {
-    val summariesInJson = "HI"
-    s"""{"summaries":"${summariesInJson}"}"""
+
+    def getJsonFromSummaries() = {
+      val sb = (new StringBuilder() /: Storage.summaries ) { (acc, value) =>
+        acc ++= value.repr() + ","
+      }
+      sb.toString.dropRight(1)
+    }
+
+    def getJsonFromMaps() = {
+
+      def dictToJson(m:Tuple2[Int, mSet[ContextMessage]]) = {
+        def setToJson(set:mSet[ContextMessage]) = {
+          val sb = (new StringBuilder() /: set ) { (acc, value) =>
+            acc ++= value.repr + ","
+          }
+          "[" ++ sb.toString.dropRight(1) ++ "]"
+        }
+        s""""${m._1}":${setToJson(m._2)}"""
+      }
+
+      val sb = (new StringBuilder() /: Storage.hostTocontextMessagesMap ) { (acc, value) =>
+        acc ++= dictToJson(value) + ","
+      }
+      sb.toString.dropRight(1)
+    }
+
+    s"""{"summaries":[${getJsonFromSummaries()}],\n"hostTocontextMessagesMap":{${getJsonFromMaps()}}}"""
   }
 
   def add(host:Int, c:ContextMessage) = {
@@ -42,5 +67,9 @@ class Storage(directory:String) {
     val set = Storage.hostTocontextMessagesMap(host)
     set += c
     Storage.hostTocontextMessagesMap(host) = set
+  }
+
+  def get(host:Int) = {
+    Storage.hostTocontextMessagesMap.getOrElse(host, mSet[ContextMessage]())
   }
 }
