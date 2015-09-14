@@ -57,7 +57,7 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
   //    q = 24
   //    complete = 0
   test ("test read property") {
-    val res = Summary.readProperty(confFilePath)
+    val res = util.file.readers.readProperty(confFilePath)
     assert(res == Map("q" -> 24, "k" -> 3, "m" -> 0, "complete" -> 0))
   }
   test ("test getConf") {

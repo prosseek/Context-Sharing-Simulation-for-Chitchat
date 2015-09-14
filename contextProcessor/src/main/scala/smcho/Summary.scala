@@ -14,7 +14,7 @@ import scala.collection.JavaConversions._
 class Summary(var name:String, val filePath:String) {
 
   val confFilePath = Summary.getConfigurationFilePath(filePath)
-  val conf = Summary.readProperty(confFilePath)
+  val conf = util.file.readers.readProperty(confFilePath)
   val labeledSummary = LabeledSummary(filePath)
   val bloomierSummary = bloomier(labeledSummary)
 
@@ -125,28 +125,5 @@ object Summary {
       }
     }
     summariesMap
-  }
-
-  def readProperty(filePath:String) = {
-    // http://stackoverflow.com/questions/9938098/how-to-check-to-see-if-a-string-is-a-decimal-number-in-scala
-    def isAllDigits(x: String) = x forall Character.isDigit
-    def convert(value:Any) = {
-      val newValue = value.asInstanceOf[String]
-      if (isAllDigits(newValue))
-        newValue.toInt
-      else
-        newValue
-    }
-
-    val prop = new Properties()
-    val input = new FileInputStream(filePath)
-    val m = scala.collection.mutable.Map[String, Any]()
-    prop.load(input)
-    prop.keySet foreach { key =>
-      val newKey = key.asInstanceOf[String]
-      val value = convert(prop(newKey))
-      m(newKey) = value
-    }
-    m.toMap
   }
 }

@@ -5,7 +5,7 @@ package smcho
  */
 class SimpleShareLogic extends ShareLogic {
 
-  override def get(host: Int, storage: Storage): Set[Summary] = {
+  override def get(host: Int, limit:Int, storage: Storage): Set[Summary] = {
     // SimpleShareLogic blindingly aggregates all the available contexts and share
     //val contexts = getHistory(host)
 

@@ -33,5 +33,25 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
     //getSize(nameTypesString: String) : Int
     assert(database.getSize("g1c0l:g3c1b") == 81)
   }
-
+  test ("test hosts") {
+    assert(database.hosts ==
+      Map("default3" -> 3000, "default1" -> 1000, "1" -> 4000, "0" -> 5000, "default2" -> 2000)
+    )
+  }
+  test("test getHostLimit") {
+    val directory = "contextProcessor/src/test/resources"
+    val hosts = util.file.readers.readProperty(directory + "/" + "hosts.txt")
+    assert(database.getHostLimit(0, hosts) == 5000)
+    assert(database.getHostLimit(1, hosts) == 4000)
+    assert(database.getHostLimit(2, hosts) == 1000)
+    assert(database.getHostLimit(3, hosts) == 2000)
+    assert(database.getHostLimit(4, hosts) == 2000)
+    assert(database.getHostLimit(5, hosts) == 2000)
+    assert(database.getHostLimit(6, hosts) == 3000)
+    assert(database.getHostLimit(7, hosts) == 3000)
+    assert(database.getHostLimit(8, hosts) == 3000)
+    intercept[Exception] {
+      assert(database.getHostLimit(9, hosts) == -1)
+    }
+  }
 }

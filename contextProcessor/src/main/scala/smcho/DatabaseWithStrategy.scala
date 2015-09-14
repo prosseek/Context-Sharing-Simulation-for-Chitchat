@@ -7,9 +7,37 @@ object DatabaseWithStrategy {
 class DatabaseWithStrategy(val strategy: String, val directory:String) extends Database with LoadClass {
   val storage = Storage(directory)
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
+  val hosts = util.file.readers.readProperty(directory + "/" + "hosts.txt")
+
+  def getHostLimit(host:Int, hostsLimit:Map[String, Any]): Int = {
+
+    val groupCount = hostsLimit("n").asInstanceOf[Int]
+    val accumGroupSizes = new Array[Int](groupCount)
+    val defaults = new Array[Int](groupCount)
+
+    val hostInString = host.toString
+    if (hostsLimit.contains(hostInString)) {
+      return hostsLimit(hostInString).asInstanceOf[Int]
+    }
+    else {
+      // 1. fill in the groupSizes and default values
+      for (g <- 0 until groupCount) {
+        accumGroupSizes(g) = hostsLimit("group" + (g+1)).asInstanceOf[Int] + (if (g == 0) 0 else accumGroupSizes(g-1))
+        defaults(g) = hostsLimit("default" + (g+1)).asInstanceOf[Int]
+      }
+      // 2. check what group the host is in
+      for (g <- 0 until groupCount) {
+        if (host < accumGroupSizes(g)) {
+          return defaults(g)
+        }
+      }
+      // host
+      throw new Exception(s"host id (${host}) is out of range")
+    }
+  }
 
   override def get(host: Int) : ContextMessage = {
-    val summaries = shareLogic.get(host, storage)
+    val summaries = shareLogic.get(host, getHostLimit(host, hosts), storage)
     null
   }
   // add received ContextMessage to host
