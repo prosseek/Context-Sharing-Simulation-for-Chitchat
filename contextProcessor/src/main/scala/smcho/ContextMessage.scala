@@ -24,6 +24,12 @@ case class ContextMessage(var host1: Int,
                      var nameTypesString: String,
                      var size:Int) {
 
+  // For Java interface
+  def setHost1(host1:Int) = this.host1 = host1
+  def setHost2(host2:Int) = this.host2 = host2
+  def setTime(time:Double) = this.time = time
+  def setSize(size:Int) = this.size = size
+
   override def toString() : String = s"[${host1}->${host2}/${time}/${nameTypesString}/${size}]"
   def repr() = s"""{"host1":${host1}, "host2":${host2}, "time":${time}, "nameTypes":"${nameTypesString}", "size":${size}}"""
 }

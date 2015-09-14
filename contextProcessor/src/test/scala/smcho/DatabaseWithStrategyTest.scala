@@ -26,8 +26,8 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
   test ("test add") {
     // add(host: Int, contextMessage: ContextMessage)
     database.add(0, ContextMessage("g1c0l:g3c1b"))
-    assert(database.storage.get(0).toString == "Set([0->0/0.0/g1c0l:g3c1b/81])")
-    assert(database.storage.get(3).toString == "Set()")
+    assert(database.storage.getContexts(0).toString == "Set([0->0/0.0/g1c0l:g3c1b/81])")
+    assert(database.storage.getContexts(3).toString == "Set()")
   }
   test ("test getSize") {
     //getSize(nameTypesString: String) : Int

@@ -11,4 +11,5 @@ trait Database {
   // add received ContextMessage to host
   def add(host: Int, contextMessage: ContextMessage)
   def getSize(nameTypesString: String) : Int
+  def getStorage() : Storage
 }

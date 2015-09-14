@@ -33,8 +33,8 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         // application can be instantiated multiple times, so this checking code will
         // prevent creating database everytime application is instantiated
         if (database == null) {
-            database = new DatabaseWithStrategy(strategy);
-            database.load(directory, hostSize);
+            database = new DatabaseWithStrategy(strategy, directory);
+            //database.load(directory, hostSize);
         }
     }
 
@@ -63,8 +63,7 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
 
         smcho.Storage storage = database.getStorage();
 
-        storage.print();
-        storage.toJsonString();
+        System.out.println(storage.repr());
         // JsonWriter.writeDatabase(database, "../results/hello.json");
 //        Iterable<Object> keys = JavaConversions.asJavaIterable(history.keySet());
 //
@@ -201,13 +200,13 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
     }
 
     private Message contextMessageToMessage(ContextMessage contextMessage) throws Exception {
-        int host1 = contextMessage.getHost1();
-        int host2 = contextMessage.getHost2();
+        int host1 = contextMessage.host1();
+        int host2 = contextMessage.host2();
         DTNHost dtnhost1 = getHost(host1);
         DTNHost dtnhost2 = getHost(host2);
-        int size = contextMessage.getSize();
-        double simTime = contextMessage.getTime();
-        String message = contextMessage.getContent(); //String.format(MESSAGE_FORMAT, host1, host2, size, simTime) + contextMessage.getContent();
+        int size = contextMessage.size();
+        double simTime = contextMessage.time();
+        String message = contextMessage.nameTypesString(); //String.format(MESSAGE_FORMAT, host1, host2, size, simTime) + contextMessage.getContent();
 
         Message m1 = new Message(dtnhost1, dtnhost2, message, size);
         m1.addProperty("type", "context");
@@ -227,9 +226,9 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         return new ContextMessage(
                 msg.getFrom().getAddress(),
                 msg.getTo().getAddress(),
-                msg.getSize(),
                 clock,
-                msg.getId());
+                msg.getId(),
+                msg.getSize());
     }
     //endregion
 }

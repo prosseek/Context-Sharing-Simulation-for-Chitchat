@@ -14,6 +14,7 @@ object Storage {
   var summaries: Iterable[Summary] = _
   var summariesMap: mm[String, Summary] = _
   val hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
+  val hostToTuplesMap = mm[Int, mSet[(Int, Int, Double, String, Int)]]()
 
   def apply(directory:String) = {
     if (storage == null) storage = new Storage(directory)
@@ -64,15 +65,31 @@ class Storage(directory:String) {
   }
 
   def add(host:Int, c:ContextMessage) = {
+
+    // hostToContextMessagesMap process
     if (!Storage.hostToContextMessagesMap.contains(host)) {
       Storage.hostToContextMessagesMap(host) = mSet[ContextMessage]()
     }
     val set = Storage.hostToContextMessagesMap(host)
     set += c
     Storage.hostToContextMessagesMap(host) = set
+
+    // hostToTuplesMap process
+    if (!Storage.hostToTuplesMap.contains(host)) {
+      Storage.hostToTuplesMap(host) = mSet[(Int, Int, Double, String, Int)]()
+    }
+    NameTypes.split(c.nameTypesString) foreach {
+      nameType =>
+        val tupleSet = Storage.hostToTuplesMap(host) //
+        tupleSet.add(c.host1, c.host2, c.time, nameType, NameType(nameType, Storage.summariesMap).size())
+    }
   }
 
-  def get(host:Int) = {
+  def getContexts(host:Int) = {
     Storage.hostToContextMessagesMap.getOrElse(host, mSet[ContextMessage]())
+  }
+
+  def getTuples(host:Int) = {
+    Storage.hostToTuplesMap.getOrElse(host, mSet[(Int, Int, Double, String, Int)]())
   }
 }

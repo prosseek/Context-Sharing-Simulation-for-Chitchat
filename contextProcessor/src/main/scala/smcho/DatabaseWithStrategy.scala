@@ -37,8 +37,8 @@ class DatabaseWithStrategy(val strategy: String, val directory:String) extends D
   }
 
   override def get(host: Int) : ContextMessage = {
-    val summaries = shareLogic.get(host, getHostLimit(host, hosts), storage)
-    null
+    val nameTypes = shareLogic.get(host, getHostLimit(host, hosts), storage)
+    ContextMessage(nameTypes)
   }
   // add received ContextMessage to host
   override def add(host: Int, contextMessage: ContextMessage) = {
@@ -48,4 +48,6 @@ class DatabaseWithStrategy(val strategy: String, val directory:String) extends D
   override def getSize(nameTypesString: String): Int = {
     NameTypes.size(nameTypesString, storage.summariesMap)
   }
+
+  override def getStorage() : Storage = storage
 }

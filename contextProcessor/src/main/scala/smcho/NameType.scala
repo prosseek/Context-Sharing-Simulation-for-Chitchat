@@ -3,8 +3,30 @@ package smcho
 import scala.collection.mutable.{Map => MM}
 
 object NameType {
+
+  val cache = MM[String, Summary]()
+
+  def getSummaryFromSummaries(name:String, summaries: MM[String, Summary]) = {
+
+    if (NameType.cache.contains(name)) { // if in cache
+      NameType.cache(name)
+    }
+    else {
+      val res = summaries.getOrElse(name, null)
+      if (res == null) throw new Exception(s"No summary found for ${name}")
+      NameType.cache(name) = res
+      res
+    }
+  }
+
   def split(name: String) = {
     (name.dropRight(1), name.takeRight(1))
+  }
+
+  def size(name:String, summaries:MM[String, Summary]) = {
+    val (summaryName, groupId, hostId, summaryType) = NameParser.getParams(name).get
+    val summary = getSummaryFromSummaries(summaryName, summaries)
+    summary.size(summaryType)
   }
 }
 
@@ -17,14 +39,8 @@ case class NameType(val name:String, val summaries:MM[String, Summary]) {
   }
 
   val (summaryName, groupId, hostId, summaryType) = NameParser.getParams(name).get
-  val summary = getSummaryFromSummaries(summaryName, summaries)
+  val summary = NameType.getSummaryFromSummaries(summaryName, summaries)
   val keys = summary.labeledSummary.getKeys()
-
-  def getSummaryFromSummaries(name:String, summaries: MM[String, Summary]) = {
-    val res = summaries.getOrElse(name, null)
-    if (res == null) throw new Exception(s"No summary found for ${name}")
-    res
-  }
 
   def get(key:String) = {
     summaryType match {

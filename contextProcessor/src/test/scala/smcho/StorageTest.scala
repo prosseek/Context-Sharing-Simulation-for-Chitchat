@@ -12,12 +12,15 @@ class StorageTest extends FunSuite with BeforeAndAfterEach {
   test("test add") {
     val s = Storage(directory)
     s.add(1, ContextMessage("g1c0l:g3c1b"))
-    assert(s.get(1).size == 1)
+    assert(s.getContexts(1).size == 1)
     s.add(1, ContextMessage("g1c0l:g3c1b"))
-    assert(s.get(1).size == 1)
+    assert(s.getContexts(1).size == 1)
     s.add(1, ContextMessage("g1c0l"))
-    assert(s.get(1).size == 2)
-    assert(s.get(2).size == 0)
+    assert(s.getContexts(1).size == 2)
+    assert(s.getContexts(2).size == 0)
+
+    assert(s.getTuples(1) == Set((0,0,0.0,"g3c1b",29), (0,0,0.0,"g1c0l",52)))
+    assert(s.getTuples(2) == Set())
   }
 
   test("test json") {
