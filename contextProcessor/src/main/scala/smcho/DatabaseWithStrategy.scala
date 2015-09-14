@@ -37,7 +37,7 @@ class DatabaseWithStrategy(val strategy: String, val directory:String, val hostS
   }
 
   override def get(host: Int) : ContextMessage = {
-    val nameTypes = shareLogic.get(host, getHostLimit(host, hostsConfigMap), storage)
+    val nameTypes = shareLogic.get(host, getHostLimit(host, hostsConfigMap), storage, "l")
     ContextMessage(nameTypes)
   }
   // add received ContextMessage to host

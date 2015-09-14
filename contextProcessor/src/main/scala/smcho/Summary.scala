@@ -102,10 +102,7 @@ object Summary {
   }
 
   def loadContexts(directory: String, hostSizes:String) : mm[String, Summary] = {
-    val hostSizesInList = (ListBuffer[Int]() /: hostSizes.split(":")) {
-      (acc, value) => acc += value.toInt
-    }
-    loadContexts(directory, hostSizesInList)
+    loadContexts(directory, NameType.hostSizesStringToList(hostSizes))
   }
   /**
    * g1c0 ... gNcX : N is the number of groups, X-1 is the number of hosts

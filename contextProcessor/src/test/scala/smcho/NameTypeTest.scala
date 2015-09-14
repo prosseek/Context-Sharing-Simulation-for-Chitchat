@@ -62,4 +62,25 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
     assert(nameType.get("h") == null)
     assert(nameType.get("latitude") == (10, 10, 10, 10))
   }
+
+  test("test hostIdToContextName") {
+    val r = NameType.hostIdToContextName(5, "3:3:3")
+    println(r)
+  }
+
+  test("test") {
+    assert(NameType.hostIdToContextName(0, "3:3:3") == "g1c0")
+    assert(NameType.hostIdToContextName(1, "3:3:3") == "g1c1")
+    assert(NameType.hostIdToContextName(2, "3:3:3") == "g1c2")
+    assert(NameType.hostIdToContextName(3, "3:3:3") == "g2c3")
+    assert(NameType.hostIdToContextName(4, "3:3:3") == "g2c4")
+    assert(NameType.hostIdToContextName(5, "3:3:3") == "g2c5")
+    assert(NameType.hostIdToContextName(6, "3:3:3") == "g3c6")
+    assert(NameType.hostIdToContextName(7, "3:3:3") == "g3c7")
+    assert(NameType.hostIdToContextName(8, "3:3:3") == "g3c8")
+    // This is wrong, as the largest group is 3, and id is 8
+    intercept[Exception] {
+      assert(NameType.hostIdToContextName(9, "3:3:3") == "g4c9")
+    }
+  }
 }

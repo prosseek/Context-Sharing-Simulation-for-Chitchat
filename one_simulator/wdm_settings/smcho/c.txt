@@ -6,7 +6,7 @@ Scenario.simulateConnections = true
 Scenario.updateInterval = 0.01
 
 # 43200s == 12h
-Scenario.endTime = 1000
+Scenario.endTime = 5000
 
 # Define new application
 contextSharingApp.type = ContextSharingApplication

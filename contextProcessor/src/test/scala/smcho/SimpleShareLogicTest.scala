@@ -15,6 +15,7 @@ class SimpleShareLogicTest extends FunSuite {
     val limit = 1000
 
     storage.add(host, ContextMessage("g1c0l:g3c1b"))
-    assert(s.get(host, limit, storage) == "g3c1b:g1c0l")
+    // "l" is initial summary type that is shared
+    assert(s.get(host, limit, storage, "l") == "g3c1b:g1c0l")
   }
 }

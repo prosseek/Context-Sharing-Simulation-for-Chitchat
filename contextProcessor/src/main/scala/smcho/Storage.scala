@@ -1,9 +1,6 @@
 package smcho
 
-import net.liftweb.json.DefaultFormats
-
 import scala.collection.mutable.{Map => mm, Set => mSet}
-import net.liftweb.json.Serialization.{write => jsonWrite}
 
 /**
  * Created by smcho on 8/28/15.

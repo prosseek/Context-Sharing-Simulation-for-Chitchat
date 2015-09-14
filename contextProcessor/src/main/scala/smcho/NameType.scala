@@ -1,6 +1,6 @@
 package smcho
 
-import scala.collection.mutable.{Map => MM}
+import scala.collection.mutable.{Map => MM, ListBuffer}
 
 object NameType {
 
@@ -27,6 +27,25 @@ object NameType {
     val (summaryName, groupId, hostId, summaryType) = NameParser.getParams(name).get
     val summary = getSummaryFromSummaries(summaryName, summaries)
     summary.size(summaryType)
+  }
+
+  def hostSizesStringToList(hostSizes:String) = (ListBuffer[Int]() /: hostSizes.split(":")) {(acc, value) => acc += value.toInt}
+
+  /**
+   * Based on the hostSizes, it returns the name of the context summary
+   * 5, "3:3:3" => g2c5
+   *
+   * @param id
+   * @param hostSizes
+   */
+  def hostIdToContextName(id:Int, hostSizes:String) = {
+    val list = hostSizesStringToList(hostSizes)
+    for (i <- 1.until(list.size)) {
+      list(i) += list(i-1)
+    }
+    val group = (0 /: list) {(acc, value) => if (id < value) acc else acc+1}
+    if (group >= list.size) throw new Exception(s"id(${id}) is out out of range in group(total:${list.size})")
+    s"g${group+1}c${id}"
   }
 }
 

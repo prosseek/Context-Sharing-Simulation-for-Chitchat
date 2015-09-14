@@ -54,15 +54,15 @@ public class ContextSharingApplication extends Application {
         Settings s3 = new Settings("Scenario");
         int nrofGroups = s3.getInt(NROF_GROUPS_S);
 
-        String totalSize = "";
+        String hostSizes = "";
         for (int i = 1; i <= nrofGroups; i++) {
             Settings t = new Settings("Group" + i);
             int hostSize = t.getInt("nrofHosts");
-            totalSize += String.format("%d,", hostSize);
+            hostSizes += String.format("%d:", hostSize);
         }
-        totalSize = totalSize.substring(0, totalSize.length() - 1);
+        hostSizes = hostSizes.substring(0, hostSizes.length() - 1);
 
-        ContextSharingAppReporter.setup(this.directory, this.strategy, totalSize);
+        ContextSharingAppReporter.setup(this.directory, this.strategy, hostSizes);
         super.setAppID(APP_ID);
     }
 
