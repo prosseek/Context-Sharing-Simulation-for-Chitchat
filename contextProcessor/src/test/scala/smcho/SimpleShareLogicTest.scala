@@ -9,7 +9,7 @@ class SimpleShareLogicTest extends FunSuite {
 
   test("testGet") {
     val directory = "contextProcessor/src/test/resources"
-    val storage = Storage(directory)
+    val storage = Storage(directory, "1:0:1")
     val s = SimpleShareLogic()
     val host = 0
     val limit = 1000

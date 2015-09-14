@@ -13,7 +13,7 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
   val strategy = "smcho.SimpleShareLogic"
 
   override def beforeEach() {
-    database = DatabaseWithStrategy(strategy, "contextProcessor/src/test/resources")
+    database = DatabaseWithStrategy(strategy, "contextProcessor/src/test/resources", "1:0:1")
   }
 
   test("test construction") {
@@ -34,8 +34,9 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
     assert(database.getSize("g1c0l:g3c1b") == 81)
   }
   test ("test hosts") {
-    assert(database.hosts ==
-      Map("default3" -> 3000, "default1" -> 1000, "1" -> 4000, "0" -> 5000, "default2" -> 2000)
+
+    assert(database.hostsConfigMap ==
+      Map("n" -> 3, "group1" -> 3, "group2" -> 3, "group3" -> 3, "default3" -> 3000, "default1" -> 1000, "1" -> 4000, "0" -> 5000, "default2" -> 2000)
     )
   }
   test("test getHostLimit") {

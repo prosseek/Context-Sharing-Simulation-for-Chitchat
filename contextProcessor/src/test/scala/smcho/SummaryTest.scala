@@ -89,6 +89,11 @@ class SummaryTest extends FunSuite with BeforeAndAfterEach {
     }
   }
 
+  test("test loadContexts 2") {
+    val res2 = Summary.loadContexts(directory = "contextProcessor/src/test/resources/", "5:5:5")
+    assert(res2.size == (5+5+5+2-1)) // default (5+5+5), +2 existing -1 (g1c0)
+  }
+
   test("test summariesToJsonString") {
     val summaries = Summary.loadContexts(directory = "contextProcessor/src/test/resources/")
     val expected = "g1c0"

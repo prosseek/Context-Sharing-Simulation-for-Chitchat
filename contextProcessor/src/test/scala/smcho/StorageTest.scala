@@ -10,7 +10,7 @@ class StorageTest extends FunSuite with BeforeAndAfterEach {
   val directory = "contextProcessor/src/test/resources"
 
   test("test add") {
-    val s = Storage(directory)
+    val s = Storage(directory, "1:0:1")
     s.add(1, ContextMessage("g1c0l:g3c1b"))
     assert(s.getContexts(1).size == 1)
     s.add(1, ContextMessage("g1c0l:g3c1b"))
@@ -24,12 +24,13 @@ class StorageTest extends FunSuite with BeforeAndAfterEach {
   }
 
   test("test json") {
-    val s = Storage(directory)
+    val s = Storage(directory, "1:0:1")
     s.add(1, ContextMessage("g1c0l:g3c1b"))
     s.add(1, ContextMessage("g3c1b"))
     s.add(2, ContextMessage("g1c0l:g3c1b"))
     s.add(2, ContextMessage("g3c1b"))
 
+    //println(s.repr())
     val expected = """{"summaries":[{"name":"g1c0", "sizes":[105,52,29], "fileName":"g1c0.json"},{"name":"g3c1", "sizes":[105,52,29], "fileName":"g3c1.json"}],"""
     assert(s.repr.startsWith(expected))
   }

@@ -16,14 +16,14 @@ object Storage {
   val hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
   val hostToTuplesMap = mm[Int, mSet[(Int, Int, Double, String, Int)]]()
 
-  def apply(directory:String) = {
-    if (storage == null) storage = new Storage(directory)
+  def apply(directory:String, hostSizes:String) = {
+    if (storage == null) storage = new Storage(directory, hostSizes)
     storage
   }
 }
 
-class Storage(directory:String) {
-  Storage.summariesMap = Summary.loadContexts(directory)
+class Storage(val directory:String, val hostSizes:String) {
+  Storage.summariesMap = Summary.loadContexts(directory, hostSizes)
   Storage.summaries = Storage.summariesMap.values
   ContextMessage.summariesMap = Storage.summariesMap
 

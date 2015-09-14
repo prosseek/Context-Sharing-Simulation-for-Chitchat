@@ -27,13 +27,13 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         System.out.printf("Host (%d) To (%d) - %s\n", from, to, event);
     }
 
-    public static void setup(String directory, String strategy, String hostSize)
+    public static void setup(String directory, String strategy, String hostSizes)
     {
         // application invokes setup function
         // application can be instantiated multiple times, so this checking code will
         // prevent creating database everytime application is instantiated
         if (database == null) {
-            database = new DatabaseWithStrategy(strategy, directory);
+            database = new DatabaseWithStrategy(strategy, directory, hostSizes);
             //database.load(directory, hostSize);
         }
     }

@@ -1,13 +1,13 @@
 package smcho
 
 object DatabaseWithStrategy {
-  def apply(strategy: String, directory:String) = new DatabaseWithStrategy(strategy, directory)
+  def apply(strategy: String, directory:String, hostSizes:String) = new DatabaseWithStrategy(strategy, directory, hostSizes)
 }
 
-class DatabaseWithStrategy(val strategy: String, val directory:String) extends Database with LoadClass {
-  val storage = Storage(directory)
+class DatabaseWithStrategy(val strategy: String, val directory:String, val hostSizes:String) extends Database with LoadClass {
+  val storage = Storage(directory, hostSizes)
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
-  val hosts = util.file.readers.readProperty(directory + "/" + "hosts.txt")
+  val hostsConfigMap = util.file.readers.readProperty(directory + "/" + "hosts.txt")
 
   def getHostLimit(host:Int, hostsLimit:Map[String, Any]): Int = {
 
@@ -37,7 +37,7 @@ class DatabaseWithStrategy(val strategy: String, val directory:String) extends D
   }
 
   override def get(host: Int) : ContextMessage = {
-    val nameTypes = shareLogic.get(host, getHostLimit(host, hosts), storage)
+    val nameTypes = shareLogic.get(host, getHostLimit(host, hostsConfigMap), storage)
     ContextMessage(nameTypes)
   }
   // add received ContextMessage to host
