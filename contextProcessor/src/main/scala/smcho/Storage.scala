@@ -13,7 +13,7 @@ object Storage {
   var storage: Storage = null
   var summaries: Iterable[Summary] = _
   var summariesMap: mm[String, Summary] = _
-  val hostTocontextMessagesMap = mm[Int, mSet[ContextMessage]]()
+  val hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
 
   def apply(directory:String) = {
     if (storage == null) storage = new Storage(directory)
@@ -24,7 +24,10 @@ object Storage {
 class Storage(directory:String) {
   Storage.summariesMap = Summary.loadContexts(directory)
   Storage.summaries = Storage.summariesMap.values
+  ContextMessage.summariesMap = Storage.summariesMap
 
+  def summaries = Storage.summaries
+  def summariesMap = Storage.summariesMap
 
   override def toString = {
     s"""summary has ${Storage.summaries.size} items, map has ${Storage.summaries.size} items"""
@@ -51,7 +54,7 @@ class Storage(directory:String) {
         s""""${m._1}":${setToJson(m._2)}"""
       }
 
-      val sb = (new StringBuilder() /: Storage.hostTocontextMessagesMap ) { (acc, value) =>
+      val sb = (new StringBuilder() /: Storage.hostToContextMessagesMap ) { (acc, value) =>
         acc ++= dictToJson(value) + ","
       }
       sb.toString.dropRight(1)
@@ -61,15 +64,15 @@ class Storage(directory:String) {
   }
 
   def add(host:Int, c:ContextMessage) = {
-    if (!Storage.hostTocontextMessagesMap.contains(host)) {
-      Storage.hostTocontextMessagesMap(host) = mSet[ContextMessage]()
+    if (!Storage.hostToContextMessagesMap.contains(host)) {
+      Storage.hostToContextMessagesMap(host) = mSet[ContextMessage]()
     }
-    val set = Storage.hostTocontextMessagesMap(host)
+    val set = Storage.hostToContextMessagesMap(host)
     set += c
-    Storage.hostTocontextMessagesMap(host) = set
+    Storage.hostToContextMessagesMap(host) = set
   }
 
   def get(host:Int) = {
-    Storage.hostTocontextMessagesMap.getOrElse(host, mSet[ContextMessage]())
+    Storage.hostToContextMessagesMap.getOrElse(host, mSet[ContextMessage]())
   }
 }

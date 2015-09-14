@@ -8,8 +8,8 @@ object NameTypes {
 
   def count() = cacheMap.size
 
-  def size(names:String, summaries:mm[String, Summary]) = {
-    NameTypes(names, summaries).size()
+  def size(names:String, summariesMap:mm[String, Summary]) = {
+    NameTypes(names, summariesMap).size()
   }
 
   def split(names:String) = {

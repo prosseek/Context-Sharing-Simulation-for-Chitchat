@@ -104,15 +104,15 @@ object Summary {
   /**
    * g1c0 ... gNcX : N is the number of groups, X-1 is the number of hosts
    * @param directory
-   * @param defaults
+   * @param hostSizes
    * @return
    */
-  def loadContexts(directory: String, defaults:List[Int]) : mm[String, Summary] = {
+  def loadContexts(directory: String, hostSizes:Iterable[Int]) : mm[String, Summary] = {
     val summariesMap = loadContexts(directory)
     val absoluteDirectory = new File(".").getAbsoluteFile() + "/" + directory
 
     var sum = 0
-    defaults.zipWithIndex foreach {
+    hostSizes.zipWithIndex foreach {
       case (count, index) => {
         for (i <- 0 until count) {
           val name = s"g${index+1}c${sum}"
