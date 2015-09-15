@@ -13,7 +13,7 @@ class DatabaseWithStrategyTest extends FunSuite  with BeforeAndAfterEach {
   val strategy = "smcho.SimpleShareLogic"
 
   override def beforeEach() {
-    database = DatabaseWithStrategy(strategy, "contextProcessor/src/test/resources", "1:0:1")
+    database = DatabaseWithStrategy(strategy, "contextProcessor/src/test/resources", "l", "1:0:1")
   }
 
   test("test construction") {

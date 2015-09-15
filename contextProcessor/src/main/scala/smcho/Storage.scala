@@ -1,6 +1,9 @@
 package smcho
 
+import java.io.{File, PrintWriter}
+
 import scala.collection.mutable.{Map => mm, Set => mSet}
+import net.liftweb.json._
 
 /**
  * Created by smcho on 8/28/15.
@@ -20,6 +23,9 @@ object Storage {
 }
 
 class Storage(val directory:String, val hostSizes:String) {
+
+  implicit val formats = DefaultFormats
+
   Storage.summariesMap = Summary.loadContexts(directory, hostSizes)
   Storage.summaries = Storage.summariesMap.values
   ContextMessage.summariesMap = Storage.summariesMap
@@ -31,16 +37,27 @@ class Storage(val directory:String, val hostSizes:String) {
     s"""summary has ${Storage.summaries.size} items, map has ${Storage.summaries.size} items"""
   }
 
+  def save(path:String) = {
+    val f = new PrintWriter(new File(path))
+    f.write(repr())
+    f.close()
+  }
+
   def repr() = {
 
     def getJsonFromSummaries() = {
-      val sb = (new StringBuilder() /: Storage.summaries ) { (acc, value) =>
-        acc ++= value.repr() + ","
+
+      val keys = Storage.summariesMap.keys.toList.sorted
+      val sb = new StringBuilder()
+
+      keys foreach {key =>
+        val value = Storage.summariesMap(key).repr()
+        sb ++= s"${value}, "
       }
       sb.toString.dropRight(1)
     }
 
-    def getJsonFromMaps() = {
+    def getJsonFromHostToContextMessagesMap() = {
 
       def dictToJson(m:Tuple2[Int, mSet[ContextMessage]]) = {
         def setToJson(set:mSet[ContextMessage]) = {
@@ -58,7 +75,41 @@ class Storage(val directory:String, val hostSizes:String) {
       sb.toString.dropRight(1)
     }
 
-    s"""{"summaries":[${getJsonFromSummaries()}],\n"hostTocontextMessagesMap":{${getJsonFromMaps()}}}"""
+    def getJsonFromHostToTuplesMap() = {
+
+      def dictToJson(key:Int, value:mSet[(Int, Int, Double, String, Int)]) = {
+
+        def setToJson(set:mSet[(Int, Int, Double, String, Int)]) = {
+
+          def getJsonList(value:(Int, Int, Double, String, Int)) = """[%d,%d,%5.2f,"%s",%d]""".format(value._1, value._2, value._3, value._4, value._5)
+
+          val sb = new StringBuilder()
+          var selfString:String = ""
+          set foreach { elem =>
+            if (elem._1 == 0 && elem._2 == 0) selfString = getJsonList(elem)
+            else {
+              sb ++= s"${getJsonList(elem)},"
+            }
+          }
+          "[" ++ selfString ++ "," ++ sb.toString.dropRight(1) ++ "]"
+        }
+
+        s""""${key}":${setToJson(value)},"""
+      }
+
+      val sb = new StringBuilder()
+      val keys = Storage.hostToTuplesMap.keys.toList.sorted
+
+      keys foreach { key =>
+        val res = dictToJson(key, Storage.hostToTuplesMap(key))
+        sb ++= res
+      }
+      sb.toString.dropRight(1)
+    }
+
+    val result = s"""{"summaries":[${getJsonFromSummaries()}],\n"hostToTuplesMap":{${getJsonFromHostToTuplesMap()}}}"""
+    pretty(render(parse(result)))
+
   }
 
   def add(host:Int, c:ContextMessage) = {

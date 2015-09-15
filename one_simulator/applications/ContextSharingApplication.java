@@ -33,9 +33,9 @@ public class ContextSharingApplication extends Application {
 
     // Private vars
     //private int     contextSize = 0;
-    private String   summaryType = "";
-    private String   strategy = "";
-    private String   directory = "";
+    public static String   summaryType = "";
+    public static String   strategy = "";
+    public static String   directory = "";
 
     //region CONSTRUCTORS
     /**
@@ -45,9 +45,9 @@ public class ContextSharingApplication extends Application {
      */
     public ContextSharingApplication(Settings s) {
         Settings s2 = new Settings(CONTEXTSUMMARY);
-        this.summaryType = s2.getSetting(SUMMARYTYPE);
-        this.strategy = s2.getSetting(STRAGETY);
-        this.directory = s2.getSetting(DIRECTORY);
+        summaryType = s2.getSetting(SUMMARYTYPE);
+        strategy = s2.getSetting(STRAGETY);
+        directory = s2.getSetting(DIRECTORY);
 
         // Scenario.nrofHostGroups = 2
         String NROF_GROUPS_S = "nrofHostGroups";
@@ -62,7 +62,7 @@ public class ContextSharingApplication extends Application {
         }
         hostSizes = hostSizes.substring(0, hostSizes.length() - 1);
 
-        ContextSharingAppReporter.setup(this.directory, this.strategy, hostSizes);
+        ContextSharingAppReporter.setup(this.directory + "/contexts", this.strategy, summaryType, hostSizes);
         super.setAppID(APP_ID);
     }
 

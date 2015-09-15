@@ -1,5 +1,6 @@
 package report;
 
+import applications.ContextSharingApplication;
 import applications.PingApplication;
 import core.*;
 import smcho.ContextMessage;
@@ -27,13 +28,13 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
         System.out.printf("Host (%d) To (%d) - %s\n", from, to, event);
     }
 
-    public static void setup(String directory, String strategy, String hostSizes)
+    public static void setup(String directory, String strategy, String initialSummaryType, String hostSizes)
     {
         // application invokes setup function
         // application can be instantiated multiple times, so this checking code will
         // prevent creating database everytime application is instantiated
         if (database == null) {
-            database = new DatabaseWithStrategy(strategy, directory, hostSizes);
+            database = new DatabaseWithStrategy(strategy, directory, initialSummaryType, hostSizes);
             //database.load(directory, hostSize);
         }
     }
@@ -60,49 +61,13 @@ public class ContextSharingAppReporter extends Report implements ApplicationList
 
     @Override
     public void done() {
+        String directory = ContextSharingApplication.directory;
 
         smcho.Storage storage = database.getStorage();
 
         System.out.println(storage.repr());
-        // JsonWriter.writeDatabase(database, "../results/hello.json");
-//        Iterable<Object> keys = JavaConversions.asJavaIterable(history.keySet());
-//
-//        List<Integer> sortedList = new ArrayList<>();
-//        for (Object i : keys) {
-//            sortedList.add((int)i);
-//        }
-//        Collections.sort(sortedList);
-//
-//        for (int key : sortedList) {
-//            System.out.printf("%d-%s\n", key, history.get(key).get().toString());
-//        }
-
-//        write("Ping stats for scenario " + getScenarioName() +
-//                "\nsim_time: " + format(getSimTime()));
-//        double pingProb = 0; // ping probability
-//        double pongProb = 0; // pong probability
-//        double successProb = 0;	// success probability
-//
-//        if (this.pingsSent > 0) {
-//            pingProb = (1.0 * this.pingsReceived) / this.pingsSent;
-//        }
-//        if (this.pongsSent > 0) {
-//            pongProb = (1.0 * this.pongsReceived) / this.pongsSent;
-//        }
-//        if (this.pingsSent > 0) {
-//            successProb = (1.0 * this.pongsReceived) / this.pingsSent;
-//        }
-//
-//        String statsText = "pings sent: " + this.pingsSent +
-//                "\npings received: " + this.pingsReceived +
-//                "\npongs sent: " + this.pongsSent +
-//                "\npongs received: " + this.pongsReceived +
-//                "\nping delivery prob: " + format(pingProb) +
-//                "\npong delivery prob: " + format(pongProb) +
-//                "\nping/pong success prob: " + format(successProb)
-//                ;
-//
-//        write(statsText);
+        String name = "result_" + ContextSharingApplication.strategy + "_" + ContextSharingApplication.summaryType + ".json";
+        storage.save(directory + "/results/" + name);
         super.done();
     }
 

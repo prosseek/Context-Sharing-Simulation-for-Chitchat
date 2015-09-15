@@ -6,7 +6,7 @@ Scenario.simulateConnections = true
 Scenario.updateInterval = 0.01
 
 # 43200s == 12h
-Scenario.endTime = 5000
+Scenario.endTime = 1000
 
 # Define new application
 contextSharingApp.type = ContextSharingApplication
@@ -68,4 +68,4 @@ MapBasedMovement.mapFile2 = data/tram4.wkt
 MapBasedMovement.mapFile3 = data/tram10.wkt
 MapBasedMovement.mapFile4 = data/main_roads.wkt
 
-ContextSummary.summaryType = bf
+ContextSummary.summaryType = b
