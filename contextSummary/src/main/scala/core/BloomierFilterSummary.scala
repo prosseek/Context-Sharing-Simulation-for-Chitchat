@@ -50,7 +50,7 @@ case class BloomierFilterSummary(jsonMap: Map[String, Any],
     }.reduce { _ ++ _}
   }
 
-  def setup(m:Int, k:Int, q:Int, maxTry:Int = 20, initialSeed:Int = 0, complete:Boolean = false): Unit = {
+  def setup(m:Int, k:Int, q:Int, maxTry:Int = 40, initialSeed:Int = 0, complete:Boolean = false): Unit = {
     this.initN = jsonMap.size
     if (this.initN > m)
       this.initM = Math.ceil(this.initN*1.5).toInt

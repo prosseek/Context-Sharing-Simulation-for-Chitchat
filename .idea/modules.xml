@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/ContextSharingSimulation/Context Sharing Simulation.iml" filepath="$PROJECT_DIR$/ContextSharingSimulation/Context Sharing Simulation.iml" />
+      <module fileurl="file://$PROJECT_DIR$/contextSummaryEvaluator/contextSummaryEvaluator.iml" filepath="$PROJECT_DIR$/contextSummaryEvaluator/contextSummaryEvaluator.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor.iml" filepath="$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor-build.iml" filepath="$PROJECT_DIR$/contextProcessor/.idea/modules/contextprocessor-build.iml" />
       <module fileurl="file://$PROJECT_DIR$/contextSummary/.idea/modules/contextsummary.iml" filepath="$PROJECT_DIR$/contextSummary/.idea/modules/contextsummary.iml" />

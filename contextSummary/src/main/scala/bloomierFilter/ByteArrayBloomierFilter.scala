@@ -41,7 +41,7 @@ class ByteArrayBloomierFilter (map:Map[String, Array[Byte]], initialM:Int, k:Int
   }
   def find() : Option[OrderAndMatch] = {
     var m = initialM
-    if (initialM == -1) {
+    if (initialM < 0) {
       m = map.size
     }
 
@@ -61,6 +61,7 @@ class ByteArrayBloomierFilter (map:Map[String, Array[Byte]], initialM:Int, k:Int
         }
       }
       //WARNING - quick and dirty code, it should be optimized to return the best m
+      //println(s"Print m = ${m}")
       m = (m*1.2).toInt
       //println(s"Q:${q}/${oamf.getDepthCount()} : ${i}=>${m}")
 //      println(s"m = ${m}")
