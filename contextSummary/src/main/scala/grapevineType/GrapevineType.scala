@@ -90,15 +90,22 @@ object GrapevineType {
     keyType.foreach { case(key, grapevineType)  =>
       if (lowerKey.startsWith(key)) return Some(grapevineType)
     }
-    if (key.endsWith(" level")) return Some(classOf[LevelType])
-    if (key.endsWith(" date")) return Some(classOf[DateType])
-    if (key.endsWith(" time")) return Some(classOf[TimeType])
-    if (key.endsWith(" rating")) return Some(classOf[LevelType])
-    if (key.endsWith(" count")) return Some(classOf[UnsignedShortType])
-    if (key.endsWith(" id")) return Some(classOf[StringType])
-    if (key.endsWith("_f")) return Some(classOf[FloatType])
 
-    Some(classOf[StringType])
+    if (key.endsWith(" level")) return Some(classOf[LevelType])
+    else if (key.endsWith(" date")) return Some(classOf[DateType])
+    else if (key.endsWith(" time")) return Some(classOf[TimeType])
+    else if (key.endsWith(" rating")) return Some(classOf[LevelType])
+    else if (key.endsWith(" count")) return Some(classOf[UnsignedShortType])
+    else if (key.endsWith(" id")) return Some(classOf[ByteType])
+      // it should be related to the name/value format
+    else if (key.endsWith(" value")) return Some(classOf[ByteType])
+    else if (key.endsWith("_f"))
+      return Some(classOf[FloatType])
+    else if (key.endsWith("number"))
+      return Some(classOf[ByteType])
+    else if (key.endsWith("_i"))
+      return Some(classOf[ByteType])
+    else Some(classOf[StringType])
     //None
   }
 

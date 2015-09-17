@@ -4,8 +4,8 @@
   "time": [11, 21],
   "date":[2015, 10, 11],
   "age": 23,
-  "name": "Brian Taylor",
+  "name": "Brian",
   "temperature": 41,
-  "message": "Isolated in room 121",
+  "message": "Room 121",
 }
 

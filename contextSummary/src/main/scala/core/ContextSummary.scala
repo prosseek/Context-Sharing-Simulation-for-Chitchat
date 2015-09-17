@@ -60,8 +60,8 @@ object ContextSummary {
     // File size
     val jsonSize = new File(filePath).length.toInt
     val source = Source.fromFile(filePath).mkString("")
-    val ba = ByteArrayTool.stringToByteArray(source)
-    val z = CompressorHelper.compress(ba)
+    //val ba = ByteArrayTool.stringToByteArray(source)
+    val z = CompressorHelper.compress(source)
     val jsonCompressedSize = z.length
     val res = parse(source)
     val json = res.values.asInstanceOf[Map[String, Any]]
@@ -171,7 +171,7 @@ abstract class ContextSummary(jsonMap: Map[String, Any], jsonSize:Int, jsonCompr
     this._jsonMap = jsonMap
     val string = ContextSummary.toString(jsonMap)
     this._jsonSize = string.length()
-    this._jsonCompressedSize = CompressorHelper.compress(ByteArrayTool.stringToByteArray(string)).length
+    this._jsonCompressedSize = CompressorHelper.compress(string).length
   }
 
   def load(filePath: String): Unit = {

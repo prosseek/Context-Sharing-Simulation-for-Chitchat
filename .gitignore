@@ -24,3 +24,9 @@ contextSummary/target/
 contextSummary/project/
 
 results/
+
+gnuplot.txt
+results.json
+runme.sh
+data.txt
+*.png

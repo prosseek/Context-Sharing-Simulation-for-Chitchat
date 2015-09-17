@@ -101,7 +101,7 @@ object ByteArrayTool {
   }
 
   def unsignedToByte(x:Int) :Byte = {
-    assert(x >= 0 && x < 256)
+    assert(x >= 0 && x < 256, s"${x.toChar}/${x} is wrong")
     if (x >= 0 && x < 256/2) x.toByte
     else (x - 256).toByte
   }
@@ -112,7 +112,6 @@ object ByteArrayTool {
     val size = if (n == -1) (x.size + 1) else n
     assert (size >= (x.size + 1), s"${size} >= ${x.size + 1}???")
     val diff = size - (x.size + 1)
-    // Array[Byte](unsignedToByte(x.size)) ++ ByteBuffer.allocate(x.size).put((x).getBytes()).array() ++ new Array[Byte](diff)
     Array[Byte](unsignedToByte(x.size)) ++ x.getBytes() ++ new Array[Byte](diff)
   }
 

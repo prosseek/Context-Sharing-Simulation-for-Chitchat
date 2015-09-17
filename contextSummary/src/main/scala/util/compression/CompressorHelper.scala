@@ -12,6 +12,21 @@ import java.util.zip.{InflaterInputStream, DeflaterOutputStream}
  */
 object CompressorHelper {
 
+  def compress(str: String): Array[Byte] = {
+    val bytes = str.getBytes()
+    val deflater = new java.util.zip.Deflater
+    val baos = new ByteArrayOutputStream
+    val dos = new DeflaterOutputStream(baos, deflater)
+    dos.write(bytes)
+    baos.close
+    dos.finish
+    dos.close
+
+    val ba = baos.toByteArray
+    if (ba.size >= bytes.size) return bytes
+    else return ba
+  }
+
   def compress(bytes: Array[Byte]): Array[Byte] = {
     val deflater = new java.util.zip.Deflater
     val baos = new ByteArrayOutputStream
