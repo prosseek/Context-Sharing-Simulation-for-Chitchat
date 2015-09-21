@@ -7,14 +7,16 @@ object DatabaseWithStrategy {
 class DatabaseWithStrategy(val strategy: String, val directory:String, val initialSummaryType:String, val hostSizes:String) extends Database with LoadClass {
   val storage = Storage(directory, hostSizes)
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
-  val hostsConfigMap = util.file.readers.readProperty(directory + "/" + "hosts.txt")
+  val hostsConfigMap = util.file.readers.readProperty(directory + "/" + "default_buffer_size.txt")
 
   def getHostLimit(host:Int, hostsLimit:Map[String, Any]): Int = {
 
-    val groupCount = hostsLimit("n").asInstanceOf[Int]
+    val hostSizesInArray = hostSizes.split(":")
+    val groupCount = hostSizesInArray.size // hostsLimit("n").asInstanceOf[Int]
     val accumGroupSizes = new Array[Int](groupCount)
     val defaults = new Array[Int](groupCount)
 
+    // 1. if the hostsLimit (default_buffer_size.txt) has the host id, it just returns it.
     val hostInString = host.toString
     if (hostsLimit.contains(hostInString)) {
       return hostsLimit(hostInString).asInstanceOf[Int]
@@ -22,7 +24,7 @@ class DatabaseWithStrategy(val strategy: String, val directory:String, val initi
     else {
       // 1. fill in the groupSizes and default values
       for (g <- 0 until groupCount) {
-        accumGroupSizes(g) = hostsLimit("group" + (g+1)).asInstanceOf[Int] + (if (g == 0) 0 else accumGroupSizes(g-1))
+        accumGroupSizes(g) = hostSizesInArray(g).toInt + (if (g == 0) 0 else accumGroupSizes(g-1))
         defaults(g) = hostsLimit("default" + (g+1)).asInstanceOf[Int]
       }
       // 2. check what group the host is in

@@ -30,3 +30,4 @@ results.json
 runme.sh
 data.txt
 *.png
+experiment/jsonContextsEvaluation

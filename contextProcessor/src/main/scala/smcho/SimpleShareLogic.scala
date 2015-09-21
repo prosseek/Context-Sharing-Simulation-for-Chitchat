@@ -21,7 +21,6 @@ class SimpleShareLogic extends ShareLogic {
       val cm = ContextMessage(nameTypeString)
       storage.add(host, cm)
       nameTypeString
-
     } else {
       val sb = new StringBuilder()
       // maybe I can do some analysis based on the information
