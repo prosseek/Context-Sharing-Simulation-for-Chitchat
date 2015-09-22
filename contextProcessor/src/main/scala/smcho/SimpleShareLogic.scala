@@ -1,5 +1,9 @@
 package smcho
 
+import core.GrapevineSummary
+
+import scala.collection.mutable.ListBuffer
+
 import scala.collection.mutable.{Set => mSet}
 
 object SimpleShareLogic {
@@ -13,29 +17,31 @@ object SimpleShareLogic {
  * Created by smcho on 8/24/15.
  */
 class SimpleShareLogic extends ShareLogic {
-  var storage:Storage = _
-  // ex) 3:4:5 to indicate group1 has 3 elements, group 2 has 4 elements, and group 3 has 5 elemtns
-  var hostSizes:String = _
+  var storage = Storage.storage
 
-  def setStorage(storage:Storage) = {
-    this.storage = storage
-    this.hostSizes = storage.hostSizes
-  }
+  // ex) 3:4:5 to indicate group1 has 3 elements, group 2 has 4 elements, and group 3 has 5 elemtns
+  var hostSizes:String = storage.hostSizes
 
   def getContextTuples(host:Int) = {
-    storage.getTuples(host)
+    storage.getTuples(host).toList
   }
 
-  def findContextTuple(host:Int, m: mSet[(Int, Int, Double, String, Int)]) : (Int, Int, Double, String, Int) = {
+  def findContextTuple(host:Int) : Option[(Int, Int, Double, String, Int)] = {
+    // nameTypeString is without the type
     val nameTypeString = NameType.hostIdToContextName(host, hostSizes)
-    findContextTuple(nameTypeString, m)
+    val m = storage.getTuples(host)
+
+    m foreach { e =>
+      val (fr, to, t, name, size) = e
+      if (name.contains(nameTypeString)) return Some(e)
+    }
+    None
   }
 
-  def findContextTuple(name:String, mset: mSet[(Int, Int, Double, String, Int)]) : (Int, Int, Double, String, Int) = {
-    mset foreach {
-      case (from, to, time, nameType, size) => if (nameType.startsWith(name)) return (from, to, time, nameType, size)
-    }
-    null
+  def findContextTuple(name:String) : Option[(Int, Int, Double, String, Int)] = {
+    val host = NameType.contextNameToHostId(name)
+
+    findContextTuple(host)
   }
 
   def getContextNamesToSendAll(host: Int, limit:Int, initialSummaryType:String) = {
@@ -51,36 +57,36 @@ class SimpleShareLogic extends ShareLogic {
     NameTypes.nameSort(total)
   }
 
-  def getContextNamesToSend(host: Int, limit:Int) = {
+  def tuplesToNameTypes(tuples: Seq[(Int, Int, Double, String, Int)]) = {
 
+    if (tuples.size == 0) ""
+    else {
+      val sb = new StringBuffer()
+      tuples foreach {
+        case (host1, host2, time, name, size) =>
+          sb.append(name + ":")
+      }
+      val total = sb.toString.dropRight(1)
+      NameTypes.nameSort(total)
+    }
+  }
 
-//    val setOfContexts = storage.getTuples(host)
-//
-//    val sb = new StringBuilder()
-//
-//    // 1. get host context
-//    sb.append(getHostName())
-//
-//    val nameTypeString = getHostName()
-//    val cm = ContextMessage(nameTypeString)
-//    var newLimit = limit - cm.size
-//
-//    // 2. Sort the available contexts based on
-//    //    2.1 contexts with similar taste
-//    //    2.2 contexts that are received most recently
-//    val similarContexts = getSimilarContexts(dropContexts(setOfContexts, nameTypeString))
-//    val sizeSortedContexts = getSizeSortedContexts(setOfContexts, similarContexts)
-//
-//
-//
-//    // maybe I can do some analysis based on the information
-//    setOfContexts foreach {
-//      case (host1, host2, time, name, size) =>
-//        sb.append(name + ":")
-//    }
-//    val total = sb.toString.dropRight(1)
-//    NameTypes.nameSort(total)
-    ""
+  def getContextNamesToSend(host: Int, limit:Int, key:String, value:String) = {
+
+    val result = ListBuffer[(Int, Int, Double, String, Int)]()
+    // 1. add itself
+    //result += findContextTuple(host).get
+
+    // 2. Get the similiar contexts
+    if (!(key == null && value == null)) {
+      result ++= getSimilarContexts(host, key, value)
+    }
+
+    // 3. get all the contexts chronologically
+    val r = getContextsSorted(host, excludes=result)
+    val r2 = addContextTupleUptoLimit(limit, r)
+
+    tuplesToNameTypes(r2)
   }
 
   /**
@@ -92,9 +98,7 @@ class SimpleShareLogic extends ShareLogic {
    * @param initialSummaryType
    * @return
    */
-  override def get(host: Int, limit:Int, initialSummaryType:String): String = {
-
-
+  override def get(host: Int, limit:Int, initialSummaryType:String, key:String, value:String): String = {
     // SimpleShareLogic blindingly aggregates all the available contexts and share
     // 1. get the whole tuple that it contains
     val setOfContexts = getContextTuples(host)
@@ -106,7 +110,73 @@ class SimpleShareLogic extends ShareLogic {
       storage.add(host, cm)
       nameTypeString
     } else {
-      getContextNamesToSend(host, limit)
+      getContextNamesToSend(host, limit, key, value)
+    }
+  }
+
+  override def get(host: Int, limit:Int, initialSummaryType:String): String = {
+    get(host, limit, initialSummaryType, null, null)
+  }
+
+  def addContextTupleUptoLimit(limit:Int, contextTuples:Seq[(Int, Int, Double, String, Int)]) : Seq[(Int, Int, Double, String, Int)] = {
+
+    var sum = 0
+    val result = ListBuffer[(Int, Int, Double, String, Int)]()
+
+    contextTuples foreach {
+      case (f, to, time, nameType, size) => {
+        sum += size
+        if (sum > limit) return result
+        else
+          result += ((f, to, time, nameType, size))
+      }
+    }
+    result
+  }
+
+  def getSimilarContexts(host:Int, key:String, value:String) = {
+    val result = ListBuffer[(Int, Int, Double, String, Int)]()
+    val m = storage.getTuples(host)
+    m foreach {
+      case (f, to, time, nameType, size) => {
+        val summaryType = nameType.takeRight(1)
+        val summaryName = nameType.dropRight(1)
+
+        val s = storage.summariesMap(summaryName)
+        var gs:GrapevineSummary = null
+
+        summaryType match {
+          case "b" => gs = s.bloomierSummary
+          case "l" => gs = s.labeledSummary
+          case "j" => gs = s.labeledSummary
+        }
+
+        if (gs.get(key) != null) {
+          val v = gs.get(key).asInstanceOf[String].toLowerCase()
+          if (v.contains(value.toLowerCase()) || value.toLowerCase().contains(v)) {
+            result += ((f, to, time, nameType, size))
+          }
+        }
+      }
+    }
+    result
+  }
+
+  def containsContext(needle:(Int, Int, Double, String, Int), hayStack:Seq[(Int, Int, Double, String, Int)]): Boolean = {
+    hayStack foreach {
+      case (f, to, time, nameType, size) => if (nameType.contains(needle._4)) return true
+    }
+    false
+  }
+
+  def getContextsSorted(host:Int, excludes:Seq[(Int, Int, Double, String, Int)]) = {
+    val sortedTuple = storage.getTuples(host).sortBy(-_._3)
+
+    if (excludes == null) sortedTuple
+    else {
+      val result = ListBuffer[(Int, Int, Double, String, Int)]()
+      sortedTuple foreach { e => if (!containsContext(e, excludes)) result += e}
+      result
     }
   }
 }

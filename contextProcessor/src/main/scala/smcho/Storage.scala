@@ -10,11 +10,21 @@ import net.liftweb.json._
  */
 
 object Storage {
+  var hostSizes:String = _
   var storage: Storage = null
   var summaries: Iterable[Summary] = _
+
   var summariesMap: mm[String, Summary] = _
-  val hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
-  val hostToTuplesMap = mm[Int, mSet[(Int, Int, Double, String, Int)]]()
+  var hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
+  var hostToTuplesMap = mm[Int, mSet[(Int, Int, Double, String, Int)]]()
+
+  def reset() = {
+    storage = null
+    summaries = null
+    summariesMap = mm[String, Summary]()
+    hostToContextMessagesMap = mm[Int, mSet[ContextMessage]]()
+    hostToTuplesMap = mm[Int, mSet[(Int, Int, Double, String, Int)]]()
+  }
 
   def apply(directory:String, hostSizes:String) = {
     if (storage == null) storage = new Storage(directory, hostSizes)
@@ -26,6 +36,7 @@ class Storage(val directory:String, val hostSizes:String) {
 
   implicit val formats = DefaultFormats
 
+  Storage.hostSizes = hostSizes
   Storage.summariesMap = Summary.loadContexts(directory, hostSizes)
   Storage.summaries = Storage.summariesMap.values
   ContextMessage.summariesMap = Storage.summariesMap
@@ -134,10 +145,10 @@ class Storage(val directory:String, val hostSizes:String) {
   }
 
   def getContexts(host:Int) = {
-    Storage.hostToContextMessagesMap.getOrElse(host, mSet[ContextMessage]())
+    Storage.hostToContextMessagesMap.getOrElse(host, mSet[ContextMessage]()).toList
   }
 
   def getTuples(host:Int) = {
-    Storage.hostToTuplesMap.getOrElse(host, mSet[(Int, Int, Double, String, Int)]())
+    Storage.hostToTuplesMap.getOrElse(host, mSet[(Int, Int, Double, String, Int)]()).toList
   }
 }
