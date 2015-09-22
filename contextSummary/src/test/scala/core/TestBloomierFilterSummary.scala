@@ -1,12 +1,6 @@
 package core
 
-import core.BloomierFilterSummary
-
-import scala.reflect.macros.Context
-
-import java.io.File
-
-import grapevineType.{GrapevineType, BottomType}
+import grapevineType.{BottomType}
 import grapevineType.BottomType._
 import org.scalatest.{BeforeAndAfter, FunSuite}
 

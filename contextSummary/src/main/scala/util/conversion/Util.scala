@@ -39,7 +39,7 @@ object Util {
   }
 
   def dms2dd(v:Any) :Double = {
-    if (v.isInstanceOf[(Int, Int, Int, Int)]) {
+    if (v.isInstanceOf[Tuple4[Int, Int, Int, Int] @unchecked]) {
       val value = v.asInstanceOf[(Int, Int, Int, Int)]
       dms2dd(value._1, value._2, value._3, value._4)
     }

@@ -47,7 +47,14 @@ object NameType {
     if (group >= list.size) throw new Exception(s"id(${id}) is out out of range in group(total:${list.size})")
     s"g${group+1}c${id}"
   }
+
+  def contextNameToHostId(contextname:String) = {
+    val (summaryName, groupId, hostId, summaryType) = NameParser.getParamsIgnoringSummaryType(contextname).get
+    hostId.toInt
+  }
 }
+
+
 
 /**
  * Created by smcho on 9/12/15.

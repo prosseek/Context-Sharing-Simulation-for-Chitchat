@@ -83,4 +83,8 @@ class NameTypeTest extends FunSuite with BeforeAndAfterEach {
       assert(NameType.hostIdToContextName(9, "3:3:3") == "g4c9")
     }
   }
+
+  test("test contextNameToHostId") {
+    assert(NameType.contextNameToHostId("g1c0") == 0)
+  }
 }

@@ -75,7 +75,7 @@ class GrapevineSummary(jsonMap: Map[String, Any],
     map.contains(key)
   }
 
-  override def get(key:String) = {
+  override def get(key:String) : Any = {
     getValue(key) match {
       case Some(p) => p
       case None => null

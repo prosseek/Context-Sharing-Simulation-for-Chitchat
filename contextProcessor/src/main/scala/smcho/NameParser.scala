@@ -19,6 +19,14 @@ object NameParser {
       }
     }
 
+    def getParamsIgnoringSummaryType(nameType:String) = {
+      val p = """^(g(\d+)c(\d+))([blj])?$""".r
+      nameType match {
+        case p(name, groupId, hostId, summaryType) => Some(name, groupId.toInt, hostId.toInt, summaryType)
+        case _ => None
+      }
+    }
+
     def getGroupId(nameType:String) = {
       getParams(nameType) match {
         case Some((name, groupId, hostId, summaryType)) => groupId
