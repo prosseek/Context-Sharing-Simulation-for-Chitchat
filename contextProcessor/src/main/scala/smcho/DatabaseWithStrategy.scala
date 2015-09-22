@@ -7,6 +7,7 @@ object DatabaseWithStrategy {
 class DatabaseWithStrategy(val strategy: String, val directory:String, val initialSummaryType:String, val hostSizes:String) extends Database with LoadClass {
   val storage = Storage(directory, hostSizes)
   val shareLogic: ShareLogic = loadObject(strategy).asInstanceOf[ShareLogic]
+  shareLogic.setStorage(storage)
   val hostsConfigMap = util.file.readers.readProperty(directory + "/" + "default_buffer_size.txt")
 
   def getHostLimit(host:Int, hostsLimit:Map[String, Any]): Int = {
@@ -39,7 +40,7 @@ class DatabaseWithStrategy(val strategy: String, val directory:String, val initi
   }
 
   override def get(host: Int) : ContextMessage = {
-    val nameTypes = shareLogic.get(host, getHostLimit(host, hostsConfigMap), storage, initialSummaryType)
+    val nameTypes = shareLogic.get(host, getHostLimit(host, hostsConfigMap), initialSummaryType)
     ContextMessage(nameTypes)
   }
   // add received ContextMessage to host

@@ -10,6 +10,6 @@ trait ShareLogic {
 //
 //  def getSummaries() = summaries
 //  def getHistory() = history
-
-  def get(host: Int, limit: Int, storage: Storage, initialSummaryType:String): String
+  def setStorage(storage:Storage)
+  def get(host: Int, limit: Int, initialSummaryType:String): String
 }
