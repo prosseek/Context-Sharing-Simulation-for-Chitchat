@@ -1,5 +1,5 @@
 # ContextSharingSimulation
-Context Sharing Simulation on ONE Simulator
+Context Sharing Simulation on ONE Simulator, the results are used in the paper [CHITCHAT: Navigating Tradeoffs in Device-to-Device Context Sharing](https://www.researchgate.net/publication/287249098_CHITCHAT_Navigating_Tradeoffs_in_Device-to-Device_Context_Sharing)
 
 ## Simulation setup
 * [2015/08/19] `ln -s ../experiment/ ./experiment` should be executed in the ONE simulator directory.
